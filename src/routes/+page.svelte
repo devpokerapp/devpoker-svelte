@@ -10,50 +10,17 @@
 </svelte:head>
 
 <section>
-	<h1>
-		<span class="welcome">
-			<picture>
-				<source srcset={welcome} type="image/webp" />
-				<img src={welcome_fallback} alt="Welcome" />
-			</picture>
-		</span>
-
-		to your new<br />SvelteKit app
-	</h1>
-
-	<h2>
-		try editing <strong>src/routes/+page.svelte</strong>
-	</h2>
-
-	<Counter />
+	<div class="hero min-h-screen bg-base-200">
+		<div class="hero-content text-center">
+			<div class="max-w-md">
+				<h1 class="text-5xl font-bold">DevPoker</h1>
+				<p class="py-6">
+					Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iste quaerat illo corrupti
+					soluta. Unde itaque reprehenderit voluptatibus sed tempore? Inventore vel excepturi ab
+					blanditiis laborum nulla itaque enim saepe deleniti.
+				</p>
+				<a class="btn btn-primary" href="/poker">Continuar</a>
+			</div>
+		</div>
+	</div>
 </section>
-
-<style>
-	section {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		flex: 0.6;
-	}
-
-	h1 {
-		width: 100%;
-	}
-
-	.welcome {
-		display: block;
-		position: relative;
-		width: 100%;
-		height: 0;
-		padding: 0 0 calc(100% * 495 / 2048) 0;
-	}
-
-	.welcome img {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		display: block;
-	}
-</style>
