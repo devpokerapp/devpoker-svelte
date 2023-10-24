@@ -1,4 +1,6 @@
 <script>
+	import Deck from "./Deck.svelte";
+
 	const votes = ['1', '2', '3', '4'];
 	const comments = [
 		'Acho que seria importante considerar os testes para a estimativa de esforços.',
@@ -52,5 +54,8 @@
                 Estimativa definida como <strong>5</strong> story points
             </p>
 		</div>
+        <div class="fixed bottom-0 p-8">
+            <Deck />
+        </div>
 	</div>
 </section>
