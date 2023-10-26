@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
-	import type { IWebSocketContext } from '../../context/websocket';
 
 	const cards = ['0', '1', '2', '3', '5', '8', '13', '?', '☕'];
 

@@ -23,12 +23,6 @@ interface IWebSocketListener {
     callback: (message: ReceivedMessage) => void;
 }
 
-export interface IWebSocketContext {
-    start(url: string): void;
-    send(message: EmittedMessage): void;
-    listen(event: string, callback: (message: ReceivedMessage) => void): void;
-}
-
 export const websocket: IWebSocketContext = (() => {
     const listeners: IWebSocketListener[] = [];
     let socket: WebSocket;
@@ -54,7 +48,7 @@ export const websocket: IWebSocketContext = (() => {
         affected.forEach((listener) => (listener.callback(message)));
 	}
 
-    function start(url: string) {
+    function init(url: string) {
 		const instance = new WebSocket(url);
 
 		instance.onopen = () => {
@@ -83,7 +77,7 @@ export const websocket: IWebSocketContext = (() => {
 	}
 
     return {
-        start,
+        init,
         listen,
         send
     }

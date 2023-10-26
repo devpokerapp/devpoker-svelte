@@ -7,7 +7,7 @@
 	setContext('websocket', websocket);
 
 	onMount(() => {
-		websocket.start('ws://localhost:8000/ws');
+		websocket.init('ws://localhost:8000/ws');
 	});
 </script>
 
