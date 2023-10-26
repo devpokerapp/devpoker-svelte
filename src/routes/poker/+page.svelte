@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from "svelte";
+	import { onMount, setContext } from "svelte";
 	import Deck from "./Deck.svelte";
 	import { writable } from "svelte/store";
 
@@ -36,7 +36,7 @@
 	const listeners = writable<IWebSocketListener<any>[]>([]);
 	const socket = writable<WebSocket | undefined>(undefined);
 
-	const listen = (event: string, callback: (message: ReceivedMessage<any>) => void): void => {
+	function listen<T>(event: string, callback: (message: ReceivedMessage<T>) => void): void {
 		listeners.update((value) => ([
 			...value,
 			{
@@ -46,7 +46,7 @@
 		]))
 	}
 
-	const propagate = (message: ReceivedMessage<any>) => {
+	function propagate<T>(message: ReceivedMessage<T>) {
 		if (message === undefined || message.type === "result") {
             return;
         }
@@ -110,6 +110,11 @@
                 }
             });
 		})
+	})
+
+	setContext('websocket', {
+		listen,
+		send
 	})
 
 </script>
