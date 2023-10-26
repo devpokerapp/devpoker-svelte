@@ -1,4 +1,5 @@
-<script>
+<script lang="ts">
+	import { onMount } from "svelte";
 	import Deck from "./Deck.svelte";
 
 	const votes = ['1', '2', '3', '4'];
@@ -6,6 +7,33 @@
 		'Acho que seria importante considerar os testes para a estimativa de esforços.',
 		'Precisa definir bem quais tipos de ingredientes poderão estar na checklist.'
 	];
+
+	onMount(() => {
+		const socket = new WebSocket('ws://localhost:8000/ws');
+
+		socket.onopen = (event: Event) => {
+			console.debug('[ws] established websocket connection!')
+		}
+
+		socket.onclose = (event: CloseEvent) => {
+			if (event.wasClean) {
+                console.debug(`[ws] connection closed cleanly. code=${event.code} reason=${event.reason}`);
+            } else {
+                console.debug('[ws] connection died');
+            }
+		}
+
+		socket.onerror = (event: Event) => {
+			console.debug(`[ws] error. ${event}`);
+		}
+
+		socket.onmessage = (event: MessageEvent<string>) => {
+			console.debug(`[ws] received message. ${event.data}`);
+			const message = JSON.parse(event.data);
+			// TODO: deal with message
+		}
+	})
+
 </script>
 
 <section style="padding-bottom: 10em;">
