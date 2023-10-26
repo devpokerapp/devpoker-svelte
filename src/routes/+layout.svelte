@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount, setContext } from 'svelte';
-	import { websocket } from '../stores/websocket';
+	import { websocket } from '../context/websocket';
 	import Header from './Header.svelte';
 	import './styles.css';
 

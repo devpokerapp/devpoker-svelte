@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { getContext } from "svelte";
 	import Deck from "./Deck.svelte";
-	import type { IWebSocketContext } from "../../stores/websocket";
+	import type { IWebSocketContext } from "../../context/websocket";
 
 	const votes = ['1', '2', '3', '4'];
 	const comments = [
