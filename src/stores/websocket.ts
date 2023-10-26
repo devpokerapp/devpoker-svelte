@@ -24,28 +24,17 @@ interface IWebSocketListener {
 }
 
 export interface IWebSocketContext {
-    onMount(): void;
+    start(url: string): void;
     send(message: EmittedMessage): void;
     listen(event: string, callback: (message: ReceivedMessage) => void): void;
 }
 
-export const initWebSocketContext = (url: string): IWebSocketContext => {
+export const websocket: IWebSocketContext = (() => {
     const listeners: IWebSocketListener[] = [];
     let socket: WebSocket;
 
     function listen(event: string, callback: (message: ReceivedMessage) => void): void {
-		listeners.push({
-            event,
-            callback
-        })
-	}
-
-	function propagate(message: ReceivedMessage) {
-		if (message === undefined || message.type === "result") {
-            return;
-        }
-        const affected = listeners.filter((listener) => listener.event === message.event);
-        affected.forEach((listener) => (listener.callback(message)));
+		listeners.push({ event, callback })
 	}
 
 	function send(message: EmittedMessage): void {
@@ -57,7 +46,15 @@ export const initWebSocketContext = (url: string): IWebSocketContext => {
         socket.send(payload);
     };
 
-    function onMount() {
+    function propagate(message: ReceivedMessage) {
+		if (message === undefined || message.type === "result") {
+            return;
+        }
+        const affected = listeners.filter((listener) => listener.event === message.event);
+        affected.forEach((listener) => (listener.callback(message)));
+	}
+
+    function start(url: string) {
 		const instance = new WebSocket(url);
 
 		instance.onopen = () => {
@@ -86,8 +83,8 @@ export const initWebSocketContext = (url: string): IWebSocketContext => {
 	}
 
     return {
-        onMount,
+        start,
         listen,
         send
     }
-}
+})();

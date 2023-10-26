@@ -1,6 +1,14 @@
-<script>
+<script lang="ts">
+	import { onMount, setContext } from 'svelte';
+	import { websocket } from '../stores/websocket';
 	import Header from './Header.svelte';
 	import './styles.css';
+
+	setContext('websocket', websocket);
+
+	onMount(() => {
+		websocket.start('ws://localhost:8000/ws');
+	});
 </script>
 
 <html lang="en" data-theme="pastel">

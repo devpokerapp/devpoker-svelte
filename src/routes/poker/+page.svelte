@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { onMount, setContext } from "svelte";
+	import { getContext } from "svelte";
 	import Deck from "./Deck.svelte";
-	import { writable } from "svelte/store";
-	import { initWebSocketContext } from "../../stores/websocket";
+	import type { IWebSocketContext } from "../../stores/websocket";
 
 	const votes = ['1', '2', '3', '4'];
 	const comments = [
@@ -10,8 +9,7 @@
 		'Precisa definir bem quais tipos de ingredientes poderão estar na checklist.'
 	];
 
-	const websocket = initWebSocketContext('ws://localhost:8000/ws');
-	onMount(websocket.onMount);
+	const websocket = getContext<IWebSocketContext>('websocket');
 
 	const sendSample = () => {
 		websocket.send({
@@ -25,6 +23,7 @@
 	}
 
 	websocket.listen('connected', () => {
+		// auto register
 		websocket.send({
 			correlation_id: 'poker_service',
 			method: 'join',
@@ -33,9 +32,6 @@
 			}
 		});
 	})
-
-	setContext('websocket', websocket);
-
 </script>
 
 <section style="padding-bottom: 10em;">
