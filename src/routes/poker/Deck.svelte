@@ -1,13 +1,10 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
+	import type { IWebSocketContext } from '../../stores/websocket';
 
 	const cards = ['0', '1', '2', '3', '5', '8', '13', '?', '☕'];
 
-	const websocket = getContext('websocket') as {
-        listen: any,
-        send: any
-        // TODO: typing
-    };
+	const websocket = getContext<IWebSocketContext>('websocket');
 
 	const sendVote = (value: string) => {
         websocket.send({
