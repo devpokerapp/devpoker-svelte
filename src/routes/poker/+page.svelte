@@ -12,7 +12,7 @@
 
 	const sendSample = () => {
 		websocket.send({
-            correlation_id: 'story_service',
+            service: 'story_service',
             method: 'create',
             data: {
                 channel: 'test_',
@@ -24,7 +24,7 @@
 	websocket.listen('connected', () => {
 		// auto register
 		websocket.send({
-			correlation_id: 'poker_service',
+			service: 'poker_service',
 			method: 'join',
 			data: {
 				channel: 'test_'

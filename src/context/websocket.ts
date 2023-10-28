@@ -1,28 +1,3 @@
-interface EmittedMessage {
-    correlation_id: string;
-    method: string;
-    data: object;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-interface MessageResult {
-    type: "result" | "event";
-    success: boolean;
-    correlation_id: string;
-    data: object;
-}
-
-interface ReceivedMessage {
-    type: "result" | "event";
-    event: string;
-    data: object;
-}
-
-interface IWebSocketListener {
-    event: string;
-    callback: (message: ReceivedMessage) => void;
-}
-
 export const websocket: IWebSocketContext = (() => {
     const listeners: IWebSocketListener[] = [];
     let socket: WebSocket;
@@ -36,7 +11,11 @@ export const websocket: IWebSocketContext = (() => {
             console.error("Disconnected WebSocket!", socket);
             return;
         }
-        const payload = JSON.stringify(message);
+        const payload = JSON.stringify({
+            correlation_id: 'gateway_service',
+            method: 'request',
+            data: message
+        });
         socket.send(payload);
     };
 

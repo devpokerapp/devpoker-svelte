@@ -7,7 +7,7 @@
 
 	const sendVote = (value: string) => {
         websocket.send({
-            correlation_id: 'story_service',
+            service: 'story_service',
             method: 'create',
             data: {
                 channel: 'test_',
