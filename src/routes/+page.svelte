@@ -1,7 +1,25 @@
-<script>
-	import Counter from './Counter.svelte';
-	import welcome from '$lib/images/svelte-welcome.webp';
-	import welcome_fallback from '$lib/images/svelte-welcome.png';
+<script lang="ts">
+	import { goto } from '$app/navigation';
+	import { getContext } from 'svelte';
+
+	const websocket = getContext<IWebSocketContext>('websocket');
+
+	websocket.listen('poker_created', (message) => {
+		const poker = message.data as Poker;
+		goto(`/poker/${poker.id}`);
+	});
+
+	const start = () => {
+		websocket.send({
+			service: 'poker_service',
+			method: 'create',
+			data: {
+				payload: {
+					creator: ''
+				}
+			}
+		});
+	};
 </script>
 
 <svelte:head>
@@ -19,7 +37,7 @@
 					soluta. Unde itaque reprehenderit voluptatibus sed tempore? Inventore vel excepturi ab
 					blanditiis laborum nulla itaque enim saepe deleniti.
 				</p>
-				<a class="btn btn-primary" href="/poker">Continuar</a>
+				<button class="btn btn-primary" on:click={start}>Começar</button>
 			</div>
 		</div>
 	</div>

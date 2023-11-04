@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { getContext } from "svelte";
-	import Deck from "./Deck.svelte";
+	import { getContext, onMount } from 'svelte';
+	import Deck from './Deck.svelte';
 
 	const votes = ['1', '2', '3', '4'];
 	const comments = [
@@ -12,14 +12,19 @@
 
 	const sendSample = () => {
 		websocket.send({
-            service: 'story_service',
-            method: 'create',
-            data: {
-                channel: 'test_',
-                vote: '1'
-            },
-        });
-	}
+			service: 'poker_service',
+			method: 'create',
+			data: {
+				payload: {
+					creator: 'rthurmedeiros@gmail.com'
+				}
+			}
+		});
+	};
+
+	websocket.listen('poker_created', ({ data }) => {
+		console.log({ poker: data });
+	});
 
 	websocket.listen('connected', () => {
 		// auto register
@@ -30,7 +35,7 @@
 				channel: 'test_'
 			}
 		});
-	})
+	});
 </script>
 
 <section style="padding-bottom: 10em;">
@@ -56,31 +61,29 @@
 				<button class="btn btn-circle btn-accent" on:click={sendSample}> ✅ </button>
 			</div>
 			<div id="poker-comment-area">
-                <input type="text" placeholder="Adicionar comentário" class="input input-bordered w-full" />
+				<input type="text" placeholder="Adicionar comentário" class="input input-bordered w-full" />
 			</div>
-            {#each comments as comment}
-                <div class="card border-2">
-                    <div class="card-body flex flex-row gap-8">
-                        <button class="btn btn-circle btn-info"></button>
-                        <div>
-                            <p>
-                                {comment}
-                            </p>
-                            <div class="text-right">
-                                <p class="text-gray-500">
-                                    01/10/2023, 18:27
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {/each}
-            <p class="text-center">
-                Estimativa definida como <strong>5</strong> story points
-            </p>
+			{#each comments as comment}
+				<div class="card border-2">
+					<div class="card-body flex flex-row gap-8">
+						<button class="btn btn-circle btn-info" />
+						<div>
+							<p>
+								{comment}
+							</p>
+							<div class="text-right">
+								<p class="text-gray-500">01/10/2023, 18:27</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			{/each}
+			<p class="text-center">
+				Estimativa definida como <strong>5</strong> story points
+			</p>
 		</div>
-        <div class="fixed bottom-0 pb-8">
-            <Deck />
-        </div>
+		<div class="fixed bottom-0 pb-8">
+			<Deck />
+		</div>
 	</div>
 </section>
