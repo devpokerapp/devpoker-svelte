@@ -1,6 +1,7 @@
 export const websocket: IWebSocketContext = (() => {
     const listeners: IWebSocketListener[] = [];
     let socket: WebSocket;
+    let connected: boolean = false;
 
     function listen(event: string, callback: (message: ReceivedMessage) => void): void {
 		listeners.push({ event, callback })
@@ -32,6 +33,7 @@ export const websocket: IWebSocketContext = (() => {
 
 		instance.onopen = () => {
 			console.debug('[ws] established websocket connection!')
+            connected = true;
 		}
 
 		instance.onclose = (event: CloseEvent) => {
@@ -40,6 +42,7 @@ export const websocket: IWebSocketContext = (() => {
             } else {
                 console.debug('[ws] connection died');
             }
+            connected = false;
 		}
 
 		instance.onerror = (event: Event) => {
@@ -55,9 +58,20 @@ export const websocket: IWebSocketContext = (() => {
 		socket = instance;
 	}
 
+    function asap(callback: () => void): void {
+        if (connected) {
+            callback()
+            return;
+        }
+        listen('connected', () => {
+            callback()
+        });
+    }
+
     return {
         init,
         listen,
-        send
+        send,
+        asap,
     }
 })();

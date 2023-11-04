@@ -1,6 +1,11 @@
 <script lang="ts">
 	import { getContext, onMount } from 'svelte';
 	import Deck from './Deck.svelte';
+	import type { PageData } from './$types';
+
+	export let data: PageData;
+
+	let poker: Poker | undefined = undefined;
 
 	const votes = ['1', '2', '3', '4'];
 	const comments = [
@@ -10,38 +15,36 @@
 
 	const websocket = getContext<IWebSocketContext>('websocket');
 
-	const sendSample = () => {
-		websocket.send({
-			service: 'poker_service',
-			method: 'create',
-			data: {
-				payload: {
-					creator: 'rthurmedeiros@gmail.com'
+	websocket.listen('poker_retrieved', (message) => {
+		const retrieved = message.data as Poker;
+		poker = retrieved;
+	})
+
+	onMount(() => {
+		websocket.asap(() => {
+			// auto register
+			websocket.send({
+				service: 'poker_service',
+				method: 'join',
+				data: {
+					channel: data.id
 				}
-			}
+			});
+			websocket.send({
+				service: 'poker_service',
+				method: 'retrieve',
+				data: {
+					entity_id: data.id
+				}
+			});
 		});
-	};
-
-	websocket.listen('poker_created', ({ data }) => {
-		console.log({ poker: data });
-	});
-
-	websocket.listen('connected', () => {
-		// auto register
-		websocket.send({
-			service: 'poker_service',
-			method: 'join',
-			data: {
-				channel: 'test_'
-			}
-		});
-	});
+	})
 </script>
 
 <section style="padding-bottom: 10em;">
 	<div class="flex flex-row justify-center">
 		<div id="poker-main" class="flex flex-col gap-6 max-w-lg">
-			<h3>Sessão de planning poker #1</h3>
+			<h3>Sessão de planning poker #{poker?.id || ''}</h3>
 			<div class="text-[2.3rem] lg:text-5xl leading-9 font-bold text-center">
 				<h2>Adicionar checklist de ingredientes</h2>
 			</div>
@@ -58,7 +61,7 @@
 				{/each}
 				<div class="flex-grow" />
 				<button class="btn btn-circle btn-accent"> 👁️ </button>
-				<button class="btn btn-circle btn-accent" on:click={sendSample}> ✅ </button>
+				<button class="btn btn-circle btn-accent"> ✅ </button>
 			</div>
 			<div id="poker-comment-area">
 				<input type="text" placeholder="Adicionar comentário" class="input input-bordered w-full" />
