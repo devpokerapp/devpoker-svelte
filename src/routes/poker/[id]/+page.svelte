@@ -1,5 +1,8 @@
 <script lang="ts">
 	import { getContext, onMount } from 'svelte';
+	import { cubicOut } from 'svelte/easing';
+	import { get, writable } from 'svelte/store';
+	import { fly } from 'svelte/transition';
 	import type { PageData } from './$types';
 	import Deck from './Deck.svelte';
 	import UserStoryMenu from './UserStoryMenu.svelte';
@@ -7,6 +10,8 @@
 	export let data: PageData;
 
 	let poker: Poker | undefined = undefined;
+
+	const showUSMenu = writable(true);
 
 	const votes = ['1', '2', '3', '4'];
 	const comments = [
@@ -19,7 +24,7 @@
 	websocket.listen('poker_retrieved', (message) => {
 		const retrieved = message.data as Poker;
 		poker = retrieved;
-	})
+	});
 
 	onMount(() => {
 		websocket.asap(() => {
@@ -39,7 +44,11 @@
 				}
 			});
 		});
-	})
+	});
+
+	const handleUSMenuSwitcher = () => {
+		showUSMenu.set(!get(showUSMenu));
+	};
 </script>
 
 <section style="padding-bottom: 10em;">
@@ -89,9 +98,31 @@
 		<div class="p-4 fixed right-0">
 			<div class="flex flex-row">
 				<div class="p-4">
-					<div class="btn btn-circle btn-neutral"> &gt; </div>
+					<button
+						class="btn btn-circle btn-neutral"
+						on:click={handleUSMenuSwitcher}
+					>
+						{#if $showUSMenu}
+							&gt;
+						{:else}
+							&lt;
+						{/if}
+					</button>
 				</div>
-				<UserStoryMenu />
+				{#if $showUSMenu}
+					<div
+						transition:fly={{
+							delay: 250,
+							duration: 300,
+							x: 400,
+							y: 0,
+							opacity: 0.5,
+							easing: cubicOut
+						}}
+					>
+						<UserStoryMenu />
+					</div>
+				{/if}
 			</div>
 		</div>
 		<div class="fixed bottom-0 pb-8">
