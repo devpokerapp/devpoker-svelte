@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid";
-import { writable } from "svelte/store";
+import { get, writable } from "svelte/store";
 
 export const websocket: IWebSocketContext = (() => {
     const listeners: WSEventListener[] = [];
@@ -82,8 +82,6 @@ export const websocket: IWebSocketContext = (() => {
             }));
         }
 
-        console.log({ listeners, resultListeners, affected });
-
         affected.forEach((listener) => (listener.callback(message)));
 	}
 
@@ -124,7 +122,7 @@ export const websocket: IWebSocketContext = (() => {
 	}
 
     function asap(callback: () => void): void {
-        if (connected) {
+        if (get(connected)) {
             callback();
             return;
         }
