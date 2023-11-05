@@ -3,6 +3,7 @@
 	import { websocket } from '../context/websocket';
 	import Header from './Header.svelte';
 	import './styles.css';
+	import ConnectionManager from './ConnectionManager.svelte';
 
 	setContext('websocket', websocket);
 
@@ -13,6 +14,7 @@
 
 <html lang="en" data-theme="pastel">
 	<div class="app">
+		<ConnectionManager />
 		<main>
 			<slot />
 		</main>

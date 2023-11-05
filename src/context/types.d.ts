@@ -4,12 +4,20 @@ interface EmittedMessage {
     data: object;
 }
 
+interface RPCResult {
+    success: boolean;
+    service: string;
+    method: string;
+    result: object;
+    error: object;
+}
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-interface MessageResult {
+interface ResultingMessage {
     type: "result" | "event";
     success: boolean;
     correlation_id: string;
-    data: object;
+    data: RPCResult | object;
 }
 
 interface ReceivedMessage {
@@ -24,7 +32,10 @@ interface IWebSocketListener {
 }
 
 interface IWebSocketContext {
+    connected: Writable<boolean>;
+    initiated: Writable<boolean>;
     init(url: string): void;
+    restart(): void;
     send(message: EmittedMessage): void;
     listen(event: string, callback: (message: ReceivedMessage) => void): void;
     asap(callback: () => void): void;

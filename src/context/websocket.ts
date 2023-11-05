@@ -1,10 +1,14 @@
+import { writable } from "svelte/store";
+
 export const websocket: IWebSocketContext = (() => {
     const listeners: IWebSocketListener[] = [];
+    const initiated = writable(false);
+    const connected = writable(false);
+    let url: string;
     let socket: WebSocket;
-    let connected: boolean = false;
 
     function listen(event: string, callback: (message: ReceivedMessage) => void): void {
-		listeners.push({ event, callback })
+		listeners.push({ event, callback });
 	}
 
 	function send(message: EmittedMessage): void {
@@ -28,12 +32,18 @@ export const websocket: IWebSocketContext = (() => {
         affected.forEach((listener) => (listener.callback(message)));
 	}
 
-    function init(url: string) {
-		const instance = new WebSocket(url);
+    function restart() {
+        init(url);
+    }
+
+    function init(connectionUrl: string) {
+		const instance = new WebSocket(connectionUrl);
+        url = connectionUrl;
 
 		instance.onopen = () => {
 			console.debug('[ws] established websocket connection!')
-            connected = true;
+            connected.set(true);
+            initiated.set(true);
 		}
 
 		instance.onclose = (event: CloseEvent) => {
@@ -42,7 +52,7 @@ export const websocket: IWebSocketContext = (() => {
             } else {
                 console.debug('[ws] connection died');
             }
-            connected = false;
+            connected.set(false);
 		}
 
 		instance.onerror = (event: Event) => {
@@ -60,16 +70,19 @@ export const websocket: IWebSocketContext = (() => {
 
     function asap(callback: () => void): void {
         if (connected) {
-            callback()
+            callback();
             return;
         }
         listen('connected', () => {
-            callback()
+            callback();
         });
     }
 
     return {
+        connected,
+        initiated,
         init,
+        restart,
         listen,
         send,
         asap,
