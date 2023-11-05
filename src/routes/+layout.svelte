@@ -1,10 +1,20 @@
-<script>
+<script lang="ts">
+	import { onMount, setContext } from 'svelte';
+	import { websocket } from '../context/websocket';
 	import Header from './Header.svelte';
 	import './styles.css';
+	import ConnectionManager from './ConnectionManager.svelte';
+
+	setContext('websocket', websocket);
+
+	onMount(() => {
+		websocket.init('ws://localhost:8000/ws');
+	});
 </script>
 
 <html lang="en" data-theme="pastel">
 	<div class="app">
+		<ConnectionManager />
 		<main>
 			<slot />
 		</main>

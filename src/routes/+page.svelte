@@ -1,7 +1,31 @@
-<script>
-	import Counter from './Counter.svelte';
-	import welcome from '$lib/images/svelte-welcome.webp';
-	import welcome_fallback from '$lib/images/svelte-welcome.png';
+<script lang="ts">
+	import { goto } from '$app/navigation';
+	import { getContext } from 'svelte';
+
+	let loading = false;
+
+	const websocket = getContext<IWebSocketContext>('websocket');
+
+	const start = () => {
+		websocket
+			.sendAndWait({
+				service: 'poker_service',
+				method: 'create',
+				data: {
+					payload: {
+						creator: ''
+					}
+				}
+			})
+			.then((response) => {
+				const poker = response.result as Poker;
+				goto(`/poker/${poker.id}`);
+			})
+			.catch((response) => {
+				console.error('REJECTED: ', response);
+			});
+		loading = true;
+	};
 </script>
 
 <svelte:head>
@@ -19,7 +43,12 @@
 					soluta. Unde itaque reprehenderit voluptatibus sed tempore? Inventore vel excepturi ab
 					blanditiis laborum nulla itaque enim saepe deleniti.
 				</p>
-				<a class="btn btn-primary" href="/poker">Continuar</a>
+				<button class="btn btn-primary" on:click={start} disabled={loading}>
+					{#if loading}
+						<span class="loading loading-spinner loading-xs" />
+					{/if}
+					Começar
+				</button>
 			</div>
 		</div>
 	</div>
