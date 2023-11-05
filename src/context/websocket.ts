@@ -23,23 +23,26 @@ export const websocket: IWebSocketContext = (() => {
         return payload;
     }
 
-	function send(message: EmittedMessage): void {
+	function send(message: EmittedMessage): string {
         if (socket === undefined || socket.readyState === 3) {
             console.error("Disconnected WebSocket!", socket);
-            return;
+            throw Error('Disconnected WebSocket!');
         }
-        socket.send(buildPayload(message));
+
+        const transactionId = nanoid();
+        const payload = buildPayload({
+            ...message,
+            transaction_id: transactionId
+        });
+
+        socket.send(payload);
+
+        return transactionId;
     };
 
-    function request(message: EmittedMessage): Promise<RPCResponse> {
+    function sendAndWait(message: EmittedMessage): Promise<RPCResponse> {
         return new Promise((resolve, reject) => {
-            const transactionId = nanoid();
-            const payload = buildPayload({
-                ...message,
-                transaction_id: transactionId
-            });
-
-            socket.send(payload);
+            const transactionId = send(message);
 
             const handler = (message: ReceivedMessage) => {
                 const response = message.data as RPCResponse
@@ -137,7 +140,7 @@ export const websocket: IWebSocketContext = (() => {
         restart,
         listen,
         send,
-        request,
+        sendAndWait,
         asap,
     }
 })();

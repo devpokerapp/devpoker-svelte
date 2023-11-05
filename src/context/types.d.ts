@@ -44,8 +44,8 @@ interface IWebSocketContext {
     initiated: Writable<boolean>;
     init(url: string): void;
     restart(): void;
-    send(message: EmittedMessage): void; // dispatches a message without waiting for a return
-    request(message: EmittedMessage): Promise<RPCResponse>;
+    send(message: EmittedMessage): string;
+    sendAndWait(message: EmittedMessage): Promise<RPCResponse>;
     listen(event: string, callback: (message: ReceivedMessage) => void): void;
     asap(callback: () => void): void;
 }

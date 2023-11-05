@@ -8,7 +8,7 @@
 
 	const start = () => {
 		websocket
-			.request({
+			.sendAndWait({
 				service: 'poker_service',
 				method: 'create',
 				data: {
