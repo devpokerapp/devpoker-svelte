@@ -6,21 +6,24 @@
 
 	const websocket = getContext<IWebSocketContext>('websocket');
 
-	websocket.listen('poker_created', (message) => {
-		const poker = message.data as Poker;
-		goto(`/poker/${poker.id}`);
-	});
-
 	const start = () => {
-		websocket.send({
-			service: 'poker_service',
-			method: 'create',
-			data: {
-				payload: {
-					creator: ''
+		websocket
+			.request({
+				service: 'poker_service',
+				method: 'create',
+				data: {
+					payload: {
+						creator: ''
+					}
 				}
-			}
-		});
+			})
+			.then((response) => {
+				const poker = response.result as Poker;
+				goto(`/poker/${poker.id}`);
+			})
+			.catch((response) => {
+				console.error('REJECTED: ', response);
+			});
 		loading = true;
 	};
 </script>
@@ -42,7 +45,7 @@
 				</p>
 				<button class="btn btn-primary" on:click={start} disabled={loading}>
 					{#if loading}
-						<span class="loading loading-spinner loading-xs"></span>
+						<span class="loading loading-spinner loading-xs" />
 					{/if}
 					Começar
 				</button>

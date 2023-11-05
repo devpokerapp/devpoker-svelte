@@ -1,34 +1,86 @@
+import { nanoid } from "nanoid";
 import { writable } from "svelte/store";
 
 export const websocket: IWebSocketContext = (() => {
-    const listeners: IWebSocketListener[] = [];
-    const initiated = writable(false);
-    const connected = writable(false);
+    const listeners: WSEventListener[] = [];
+    const resultListeners: WSResultListener[] = [];
     let url: string;
     let socket: WebSocket;
+
+    const initiated = writable(false);
+    const connected = writable(false);
 
     function listen(event: string, callback: (message: ReceivedMessage) => void): void {
 		listeners.push({ event, callback });
 	}
+
+    function buildPayload(data: object): string {
+        const payload = JSON.stringify({
+            correlation_id: 'gateway_service',
+            method: 'request',
+            data,
+        });
+        return payload;
+    }
 
 	function send(message: EmittedMessage): void {
         if (socket === undefined || socket.readyState === 3) {
             console.error("Disconnected WebSocket!", socket);
             return;
         }
-        const payload = JSON.stringify({
-            correlation_id: 'gateway_service',
-            method: 'request',
-            data: message
-        });
-        socket.send(payload);
+        socket.send(buildPayload(message));
     };
 
+    function request(message: EmittedMessage): Promise<RPCResponse> {
+        return new Promise((resolve, reject) => {
+            const transactionId = nanoid();
+            const payload = buildPayload({
+                ...message,
+                transaction_id: transactionId
+            });
+
+            socket.send(payload);
+
+            const handler = (message: ReceivedMessage) => {
+                const response = message.data as RPCResponse
+                if (response.success) {
+                    resolve(response);
+                } else {
+                    reject(response);
+                }
+            }
+            
+            resultListeners.push({
+                transactionId,
+                callback: handler
+            });
+
+            // TODO: reject by timeout?
+        });
+    }
+
     function propagate(message: ReceivedMessage) {
-		if (message === undefined || message.type === "result") {
+		if (message === undefined) {
             return;
         }
-        const affected = listeners.filter((listener) => listener.event === message.event);
+
+        const affected: WSListener[] = [];
+
+        if (message.type === "result") {
+            affected.push(...resultListeners.filter((listener) => {
+                const result = message.data as RPCResponse;
+                return listener.transactionId === result.transaction_id;
+            }));
+        }
+
+        if (message.type === "event") {
+            affected.push(...listeners.filter((listener) => {
+                return listener.event === message.event
+            }));
+        }
+
+        console.log({ listeners, resultListeners, affected });
+
         affected.forEach((listener) => (listener.callback(message)));
 	}
 
@@ -85,6 +137,7 @@ export const websocket: IWebSocketContext = (() => {
         restart,
         listen,
         send,
+        request,
         asap,
     }
 })();
