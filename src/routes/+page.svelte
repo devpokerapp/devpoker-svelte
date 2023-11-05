@@ -2,6 +2,8 @@
 	import { goto } from '$app/navigation';
 	import { getContext } from 'svelte';
 
+	let loading = false;
+
 	const websocket = getContext<IWebSocketContext>('websocket');
 
 	websocket.listen('poker_created', (message) => {
@@ -19,6 +21,7 @@
 				}
 			}
 		});
+		loading = true;
 	};
 </script>
 
@@ -37,7 +40,12 @@
 					soluta. Unde itaque reprehenderit voluptatibus sed tempore? Inventore vel excepturi ab
 					blanditiis laborum nulla itaque enim saepe deleniti.
 				</p>
-				<button class="btn btn-primary" on:click={start}>Começar</button>
+				<button class="btn btn-primary" on:click={start} disabled={loading}>
+					{#if loading}
+						<span class="loading loading-spinner loading-xs"></span>
+					{/if}
+					Começar
+				</button>
 			</div>
 		</div>
 	</div>
