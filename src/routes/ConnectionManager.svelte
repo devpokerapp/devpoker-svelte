@@ -5,9 +5,9 @@
 	const { connected, initiated } = websocket;
 </script>
 
-<div class="absolute top-0 left-0 w-full p-4">
+<div class="absolute top-0 left-0 w-full p-4" style="z-index: 500;">
 	{#if initiated && !$connected}
-		<div class="alert alert-error shadow-md z-40">
+		<div class="alert alert-error shadow-md">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				class="stroke-current shrink-0 h-6 w-6"
