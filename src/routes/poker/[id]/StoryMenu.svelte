@@ -52,23 +52,34 @@
 	};
 </script>
 
-<div id="story-menu" class="card border border-gray-300 shadow w-72 bg-white">
+<div id="story-menu" class="card border border-base-200 shadow w-72 bg-white">
 	<div class="card-body">
 		<h3 class="card-title text-center text-2xl">User Stories</h3>
 		<div class="py-6">
-            {#if $entities.length < 1}
-                <p class="text-gray-500">
-                    Você ainda não criou nenhuma User Story.
-                </p>
-            {/if}
+			{#if $entities.length < 1}
+				<p class="text-gray-500">Você ainda não criou nenhuma User Story.</p>
+			{/if}
 			{#each $entities as entity, index}
 				{#if index !== 0}
 					<div class="divider my-3" />
 				{/if}
 				<div class="flex flex-row justify-between">
 					<button class="text-left"> {entity.name} </button>
-					<!-- <button class="btn btn-sm btn-circle btn-info">5</button> -->
-					<div class="btn btn-sm btn-circle btn-ghost">...</div>
+					<div>
+						<!-- buttons -->
+						<!-- <button class="btn btn-sm btn-circle btn-info">5</button> -->
+						<div class="dropdown dropdown-end">
+							<button tabindex="-1" class="btn btn-sm btn-circle btn-ghost">...</button>
+							<ul
+								tabindex="-1"
+								class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
+							>
+								<li><button>Selecionar</button></li>
+								<li><button>Editar</button></li>
+								<li><button class="text-error">Remover</button></li>
+							</ul>
+						</div>
+					</div>
 				</div>
 			{/each}
 		</div>
