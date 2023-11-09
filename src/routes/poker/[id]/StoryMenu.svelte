@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
-	import type { Writable } from 'svelte/store';
+	import { get, type Writable } from 'svelte/store';
 	import { closeModal, openModal } from '../../../util/modal';
 
 	const storyContext = getContext<IStoryContext>('story');
@@ -18,6 +18,9 @@
 	const handleCreateStory = async (event: SubmitEvent) => {
 		event.preventDefault();
 		loading = true;
+
+        const wasEmptyBefore = get(entities).length < 1;
+
 		try {
 			const story = await storyContext.create({
 				name: name,
@@ -28,8 +31,18 @@
 				updatedAt: '',
 				value: undefined
 			});
-			name = '';
+
+            if (story === undefined) {
+                throw Error('Failed to create story!');
+            }
+			
+            name = '';
 			description = undefined;
+
+            if (wasEmptyBefore) {
+                // auto activates if is the first story added
+                storyContext.activate(story.id);
+            }
 		} catch (error) {
 			console.error(error);
 		} finally {
