@@ -1,46 +1,104 @@
 <script lang="ts">
-	import { getContext } from "svelte";
+	import { getContext } from 'svelte';
+	import type { Writable } from 'svelte/store';
 
-    const storyContext = getContext<IStoryContext>('story');
+	const storyContext = getContext<IStoryContext>('story');
+	const { entities }: { entities: Writable<Story[]> } = storyContext;
 
-    export let pokerId: string;
+	export let pokerId: string;
 
-    const handleCreateStory = () => {
-        storyContext.create({
-            id: '',
-            createdAt: '',
-            updatedAt: '',
-            name: 'Teste',
-            pokerId,
-            description: undefined,
-            value: undefined
-        })
-    }
+	let name: string = '';
+	let description: string | undefined;
+	let loading = false;
+
+	interface ModalElement extends HTMLElement {
+		showModal(): void;
+		close(): void;
+	}
+
+	const openModal = (id: string) => {
+		const element = document.getElementById(id);
+		const modal = element as ModalElement | null;
+		modal?.showModal();
+	};
+
+	const closeModal = (id: string) => {
+		const element = document.getElementById(id);
+		const modal = element as ModalElement | null;
+		modal?.close();
+	};
+
+	const handleCreateStory = async (event: SubmitEvent) => {
+		event.preventDefault();
+		loading = true;
+		try {
+			const story = await storyContext.create({
+				name: name,
+				description: description,
+				pokerId,
+				id: '',
+				createdAt: '',
+				updatedAt: '',
+				value: undefined
+			});
+			name = '';
+			description = undefined;
+		} catch (error) {
+			console.error(error);
+		} finally {
+			loading = false;
+			closeModal('modal-story-create');
+		}
+	};
 </script>
 
 <div id="story-menu" class="card border border-gray-300 shadow w-72 bg-white">
-    <div class="card-body">
-        <h3 class="card-title text-center text-2xl"> User Stories </h3>
-        <div class="py-6">
-            <div class="flex flex-row">
-                <button class="text-left"> Implementar sistema de comentários </button>
-                <div class="btn btn-sm btn-circle btn-info">5</div>
-            </div>
-            <div class="divider my-3"></div>
-            <div class="flex flex-row">
-                <button class="text-left font-bold"> Adicionar checklist de ingredientes </button>
-                <div class="btn btn-sm btn-circle btn-ghost">...</div>
-            </div>
-            <div class="divider my-3"></div>
-            <div class="flex flex-row">
-                <button class="text-left"> Corrigir falha de segurança </button>
-                <div class="btn btn-sm btn-circle btn-ghost">...</div>
-            </div>
-        </div>
-        <div class="card-actions">
-            <button class="btn btn-primary w-full" on:click={handleCreateStory}>
-                + Nova US
-            </button>
-        </div>
-    </div>
+	<div class="card-body">
+		<h3 class="card-title text-center text-2xl">User Stories</h3>
+		<div class="py-6">
+			{#each $entities as entity, index}
+				{#if index !== 0}
+					<div class="divider my-3" />
+				{/if}
+				<div class="flex flex-row justify-between">
+					<button class="text-left"> {entity.name} </button>
+					<!-- <button class="btn btn-sm btn-circle btn-info">5</button> -->
+					<div class="btn btn-sm btn-circle btn-ghost">...</div>
+				</div>
+			{/each}
+		</div>
+		<div class="card-actions">
+			<button class="btn btn-primary w-full" on:click={() => openModal('modal-story-create')}>
+				+ Adicionar
+			</button>
+		</div>
+		<!-- Create Modal -->
+		<dialog id="modal-story-create" class="modal modal-bottom sm:modal-middle">
+			<form method="dialog" class="modal-box flex flex-col gap-4" on:submit={handleCreateStory}>
+				<h3 class="font-bold text-xl pb-2">Adicionar User Story</h3>
+				<input
+					type="text"
+					placeholder="Nome"
+					class="input input-bordered w-full"
+					bind:value={name}
+				/>
+				<textarea
+					class="textarea textarea-bordered"
+					placeholder="Descrição"
+					bind:value={description}
+				/>
+				<div class="modal-action">
+					<div class="flex flex-row gap-4">
+						<button type="reset" class="btn" on:click={() => closeModal('modal-story-create')}>
+							Cancelar
+						</button>
+						<button type="submit" class="btn btn-primary" disabled={loading}> Confirmar </button>
+					</div>
+				</div>
+			</form>
+			<form method="dialog" class="modal-backdrop">
+				<button>close</button>
+			</form>
+		</dialog>
+	</div>
 </div>

@@ -51,6 +51,7 @@ interface IWebSocketContext {
 }
 
 interface IEntityContext<T> {
+    entities: Writable<T[]>;
     retrieve(id: string): Promise<T | undefined>;
     create(entity: T): Promise<T | undefined>;
     update(id: string, entity: T): Promise<T | undefined>;
