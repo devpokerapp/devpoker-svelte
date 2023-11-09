@@ -59,8 +59,7 @@ interface IEntityContext<T> {
 }
 
 interface IStoryContext extends IEntityContext<Story> {
-    // activeStoryId?: string;
-    // activeStory?: Story;
-    // activate(activeStoryId: string): void;
-    // TODO
+    activeStoryId: Writable<string | undefined>;
+    activeStory: Writable<Story | undefined>;
+    activate(id: string): void;
 }

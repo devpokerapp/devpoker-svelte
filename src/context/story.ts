@@ -6,6 +6,8 @@ export const getStoryContext = (): IStoryContext => {
     const websocket = getContext<IWebSocketContext>('websocket');
 
     const entities = writable<Story[]>([]);
+    const activeStoryId = writable<string | undefined>(undefined);
+    const activeStory = writable<Story | undefined>(undefined);
 
     websocket.listen('story_created', (message) => {
         const story = message.data as Story;
@@ -88,11 +90,20 @@ export const getStoryContext = (): IStoryContext => {
         }
     }
 
+    function activate(id: string): void {
+        activeStoryId.set(id);
+        const entity = get(entities).find((entity) => entity.id === id);
+        activeStory.set(entity);
+    }
+
     return {
         entities,
         retrieve,
         create,
         update,
         remove,
+        activeStoryId,
+        activeStory,
+        activate,
     }
 };

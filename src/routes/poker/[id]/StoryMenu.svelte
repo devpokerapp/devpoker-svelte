@@ -3,7 +3,10 @@
 	import type { Writable } from 'svelte/store';
 
 	const storyContext = getContext<IStoryContext>('story');
-	const { entities }: { entities: Writable<Story[]> } = storyContext;
+	const {
+		entities,
+		activeStoryId
+	}: { entities: Writable<Story[]>; activeStoryId: Writable<string> } = storyContext;
 
 	export let pokerId: string;
 
@@ -61,10 +64,15 @@
 			{/if}
 			{#each $entities as entity, index}
 				{#if index !== 0}
-					<div class="divider my-3" />
+					<div class="divider my-0" />
 				{/if}
-				<div class="flex flex-row justify-between">
-					<button class="text-left"> {entity.name} </button>
+				<div class="flex flex-row">
+					<button
+						class="flex-grow py-3 text-left {$activeStoryId === entity.id ? 'font-bold' : ''}"
+						on:click={() => storyContext.activate(entity.id)}
+					>
+						{entity.name}
+					</button>
 					<div>
 						<!-- buttons -->
 						<!-- <button class="btn btn-sm btn-circle btn-info">5</button> -->
@@ -74,9 +82,15 @@
 								tabindex="-1"
 								class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
 							>
-								<li><button>Selecionar</button></li>
-								<li><button>Editar</button></li>
-								<li><button class="text-error">Remover</button></li>
+								<li>
+									<button on:click={() => storyContext.activate(entity.id)}>Selecionar</button>
+								</li>
+								<li>
+									<button>Editar</button>
+								</li>
+								<li>
+									<button class="text-error">Remover</button>
+								</li>
 							</ul>
 						</div>
 					</div>
