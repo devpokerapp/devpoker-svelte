@@ -49,3 +49,17 @@ interface IWebSocketContext {
     listen(event: string, callback: (message: ReceivedMessage) => void): void;
     asap(callback: () => void): void;
 }
+
+interface IEntityContext<T> {
+    retrieve(id: string): Promise<T | undefined>;
+    create(entity: T): Promise<T | undefined>;
+    update(id: string, entity: T): Promise<T | undefined>;
+    remove(id: string): Promise<void>;
+}
+
+interface IStoryContext extends IEntityContext<Story> {
+    // activeStoryId?: string;
+    // activeStory?: Story;
+    // activate(activeStoryId: string): void;
+    // TODO
+}

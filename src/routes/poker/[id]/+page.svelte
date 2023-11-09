@@ -5,7 +5,7 @@
 	import { fly } from 'svelte/transition';
 	import type { PageData } from './$types';
 	import Deck from './Deck.svelte';
-	import UserStoryMenu from './UserStoryMenu.svelte';
+	import StoryMenu from './StoryMenu.svelte';
 
 	export let data: PageData;
 
@@ -109,7 +109,7 @@
 						{/if}
 					</button>
 				</div>
-				{#if $showUSMenu}
+				{#if poker !== undefined && $showUSMenu}
 					<div
 						transition:fly={{
 							delay: 250,
@@ -120,7 +120,7 @@
 							easing: cubicOut
 						}}
 					>
-						<UserStoryMenu />
+						<StoryMenu pokerId={poker?.id} />
 					</div>
 				{/if}
 			</div>
