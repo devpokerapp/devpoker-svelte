@@ -1,10 +1,19 @@
 import { getContext } from "svelte";
+import { get, writable } from "svelte/store";
 
 export const getStoryContext = (): IStoryContext => {
     const service = 'story_service';
     const websocket = getContext<IWebSocketContext>('websocket');
 
-    // TODO: listeners
+    const entities = writable<Story[]>([]);
+
+    websocket.listen('story_created', (message) => {
+        const story = message.data as Story;
+        entities.set([
+            ...get(entities),
+            story
+        ])
+    });
 
     async function retrieve(id: string): Promise<Story | undefined> {
         const response = await websocket.sendAndWait({
@@ -80,6 +89,7 @@ export const getStoryContext = (): IStoryContext => {
     }
 
     return {
+        entities,
         retrieve,
         create,
         update,
