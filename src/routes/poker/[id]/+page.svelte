@@ -95,11 +95,11 @@
 				Estimativa definida como <strong>5</strong> story points
 			</p>
 		</div>
-		<div class="p-4 fixed right-0">
+		<div class="p-4 fixed right-0 pointer-events-none">
 			<div class="flex flex-row">
 				<div class="p-4">
 					<button
-						class="btn btn-circle btn-neutral"
+						class="btn btn-circle btn-neutral pointer-events-auto"
 						on:click={handleUSMenuSwitcher}
 					>
 						{#if $showUSMenu}
@@ -111,6 +111,7 @@
 				</div>
 				{#if poker !== undefined && $showUSMenu}
 					<div
+						class="pointer-events-auto"
 						transition:fly={{
 							delay: 250,
 							duration: 300,
