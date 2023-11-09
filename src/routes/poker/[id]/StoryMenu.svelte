@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
 	import type { Writable } from 'svelte/store';
+	import { closeModal, openModal } from '../../../util/modal';
 
 	const storyContext = getContext<IStoryContext>('story');
 	const {
@@ -13,23 +14,6 @@
 	let name: string = '';
 	let description: string | undefined;
 	let loading = false;
-
-	interface ModalElement extends HTMLElement {
-		showModal(): void;
-		close(): void;
-	}
-
-	const openModal = (id: string) => {
-		const element = document.getElementById(id);
-		const modal = element as ModalElement | null;
-		modal?.showModal();
-	};
-
-	const closeModal = (id: string) => {
-		const element = document.getElementById(id);
-		const modal = element as ModalElement | null;
-		modal?.close();
-	};
 
 	const handleCreateStory = async (event: SubmitEvent) => {
 		event.preventDefault();
