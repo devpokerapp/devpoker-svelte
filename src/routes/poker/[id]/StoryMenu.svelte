@@ -56,6 +56,11 @@
 	<div class="card-body">
 		<h3 class="card-title text-center text-2xl">User Stories</h3>
 		<div class="py-6">
+            {#if $entities.length < 1}
+                <p class="text-gray-500">
+                    Você ainda não criou nenhuma User Story.
+                </p>
+            {/if}
 			{#each $entities as entity, index}
 				{#if index !== 0}
 					<div class="divider my-3" />
