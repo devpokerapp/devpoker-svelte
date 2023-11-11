@@ -18,6 +18,7 @@
 	const { activeStory }: { activeStory: Writable<Story | undefined> } = storyContext;
 	const showUSMenu = writable(true);
 
+	const participants = ['Arthur', 'Bruna', 'Cris', 'Diogo', 'Elisa'];
 	const votes = ['1', '2', '3', '4'];
 	const comments = [
 		'Acho que seria importante considerar os testes para a estimativa de esforços.',
@@ -61,11 +62,23 @@
 			{#if $activeStory === undefined}
 				<div class="w-full flex flex-row justify-center">
 					<div class="alert alert-info">
-						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-						<div>
-							Para começar, crie uma User Story.
-						</div>
-						<button class="btn btn-sm btn-primary" on:click={() => openModal('modal-story-create')}>Adicionar</button>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							class="stroke-current shrink-0 w-6 h-6"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+							/>
+						</svg>
+						<div>Para começar, crie uma User Story.</div>
+						<button class="btn btn-sm btn-primary" on:click={() => openModal('modal-story-create')}>
+							Adicionar
+						</button>
 					</div>
 				</div>
 			{/if}
@@ -89,7 +102,11 @@
 					<button class="btn btn-circle btn-accent"> ✅ </button>
 				</div>
 				<div id="poker-comment-area">
-					<input type="text" placeholder="Adicionar comentário" class="input input-bordered w-full" />
+					<input
+						type="text"
+						placeholder="Adicionar comentário"
+						class="input input-bordered w-full"
+					/>
 				</div>
 				{#each comments as comment}
 					<div class="card border border-base-300">
@@ -127,7 +144,7 @@
 				</div>
 				{#if poker !== undefined && $showUSMenu}
 					<div
-						class="pointer-events-auto"
+						class="flex flex-col gap-4 pointer-events-auto"
 						transition:fly={{
 							delay: 250,
 							duration: 300,
@@ -137,6 +154,21 @@
 							easing: cubicOut
 						}}
 					>
+						<div class="card border border-base-200 shadow w-72 bg-base-100">
+							<div class="card-body">
+								<h3 class="card-title text-center text-2xl pb-6">Participantes</h3>
+								<div class="flex flex-row justify-evenly flex-wrap gap-4">
+									{#each participants as participant}
+										<button
+											class="btn btn-circle btn-secondary tooltip tooltip-info tooltip-bottom"
+											data-tip={participant}
+										>
+											🧑
+										</button>
+									{/each}
+								</div>
+							</div>
+						</div>
 						<StoryMenu pokerId={poker?.id} />
 					</div>
 				{/if}

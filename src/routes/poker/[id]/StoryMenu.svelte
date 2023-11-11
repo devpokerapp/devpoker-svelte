@@ -112,7 +112,7 @@
 	};
 </script>
 
-<div id="story-menu" class="card border border-base-200 shadow w-72 bg-white">
+<div id="story-menu" class="card border border-base-200 shadow w-72 bg-base-100">
 	<div class="card-body">
 		<h3 class="card-title text-center text-2xl">User Stories</h3>
 		<div class="py-6">
@@ -234,7 +234,7 @@
 						>
 							Cancelar
 						</button>
-						<button type="submit" class="btn btn-primary flex-grow" disabled={loading}>
+						<button type="submit" class="btn btn-error flex-grow" disabled={loading}>
 							Confirmar
 						</button>
 					</div>
