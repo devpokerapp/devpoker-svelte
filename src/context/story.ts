@@ -90,7 +90,11 @@ export const getStoryContext = (): IStoryContext => {
         }
     }
 
-    function activate(id: string): void {
+    function activate(id: string | undefined): void {
+        if (id === undefined) {
+            activeStoryId.set(undefined);
+            activeStory.set(undefined);
+        }
         activeStoryId.set(id);
         const entity = get(entities).find((entity) => entity.id === id);
         activeStory.set(entity);

@@ -14,12 +14,13 @@
 	let name: string = '';
 	let description: string | undefined;
 	let loading = false;
+	let deleting: Story | undefined = undefined;
 
 	const handleCreateStory = async (event: SubmitEvent) => {
 		event.preventDefault();
 		loading = true;
 
-        const wasEmptyBefore = get(entities).length < 1;
+		const wasEmptyBefore = get(entities).length < 1;
 
 		try {
 			const story = await storyContext.create({
@@ -32,22 +33,51 @@
 				value: undefined
 			});
 
-            if (story === undefined) {
-                throw Error('Failed to create story!');
-            }
-			
-            name = '';
+			if (story === undefined) {
+				throw Error('Failed to create story!');
+			}
+
+			name = '';
 			description = undefined;
 
-            if (wasEmptyBefore) {
-                // auto activates if is the first story added
-                storyContext.activate(story.id);
-            }
+			if (wasEmptyBefore) {
+				// auto activates if is the first story added
+				storyContext.activate(story.id);
+			}
 		} catch (error) {
 			console.error(error);
 		} finally {
 			loading = false;
 			closeModal('modal-story-create');
+		}
+	};
+
+	const handleStartDeleteStory = (entity: Story) => {
+		deleting = entity;
+		openModal('modal-story-delete');
+	};
+
+	const handleDeleteStory = async (event: SubmitEvent) => {
+		event.preventDefault();
+		loading = true;
+
+		try {
+			if (deleting === undefined) {
+				throw Error('Unable to locate deleted story!');
+			}
+
+			const originalId = deleting.id;
+
+			await storyContext.remove(deleting.id);
+
+			if (get(activeStoryId) === originalId) {
+				storyContext.activate(undefined);
+			}
+		} catch (error) {
+			console.error(error);
+		} finally {
+			loading = false;
+			closeModal('modal-story-delete');
 		}
 	};
 </script>
@@ -86,7 +116,9 @@
 									<button>Editar</button>
 								</li>
 								<li>
-									<button class="text-error">Remover</button>
+									<button class="text-error" on:click={() => handleStartDeleteStory(entity)}>
+										Remover
+									</button>
 								</li>
 							</ul>
 						</div>
@@ -120,6 +152,30 @@
 							Cancelar
 						</button>
 						<button type="submit" class="btn btn-primary" disabled={loading}> Confirmar </button>
+					</div>
+				</div>
+			</form>
+			<form method="dialog" class="modal-backdrop">
+				<button>close</button>
+			</form>
+		</dialog>
+		<!-- Delete Modal -->
+		<dialog id="modal-story-delete" class="modal modal-bottom sm:modal-middle">
+			<form method="dialog" class="modal-box flex flex-col gap-4" on:submit={handleDeleteStory}>
+				<h3 class="font-bold text-xl pb-2">Remover "{deleting?.name}"</h3>
+				<p>Tem certeza que deseja remover esse user story?</p>
+				<div class="">
+					<div class="flex flex-row gap-4">
+						<button
+							type="reset"
+							class="btn flex-grow"
+							on:click={() => closeModal('modal-story-delete')}
+						>
+							Cancelar
+						</button>
+						<button type="submit" class="btn btn-primary flex-grow" disabled={loading}>
+							Confirmar
+						</button>
 					</div>
 				</div>
 			</form>
