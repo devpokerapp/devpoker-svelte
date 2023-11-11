@@ -14,6 +14,7 @@
 	let name: string = '';
 	let description: string | undefined;
 	let loading = false;
+	let updating: Story | undefined = undefined;
 	let deleting: Story | undefined = undefined;
 
 	const handleCreateStory = async (event: SubmitEvent) => {
@@ -49,6 +50,35 @@
 		} finally {
 			loading = false;
 			closeModal('modal-story-create');
+		}
+	};
+
+	const handleStartUpdateStory = (entity: Story) => {
+		updating = entity;
+		openModal('modal-story-update');
+	};
+
+	const handleUpdateStory = async (event: SubmitEvent) => {
+		event.preventDefault();
+		loading = true;
+
+		try {
+			if (updating === undefined) {
+				throw Error('Unable to locate updated story!');
+			}
+
+			const story = await storyContext.update(updating.id, updating);
+
+			if (story === undefined) {
+				throw Error('Failed to update story!');
+			}
+
+			updating = undefined;
+		} catch (error) {
+			console.error(error);
+		} finally {
+			loading = false;
+			closeModal('modal-story-update');
 		}
 	};
 
@@ -113,7 +143,7 @@
 									<button on:click={() => storyContext.activate(entity.id)}>Selecionar</button>
 								</li>
 								<li>
-									<button>Editar</button>
+									<button on:click={() => handleStartUpdateStory(entity)}>Editar</button>
 								</li>
 								<li>
 									<button class="text-error" on:click={() => handleStartDeleteStory(entity)}>
@@ -149,6 +179,37 @@
 				<div class="modal-action">
 					<div class="flex flex-row gap-4">
 						<button type="reset" class="btn" on:click={() => closeModal('modal-story-create')}>
+							Cancelar
+						</button>
+						<button type="submit" class="btn btn-primary" disabled={loading}> Confirmar </button>
+					</div>
+				</div>
+			</form>
+			<form method="dialog" class="modal-backdrop">
+				<button>close</button>
+			</form>
+		</dialog>
+		<!-- Update Modal -->
+		<dialog id="modal-story-update" class="modal modal-bottom sm:modal-middle">
+			<form method="dialog" class="modal-box flex flex-col gap-4" on:submit={handleUpdateStory}>
+				<h3 class="font-bold text-xl pb-2">Atualizar User Story</h3>
+				{#if updating !== undefined}
+					<input
+						type="text"
+						placeholder="Nome"
+						class="input input-bordered w-full"
+						bind:value={updating.name}
+					/>
+					<textarea
+						class="textarea textarea-bordered"
+						placeholder="Descrição"
+						bind:value={updating.description}
+					/>
+					<!-- TODO: updating.value -->
+				{/if}
+				<div class="modal-action">
+					<div class="flex flex-row gap-4">
+						<button type="reset" class="btn" on:click={() => closeModal('modal-story-update')}>
 							Cancelar
 						</button>
 						<button type="submit" class="btn btn-primary" disabled={loading}> Confirmar </button>

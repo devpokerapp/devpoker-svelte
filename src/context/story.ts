@@ -9,10 +9,31 @@ export const getStoryContext = (): IStoryContext => {
     const activeStoryId = writable<string | undefined>(undefined);
     const activeStory = writable<Story | undefined>(undefined);
 
+    activeStoryId.subscribe((value: string | undefined) => {
+        if (value === undefined) {
+            activeStory.set(undefined);
+        }
+        const entity = get(entities).find((entity) => entity.id === value);
+        activeStory.set(entity);
+    });
+
+    entities.subscribe((value: Story[]) => {
+        const entity = value.find((entity) => entity.id === get(activeStoryId));
+        activeStory.set(entity);
+    })
+
     websocket.listen('story_created', (message) => {
         const story = message.data as Story;
         entities.set([
             ...get(entities),
+            story
+        ]);
+    });
+
+    websocket.listen('story_updated', (message) => {
+        const story = message.data as Story;
+        entities.set([
+            ...get(entities).filter((entity) => entity.id !== story.id),
             story
         ]);
     });
@@ -96,13 +117,7 @@ export const getStoryContext = (): IStoryContext => {
     }
 
     function activate(id: string | undefined): void {
-        if (id === undefined) {
-            activeStoryId.set(undefined);
-            activeStory.set(undefined);
-        }
         activeStoryId.set(id);
-        const entity = get(entities).find((entity) => entity.id === id);
-        activeStory.set(entity);
     }
 
     return {
