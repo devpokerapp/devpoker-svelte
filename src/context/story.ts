@@ -14,7 +14,12 @@ export const getStoryContext = (): IStoryContext => {
         entities.set([
             ...get(entities),
             story
-        ])
+        ]);
+    });
+
+    websocket.listen('story_deleted', (message) => {
+        const story = message.data as Story;
+        entities.set(get(entities).filter((entity) => entity.id !== story.id));
     });
 
     async function retrieve(id: string): Promise<Story | undefined> {
