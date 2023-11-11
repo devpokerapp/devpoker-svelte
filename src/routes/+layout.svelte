@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { onMount, setContext } from 'svelte';
+	import { getStoryContext } from '../context/story';
 	import { websocket } from '../context/websocket';
-	import Header from './Header.svelte';
-	import './styles.css';
 	import ConnectionManager from './ConnectionManager.svelte';
+	import './styles.css';
 
 	setContext('websocket', websocket);
+	setContext('story', getStoryContext());
 
 	onMount(() => {
 		websocket.init('ws://localhost:8000/ws');
