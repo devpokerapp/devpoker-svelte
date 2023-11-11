@@ -157,15 +157,21 @@
 						<div class="card border border-base-200 shadow w-72 bg-base-100">
 							<div class="card-body">
 								<h3 class="card-title text-center text-2xl pb-6">Participantes</h3>
-								<div class="flex flex-row justify-evenly flex-wrap gap-4">
+								<div class="-space-x-4">
 									{#each participants as participant}
 										<button
-											class="btn btn-circle btn-secondary tooltip tooltip-info tooltip-bottom"
+											class="btn btn-circle btn-secondary tooltip tooltip-info tooltip-bottom border-base-100 border-4 hover:border-base-100"
 											data-tip={participant}
 										>
-											🧑
+											{participant[0].toUpperCase()}
 										</button>
 									{/each}
+									<button
+										class="btn btn-circle btn-neutral tooltip tooltip-info tooltip-bottom border-base-100 border-4 hover:border-base-100"
+									>
+										+4
+										<!-- TODO: participants modal -->
+									</button>
 								</div>
 							</div>
 						</div>
