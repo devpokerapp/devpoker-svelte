@@ -6,7 +6,8 @@
 	import type { PageData } from './$types';
 	import Deck from './Deck.svelte';
 	import StoryMenu from './StoryMenu.svelte';
-	import { openModal } from '../../../util/modal';
+	import { openModal, closeModal } from '../../../util/modal';
+	import { goto } from '$app/navigation';
 
 	const websocket = getContext<IWebSocketContext>('websocket');
 	const storyContext = getContext<IStoryContext>('story');
@@ -14,6 +15,9 @@
 	export let data: PageData;
 
 	let poker: Poker | undefined = undefined;
+	let me: Participant | undefined = undefined; // TODO: get from localStorage
+	let name: string = '';
+	let loading: boolean = false;
 
 	const { activeStory }: { activeStory: Writable<Story | undefined> } = storyContext;
 	const showUSMenu = writable(true);
@@ -38,19 +42,30 @@
 		]);
 	});
 
-	// FIXME: put the participant creation here.
-
 	onMount(() => {
-		websocket.asap(() => {
-			// auto register
-			websocket.send({
+		openModal('modal-participant-create');
+	});
+
+	const handleUSMenuSwitcher = () => {
+		showUSMenu.set(!get(showUSMenu));
+	};
+
+	const handleParticipantCreate = async (event: SubmitEvent) => {
+		event.preventDefault();
+
+		try {
+			const message = await websocket.sendAndWait({
 				service: 'poker_service',
 				method: 'join',
 				data: {
 					poker_id: data.id,
-					name: 'Arthur'
+					name,
 				}
 			});
+
+			const participant = message.result as Participant;
+			me = participant;
+
 			websocket.send({
 				service: 'poker_service',
 				method: 'retrieve',
@@ -58,12 +73,14 @@
 					entity_id: data.id
 				}
 			});
-		});
-	});
 
-	const handleUSMenuSwitcher = () => {
-		showUSMenu.set(!get(showUSMenu));
-	};
+			closeModal('modal-participant-create')
+		} catch (error) {
+			console.log(error);
+		} finally {
+			loading = false;
+		}
+	}
 </script>
 
 <section class="p-4" style="padding-bottom: 10em;">
@@ -195,4 +212,24 @@
 			<Deck />
 		</div>
 	</div>
+	<!-- Create Participant -->
+	<dialog id="modal-participant-create" class="modal modal-bottom sm:modal-middle">
+		<form method="dialog" class="modal-box flex flex-col gap-4" on:submit={handleParticipantCreate}>
+			<h3 class="font-bold text-xl pb-2">Insira seu nome para entrar na sessão:</h3>
+			<input
+				type="text"
+				placeholder="Seu nome"
+				class="input input-bordered w-full"
+				bind:value={name}
+			/>
+			<div class="modal-action">
+				<div class="flex flex-row gap-4">
+					<button type="reset" class="btn" on:click={() => goto('/')}>
+						Cancelar
+					</button>
+					<button type="submit" class="btn btn-primary" disabled={loading}> Confirmar </button>
+				</div>
+			</div>
+		</form>
+	</dialog>
 </section>

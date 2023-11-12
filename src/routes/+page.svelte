@@ -8,14 +8,8 @@
 
 	const websocket = getContext<IWebSocketContext>('websocket');
 
-	const handleStartCreatePoker = () => {
-		openModal('modal-poker-create')
-	};
-
-	const handleCreatePoker = async (event: SubmitEvent) => {
-		event.preventDefault();
-		let loading = false;
-
+	const start = async () => {
+		let loading = true;
 		try {
 			const response = await websocket.sendAndWait({
 				service: 'poker_service',
@@ -32,7 +26,7 @@
 		} catch (error) {
 			console.error('REJECTED: ', error);
 		} finally {
-			loading = true;
+			loading = false;
 		}
 	};
 </script>
@@ -52,7 +46,7 @@
 					soluta. Unde itaque reprehenderit voluptatibus sed tempore? Inventore vel excepturi ab
 					blanditiis laborum nulla itaque enim saepe deleniti.
 				</p>
-				<button class="btn btn-primary" on:click={handleStartCreatePoker} disabled={loading}>
+				<button class="btn btn-primary" on:click={start} disabled={loading}>
 					{#if loading}
 						<span class="loading loading-spinner loading-xs" />
 					{/if}
@@ -61,27 +55,4 @@
 			</div>
 		</div>
 	</div>
-	<!-- Create Poker -->
-	<dialog id="modal-poker-create" class="modal modal-bottom sm:modal-middle">
-		<form method="dialog" class="modal-box flex flex-col gap-4" on:submit={handleCreatePoker}>
-			<h3 class="font-bold text-xl pb-2">Iniciar sessão de Planning Poker</h3>
-			<input
-				type="text"
-				placeholder="Seu nome"
-				class="input input-bordered w-full"
-				bind:value={name}
-			/>
-			<div class="modal-action">
-				<div class="flex flex-row gap-4">
-					<button type="reset" class="btn" on:click={() => closeModal('modal-poker-create')}>
-						Cancelar
-					</button>
-					<button type="submit" class="btn btn-primary" disabled={loading}> Confirmar </button>
-				</div>
-			</div>
-		</form>
-		<form method="dialog" class="modal-backdrop">
-			<button>close</button>
-		</form>
-	</dialog>
 </section>
