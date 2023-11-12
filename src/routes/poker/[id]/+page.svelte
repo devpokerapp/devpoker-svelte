@@ -18,7 +18,7 @@
 	const { activeStory }: { activeStory: Writable<Story | undefined> } = storyContext;
 	const showUSMenu = writable(true);
 
-	const participants = ['Arthur', 'Bruna', 'Cris', 'Diogo', 'Elisa'];
+	const participants = writable<Participant[]>([]);
 	const votes = ['1', '2', '3', '4'];
 	const comments = [
 		'Acho que seria importante considerar os testes para a estimativa de esforços.',
@@ -30,6 +30,16 @@
 		poker = retrieved;
 	});
 
+	websocket.listen('poker_joined', (message) => {
+		const participant = message.data as Participant;
+		participants.set([
+			...get(participants),
+			participant
+		]);
+	});
+
+	// FIXME: put the participant creation here.
+
 	onMount(() => {
 		websocket.asap(() => {
 			// auto register
@@ -37,7 +47,8 @@
 				service: 'poker_service',
 				method: 'join',
 				data: {
-					channel: data.id
+					poker_id: data.id,
+					name: 'Arthur'
 				}
 			});
 			websocket.send({
@@ -55,7 +66,7 @@
 	};
 </script>
 
-<section style="padding-bottom: 10em;">
+<section class="p-4" style="padding-bottom: 10em;">
 	<div class="flex flex-row justify-center">
 		<div id="poker-main" class="flex flex-col gap-6 max-w-lg">
 			<h3>Sessão de planning poker #{poker?.id || ''}</h3>
@@ -158,12 +169,12 @@
 							<div class="card-body">
 								<h3 class="card-title text-center text-2xl pb-6">Participantes</h3>
 								<div class="-space-x-4">
-									{#each participants as participant}
+									{#each $participants as participant}
 										<button
 											class="btn btn-circle btn-secondary tooltip tooltip-info tooltip-bottom border-base-100 border-4 hover:border-base-100"
-											data-tip={participant}
+											data-tip={participant.name}
 										>
-											{participant[0].toUpperCase()}
+											{participant.name[0].toUpperCase()}
 										</button>
 									{/each}
 									<button
