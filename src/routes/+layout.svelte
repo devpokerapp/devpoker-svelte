@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount, setContext } from 'svelte';
+	import { getParticipantContext } from '../context/participant';
 	import { getStoryContext } from '../context/story';
 	import { websocket } from '../context/websocket';
 	import ConnectionManager from './ConnectionManager.svelte';
@@ -7,6 +8,7 @@
 
 	setContext('websocket', websocket);
 	setContext('story', getStoryContext());
+	setContext('participant', getParticipantContext());
 
 	onMount(() => {
 		websocket.init('ws://localhost:8000/ws');

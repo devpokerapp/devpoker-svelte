@@ -1,18 +1,19 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { getContext, onMount } from 'svelte';
 	import { cubicOut } from 'svelte/easing';
 	import { get, writable, type Writable } from 'svelte/store';
 	import { fly } from 'svelte/transition';
+	import { closeModal, openModal } from '../../../util/modal';
 	import type { PageData } from './$types';
 	import Deck from './Deck.svelte';
 	import StoryMenu from './StoryMenu.svelte';
-	import { openModal, closeModal } from '../../../util/modal';
-	import { goto } from '$app/navigation';
 
 	const LS_PARTICIPANT = 'devpokerapp:participant';
 
 	const websocket = getContext<IWebSocketContext>('websocket');
 	const storyContext = getContext<IStoryContext>('story');
+	const participantContext = getContext<IParticipantContext>('participant');
 
 	export let data: PageData;
 
@@ -24,7 +25,7 @@
 	const { activeStory }: { activeStory: Writable<Story | undefined> } = storyContext;
 	const showUSMenu = writable(true);
 
-	const participants = writable<Participant[]>([]);
+	const participants = writable<Participant[]>([]); // only includes participants that joined
 	const votes = ['1', '2', '3', '4'];
 	const comments = [
 		'Acho que seria importante considerar os testes para a estimativa de esforços.',
@@ -94,17 +95,19 @@
 		event.preventDefault();
 
 		try {
-			const message = await websocket.sendAndWait({
-				service: 'participant_service',
-				method: 'create',
-				data: {
-					payload: {
-						poker_id: data.id,
-						name
-					}
-				}
+			const participant = await participantContext.create({
+				pokerId: data.id,
+				name: name,
+				id: '',
+				sid: '',
+				createdAt: '',
+				updatedAt: ''
 			});
-			const participant = message.result as Participant;
+
+			if (participant === undefined) {
+				throw Error('Failed to create participant');
+			}
+
 			const participantId = participant.id;
 
 			// store participant for later
@@ -221,6 +224,7 @@
 							easing: cubicOut
 						}}
 					>
+						<!-- NOTE: might be better to show in another place -->
 						<div class="card border border-base-200 shadow w-72 bg-base-100">
 							<div class="card-body">
 								<h3 class="card-title text-center text-2xl pb-6">Participantes</h3>
@@ -242,6 +246,7 @@
 								</div>
 							</div>
 						</div>
+						<!-- NOTE: might work well as a modal... -->
 						<StoryMenu pokerId={poker?.id} />
 					</div>
 				{/if}

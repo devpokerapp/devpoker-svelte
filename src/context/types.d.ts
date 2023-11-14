@@ -63,3 +63,5 @@ interface IStoryContext extends IEntityContext<Story> {
     activeStory: Writable<Story | undefined>;
     activate(id: string | undefined): void;
 }
+
+interface IParticipantContext extends IEntityContext<Participant> {}
