@@ -9,6 +9,8 @@
 	import { openModal, closeModal } from '../../../util/modal';
 	import { goto } from '$app/navigation';
 
+	const LS_PARTICIPANT = 'devpokerapp:participant';
+
 	const websocket = getContext<IWebSocketContext>('websocket');
 	const storyContext = getContext<IStoryContext>('story');
 
@@ -36,14 +38,52 @@
 
 	websocket.listen('poker_joined', (message) => {
 		const participant = message.data as Participant;
-		participants.set([
-			...get(participants),
-			participant
-		]);
+		participants.set([...get(participants), participant]);
 	});
 
+	const prepareSession = async (participantId: string) => {
+		const pokerId = data.id;
+
+		const message = await websocket.sendAndWait({
+			service: 'poker_service',
+			method: 'join',
+			data: {
+				poker_id: pokerId,
+				participant_id: participantId
+			}
+		});
+		const participant = message.result as Participant;
+		me = participant;
+
+		websocket.send({
+			service: 'poker_service',
+			method: 'retrieve',
+			data: {
+				entity_id: pokerId
+			}
+		});
+	};
+
+	const loadCurrentParticipantId = (): string | undefined => {
+		const stored = localStorage.getItem(LS_PARTICIPANT);
+		if (stored === null) {
+			return undefined;
+		}
+		const participant = JSON.parse(stored) as string;
+		return participant;
+	};
+
 	onMount(() => {
-		openModal('modal-participant-create');
+		websocket.asap(() => {
+			const participantId = loadCurrentParticipantId();
+			if (participantId !== undefined) {
+				prepareSession(participantId);
+			} else {
+				// if you are not linked to a participant
+				openModal('modal-participant-create');
+				return;
+			}
+		});
 	});
 
 	const handleUSMenuSwitcher = () => {
@@ -55,32 +95,31 @@
 
 		try {
 			const message = await websocket.sendAndWait({
-				service: 'poker_service',
-				method: 'join',
+				service: 'participant_service',
+				method: 'create',
 				data: {
-					poker_id: data.id,
-					name,
+					payload: {
+						poker_id: data.id,
+						name
+					}
 				}
 			});
-
 			const participant = message.result as Participant;
-			me = participant;
+			const participantId = participant.id;
 
-			websocket.send({
-				service: 'poker_service',
-				method: 'retrieve',
-				data: {
-					entity_id: data.id
-				}
-			});
+			// store participant for later
+			localStorage.setItem(LS_PARTICIPANT, JSON.stringify(participantId));
+			// TODO: implement key system to prevent users from simply switching their ids
 
-			closeModal('modal-participant-create')
+			prepareSession(participantId);
+
+			closeModal('modal-participant-create');
 		} catch (error) {
 			console.log(error);
 		} finally {
 			loading = false;
 		}
-	}
+	};
 </script>
 
 <section class="p-4" style="padding-bottom: 10em;">
@@ -224,9 +263,7 @@
 			/>
 			<div class="modal-action">
 				<div class="flex flex-row gap-4">
-					<button type="reset" class="btn" on:click={() => goto('/')}>
-						Cancelar
-					</button>
+					<button type="reset" class="btn" on:click={() => goto('/')}> Cancelar </button>
 					<button type="submit" class="btn btn-primary" disabled={loading}> Confirmar </button>
 				</div>
 			</div>
