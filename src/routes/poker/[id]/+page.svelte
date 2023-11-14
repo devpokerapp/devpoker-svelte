@@ -39,7 +39,10 @@
 
 	websocket.listen('poker_joined', (message) => {
 		const participant = message.data as Participant;
-		participants.set([...get(participants), participant]);
+		const found = get(participants).find((entity) => entity.id === participant.id);
+		if (found === undefined) {
+			participants.set([...get(participants), participant]);
+		}
 	});
 
 	const prepareSession = async (participantId: string) => {
