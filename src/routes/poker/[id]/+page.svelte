@@ -54,6 +54,10 @@
 		}
 	});
 
+	const getLocalStorageParticipantKey = (): string => {
+		return `${LS_PARTICIPANT}:${data.id}`;
+	};
+
 	const prepareSession = async (participantId: string) => {
 		const pokerId = data.id;
 
@@ -78,7 +82,7 @@
 	};
 
 	const loadCurrentParticipantId = (): string | undefined => {
-		const stored = localStorage.getItem(LS_PARTICIPANT);
+		const stored = localStorage.getItem(getLocalStorageParticipantKey());
 		if (stored === null) {
 			return undefined;
 		}
@@ -123,7 +127,7 @@
 			const participantId = participant.id;
 
 			// store participant for later
-			localStorage.setItem(LS_PARTICIPANT, JSON.stringify(participantId));
+			localStorage.setItem(getLocalStorageParticipantKey(), JSON.stringify(participantId));
 			// TODO: implement key system to prevent users from simply switching their ids
 
 			prepareSession(participantId);
