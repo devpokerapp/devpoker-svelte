@@ -97,13 +97,11 @@
 				throw Error('Unable to locate deleted story!');
 			}
 
-			const originalId = deleting.id;
+			if (get(activeStoryId) === deleting.id) {
+				await pokerContext.selectStory(undefined);
+			}
 
 			await storyContext.remove(deleting.id);
-
-			if (get(activeStoryId) === originalId) {
-				pokerContext.selectStory(''); // FIXME: ?
-			}
 		} catch (error) {
 			console.error(error);
 		} finally {

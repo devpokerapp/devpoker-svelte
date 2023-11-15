@@ -16,7 +16,7 @@ export const getPokerContext = (): IPokerContext => {
         storyContext.activate(story.id);
     });
 
-    async function selectStory(id: string): Promise<void> {
+    async function selectStory(id: string | undefined): Promise<void> {
         if (get(current) === undefined) {
             return;
         }

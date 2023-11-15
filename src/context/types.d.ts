@@ -60,7 +60,7 @@ interface IEntityContext<T> {
 
 interface IPokerContext extends IEntityContext<Poker> {
     current: Writable<Poker | undefined>;
-    selectStory(id: string): Promise<void>;
+    selectStory(id: string | undefined): Promise<void>;
 }
 
 interface IStoryContext extends IEntityContext<Story> {
