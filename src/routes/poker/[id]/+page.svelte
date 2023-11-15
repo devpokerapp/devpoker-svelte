@@ -12,17 +12,18 @@
 	const LS_PARTICIPANT = 'devpokerapp:participant';
 
 	const websocket = getContext<IWebSocketContext>('websocket');
+	const pokerContext = getContext<IPokerContext>('poker');
 	const storyContext = getContext<IStoryContext>('story');
 	const participantContext = getContext<IParticipantContext>('participant');
 
 	export let data: PageData;
 
-	let poker: Poker | undefined = undefined;
-	let me: Participant | undefined = undefined; // TODO: get from localStorage
+	let me: Participant | undefined = undefined;
 	let name: string = '';
 	let loading: boolean = false;
 
 	const { activeStory }: { activeStory: Writable<Story | undefined> } = storyContext;
+	const { current }: { current: Writable<Poker | undefined> } = pokerContext;
 
 	const showUSMenu = writable(true);
 	const participants = writable<Participant[]>([]); // only includes participants that joined
@@ -35,9 +36,14 @@
 
 	websocket.listen('poker_context', (message) => {
 		const context = message.data as PokerContext;
-		poker = context.poker;
+
 		participants.set(context.participants);
 		storyContext.entities.set(context.stories);
+		current.set(context.poker);
+
+		if (get(current)?.currentStoryId !== undefined) {
+			storyContext.activate(get(current)?.currentStoryId);
+		}
 	});
 
 	websocket.listen('poker_joined', (message) => {
@@ -134,7 +140,7 @@
 <section class="p-4" style="padding-bottom: 10em;">
 	<div class="flex flex-row justify-center">
 		<div id="poker-main" class="flex flex-col gap-6 max-w-lg">
-			<h3>Sessão de planning poker #{poker?.id || ''}</h3>
+			<h3>Sessão de planning poker #{$current?.id || ''}</h3>
 			{#if $activeStory === undefined}
 				<div class="w-full flex flex-row justify-center">
 					<div class="alert alert-info">
@@ -218,7 +224,7 @@
 						{/if}
 					</button>
 				</div>
-				{#if poker !== undefined && $showUSMenu}
+				{#if $current !== undefined && $showUSMenu}
 					<div
 						class="flex flex-col gap-4 pointer-events-auto"
 						transition:fly={{
@@ -253,7 +259,7 @@
 							</div>
 						</div>
 						<!-- NOTE: might work well as a modal... -->
-						<StoryMenu pokerId={poker?.id} />
+						<StoryMenu pokerId={$current?.id} />
 					</div>
 				{/if}
 			</div>

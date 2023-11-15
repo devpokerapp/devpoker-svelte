@@ -3,6 +3,7 @@
 	import { get, type Writable } from 'svelte/store';
 	import { closeModal, openModal } from '../../../util/modal';
 
+	const pokerContext = getContext<IPokerContext>('poker');
 	const storyContext = getContext<IStoryContext>('story');
 	const {
 		entities,
@@ -43,7 +44,7 @@
 
 			if (wasEmptyBefore) {
 				// auto activates if is the first story added
-				storyContext.activate(story.id);
+				pokerContext.selectStory(story.id);
 			}
 		} catch (error) {
 			console.error(error);
@@ -101,7 +102,7 @@
 			await storyContext.remove(deleting.id);
 
 			if (get(activeStoryId) === originalId) {
-				storyContext.activate(undefined);
+				pokerContext.selectStory(''); // FIXME: ?
 			}
 		} catch (error) {
 			console.error(error);
@@ -126,7 +127,7 @@
 				<div class="flex flex-row">
 					<button
 						class="flex-grow py-3 text-left {$activeStoryId === entity.id ? 'font-bold' : ''}"
-						on:click={() => storyContext.activate(entity.id)}
+						on:click={() => pokerContext.selectStory(entity.id)}
 					>
 						{entity.name}
 					</button>
@@ -140,7 +141,7 @@
 								class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
 							>
 								<li>
-									<button on:click={() => storyContext.activate(entity.id)}>Selecionar</button>
+									<button on:click={() => pokerContext.selectStory(entity.id)}>Selecionar</button>
 								</li>
 								<li>
 									<button on:click={() => handleStartUpdateStory(entity)}>Editar</button>

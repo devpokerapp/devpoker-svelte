@@ -58,6 +58,11 @@ interface IEntityContext<T> {
     remove(id: string): Promise<void>;
 }
 
+interface IPokerContext extends IEntityContext<Poker> {
+    current: Writable<Poker | undefined>;
+    selectStory(id: string): Promise<void>;
+}
+
 interface IStoryContext extends IEntityContext<Story> {
     activeStoryId: Writable<string | undefined>;
     activeStory: Writable<Story | undefined>;
