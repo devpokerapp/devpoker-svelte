@@ -1,30 +1,33 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { getContext } from 'svelte';
+	import { closeModal, openModal } from '../util/modal';
 
+	let name: string = '';
 	let loading = false;
 
 	const websocket = getContext<IWebSocketContext>('websocket');
 
-	const start = () => {
-		websocket
-			.sendAndWait({
+	const start = async () => {
+		let loading = true;
+		try {
+			const response = await websocket.sendAndWait({
 				service: 'poker_service',
 				method: 'create',
 				data: {
 					payload: {
-						creator: ''
+						creator: name
+						// TODO: get a better source for the creator code
 					}
 				}
-			})
-			.then((response) => {
-				const poker = response.result as Poker;
-				goto(`/poker/${poker.id}`);
-			})
-			.catch((response) => {
-				console.error('REJECTED: ', response);
 			});
-		loading = true;
+			const poker = response.result as Poker;
+			goto(`/poker/${poker.id}`);
+		} catch (error) {
+			console.error('REJECTED: ', error);
+		} finally {
+			loading = false;
+		}
 	};
 </script>
 

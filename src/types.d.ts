@@ -15,3 +15,22 @@ interface Story extends Model {
     value?: string;
     pokerId: string;
 }
+
+interface Participant extends Model {
+    name: string;
+    pokerId: string;
+    sid: string;
+}
+
+interface QueryRead<T> {
+    items: T[];
+    metadata: {
+        filters: [];
+    }
+}
+
+interface PokerContext {
+    poker: Poker;
+    stories: Story[];
+    participants: Participant[];
+}
