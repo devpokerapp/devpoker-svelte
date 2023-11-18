@@ -1,20 +1,25 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
+	import { get, type Writable } from 'svelte/store';
 
 	const cards = ['0', '1', '2', '3', '5', '8', '13', '?', '☕'];
-
 	const websocket = getContext<IWebSocketContext>('websocket');
+	const storyContext = getContext<IStoryContext>('story');
+
+	const { activeStoryId }: { activeStoryId: Writable<string> } = storyContext;
 
 	const sendVote = (value: string) => {
-        websocket.send({
-            service: 'story_service',
-            method: 'create',
-            data: {
-                channel: 'test_',
-                vote: value
-            },
-        });
-    };
+		websocket.send({
+			service: 'vote_service',
+			method: 'place',
+			data: {
+				payload: {
+					content: value,
+					storyId: get(activeStoryId)
+				}
+			}
+		});
+	};
 </script>
 
 <div class="flex flex-row flex-wrap justify-center align-bottom">
