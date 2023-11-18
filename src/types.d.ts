@@ -1,3 +1,6 @@
+/**
+ * Models
+ */
 interface Model {
     id: string;
     createdAt: string;
@@ -22,6 +25,17 @@ interface Participant extends Model {
     sid: string;
 }
 
+interface PokerEvent extends Model {
+    type: "vote" | "comment" | "action";
+    content: string;
+    creator: string;
+    revealed: boolean;
+    storyId: string;
+}
+
+/**
+ * DTOs
+ */
 interface QueryRead<T> {
     items: T[];
     metadata: {
