@@ -48,6 +48,8 @@ interface IWebSocketContext {
     sendAndWait(message: EmittedMessage): Promise<RPCResponse>;
     listen(event: string, callback: (message: ReceivedMessage) => void): void;
     asap(callback: () => void): void;
+    subscribe(channel: string): void;
+    unsubscribe(channel: string): void;
 }
 
 interface IEntityContext<T> {

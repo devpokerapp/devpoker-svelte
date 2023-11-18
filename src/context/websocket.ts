@@ -14,10 +14,14 @@ export const websocket: IWebSocketContext = (() => {
 		listeners.push({ event, callback });
 	}
 
-    function buildPayload(data: object): string {
+    function buildPayload(
+        data: object,
+        method: string = "request",
+        service: string = "gateway_service"
+    ): string {
         const payload = JSON.stringify({
-            correlation_id: 'gateway_service',
-            method: 'request',
+            correlation_id: service,
+            method,
             data,
         });
         return payload;
@@ -63,7 +67,7 @@ export const websocket: IWebSocketContext = (() => {
     }
 
     function propagate(message: ReceivedMessage) {
-		if (message === undefined) {
+		if (message === undefined || message.data === null) {
             return;
         }
 
@@ -131,6 +135,21 @@ export const websocket: IWebSocketContext = (() => {
         });
     }
 
+    function subscribe(channel: string): void {
+        // TODO: figure out how to catch errors. its a really simple
+        // implementation on the backend, but still should be able to handle
+        // errors here.
+        socket.send(buildPayload({
+            channel
+        }, "subscribe"));
+    }
+
+    function unsubscribe(channel: string): void {
+        socket.send(buildPayload({
+            channel
+        }, "unsubscribe"));
+    }
+
     return {
         connected,
         initiated,
@@ -140,5 +159,7 @@ export const websocket: IWebSocketContext = (() => {
         send,
         sendAndWait,
         asap,
+        subscribe,
+        unsubscribe
     }
 })();
