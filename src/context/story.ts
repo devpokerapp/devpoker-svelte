@@ -1,7 +1,9 @@
+import { getContext } from "svelte";
 import { get, writable } from "svelte/store";
 import { getEntityContext } from "./entity";
 
 export const getStoryContext = (): IStoryContext => {
+    const websocket = getContext<IWebSocketContext>('websocket');
     const context = getEntityContext<Story>({
         entity: 'story'
     });
@@ -22,8 +24,22 @@ export const getStoryContext = (): IStoryContext => {
         activeStory.set(entity);
     });
 
+    function getStoryChannel(id: string): string {
+        return `story:${id}`
+    }
+
     function activate(id: string | undefined): void {
+        const oldId = get(activeStoryId);
         activeStoryId.set(id);
+
+        if (oldId !== undefined) {
+            websocket.unsubscribe(getStoryChannel(oldId));
+        }
+
+        if (id !== undefined) {
+            websocket.subscribe(getStoryChannel(id));
+        }
+
     }
 
     return {
