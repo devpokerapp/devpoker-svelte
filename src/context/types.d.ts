@@ -72,4 +72,7 @@ interface IStoryContext extends IEntityContext<Story> {
 }
 
 interface IParticipantContext extends IEntityContext<Participant> {}
-interface IEventContext extends IEntityContext<PokerEvent> {}
+
+interface IEventContext extends IEntityContext<PokerEvent> {
+    unrevealedVotes: Writable<PokerEvent[]>;
+}
