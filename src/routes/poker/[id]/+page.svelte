@@ -7,7 +7,9 @@
 	import { closeModal, openModal } from '../../../util/modal';
 	import type { PageData } from './$types';
 	import Deck from './Deck.svelte';
+	import StoryEvents from './StoryEvents.svelte';
 	import StoryMenu from './StoryMenu.svelte';
+	import StoryVoting from './StoryVoting.svelte';
 
 	const LS_PARTICIPANT = 'devpokerapp:participant';
 
@@ -185,16 +187,7 @@
 						{$activeStory.description}
 					{/if}
 				</p>
-				<div id="poker-voting" class="flex gap-2">
-					{#each votes as vote}
-						<div class="btn btn-circle btn-info">
-							{vote}
-						</div>
-					{/each}
-					<div class="flex-grow" />
-					<button class="btn btn-circle btn-accent"> 👁️ </button>
-					<button class="btn btn-circle btn-accent"> ✅ </button>
-				</div>
+				<StoryVoting />
 				<div id="poker-comment-area">
 					<input
 						type="text"
@@ -202,24 +195,7 @@
 						class="input input-bordered w-full"
 					/>
 				</div>
-				{#each comments as comment}
-					<div class="card border border-base-300">
-						<div class="card-body flex flex-row gap-8">
-							<button class="btn btn-circle btn-info" />
-							<div>
-								<p>
-									{comment}
-								</p>
-								<div class="text-right">
-									<p class="text-gray-500">01/10/2023, 18:27</p>
-								</div>
-							</div>
-						</div>
-					</div>
-				{/each}
-				<p class="text-center">
-					Estimativa definida como <strong>5</strong> story points
-				</p>
+				<StoryEvents />
 			{/if}
 		</div>
 		<div class="p-4 fixed right-0 pointer-events-none">
