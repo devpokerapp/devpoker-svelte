@@ -9,10 +9,10 @@
 	import './styles.css';
 
 	setContext('websocket', websocket);
-	setContext('story', getStoryContext());
-	setContext('participant', getParticipantContext());
-	setContext('poker', getPokerContext());
 	setContext('event', getEventContext());
+	setContext('participant', getParticipantContext());
+	setContext('story', getStoryContext());
+	setContext('poker', getPokerContext());
 
 	onMount(() => {
 		websocket.init('ws://localhost:8000/ws');

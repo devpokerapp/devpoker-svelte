@@ -4,6 +4,7 @@ import { getEntityContext } from "./entity";
 
 export const getStoryContext = (): IStoryContext => {
     const websocket = getContext<IWebSocketContext>('websocket');
+    const eventContext = getContext<IEventContext>('event');
     const context = getEntityContext<Story>({
         entity: 'story'
     });
@@ -17,6 +18,10 @@ export const getStoryContext = (): IStoryContext => {
         }
         const entity = get<Story[]>(context.entities).find((entity) => entity.id === value);
         activeStory.set(entity);
+    });
+
+    activeStory.subscribe((value: Story | undefined) => {
+        eventContext.entities.set(value?.events || []);
     });
 
     context.entities.subscribe((value: Story[]) => {
