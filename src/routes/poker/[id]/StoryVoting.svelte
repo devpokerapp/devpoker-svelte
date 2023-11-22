@@ -15,10 +15,13 @@
 </script>
 
 <div id="poker-voting" class="flex gap-2">
+	{#if $unrevealedVotes.length < 1}
+		<button class="btn btn-secondary">Vote!</button>
+	{/if}
 	{#each $unrevealedVotes as vote}
-		<div class="btn btn-circle btn-info">
+		<button class="btn btn-circle btn-info">
 			{vote.content}
-		</div>
+		</button>
 	{/each}
 	<div class="flex-grow" />
 	<button class="btn btn-circle btn-accent"> 👁️ </button>
