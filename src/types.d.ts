@@ -10,6 +10,8 @@ interface Model {
 interface Poker extends Model {
     creator: string;
     currentStoryId?: string;
+    stories: Story[];
+    participants: Participant[];
 }
 
 interface Story extends Model {
@@ -17,6 +19,7 @@ interface Story extends Model {
     description?: string;
     value?: string;
     pokerId: string;
+    events: PokerEvent[];
 }
 
 interface Participant extends Model {

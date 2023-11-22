@@ -27,22 +27,16 @@
 
 	const { activeStory }: { activeStory: Writable<Story | undefined> } = storyContext;
 	const { current }: { current: Writable<Poker | undefined> } = pokerContext;
+	const { entities: participants }: { entities: Writable<Participant[]> } = participantContext;
 
 	const showUSMenu = writable(true);
-	const participants = writable<Participant[]>([]); // only includes participants that joined
 
-	const votes = ['1', '2', '3', '4'];
-	const comments = [
-		'Acho que seria importante considerar os testes para a estimativa de esforços.',
-		'Precisa definir bem quais tipos de ingredientes poderão estar na checklist.'
-	];
+	websocket.listen('poker_retrieved', (message) => {
+		const poker = message.data as Poker;
 
-	websocket.listen('poker_context', (message) => {
-		const context = message.data as PokerContext;
-
-		participants.set(context.participants);
-		storyContext.entities.set(context.stories);
-		current.set(context.poker);
+		participantContext.entities.set(poker.participants);
+		storyContext.entities.set(poker.stories);
+		current.set(poker);
 
 		if (get(current)?.currentStoryId !== undefined) {
 			storyContext.activate(get(current)?.currentStoryId);
@@ -77,7 +71,7 @@
 
 		websocket.send({
 			service: 'poker_service',
-			method: 'context',
+			method: 'retrieve',
 			data: {
 				entity_id: pokerId
 			}
