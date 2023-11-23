@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
-	import type { Writable } from 'svelte/store';
+	import { type Writable } from 'svelte/store';
 
 	const websocket = getContext<IWebSocketContext>('websocket');
 	const eventContext = getContext<IEventContext>('event');
-	const { entities }: { entities: Writable<PokerEvent[]> } = eventContext;
+	const participantContext = getContext<IParticipantContext>('participant');
+	const { entities: events }: { entities: Writable<PokerEvent[]> } = eventContext;
+	const { getParticipantName } = participantContext;
 
 	const comments = [
 		'Acho que seria importante considerar os testes para a estimativa de esforços.',
@@ -12,14 +14,14 @@
 	];
 
 	websocket.listen('poker_selected_story', (message) => {
-		entities.set([]);
+		events.set([]);
 	});
 </script>
 
 <div id="poker-event-feed" class="flex flex-col gap-6">
-	{#each $entities as event}
+	{#each $events as event}
 		{#if event.type === 'vote'}
-			<span>{event.creator} votou!</span>
+			<div class="text-center">{getParticipantName(event.creator)} votou!</div>
 		{/if}
 		<!-- TODO: get participant name by event.creator -->
 		<!-- TODO: comments -->

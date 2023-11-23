@@ -71,7 +71,9 @@ interface IStoryContext extends IEntityContext<Story> {
     activate(id: string | undefined): void;
 }
 
-interface IParticipantContext extends IEntityContext<Participant> {}
+interface IParticipantContext extends IEntityContext<Participant> {
+    getParticipantName(id: string): string | undefined;
+}
 
 interface IEventContext extends IEntityContext<PokerEvent> {
     unrevealedVotes: Writable<PokerEvent[]>;
