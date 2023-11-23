@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount, setContext } from 'svelte';
+	import { getEventContext } from '../context/event';
 	import { getParticipantContext } from '../context/participant';
 	import { getPokerContext } from '../context/poker';
 	import { getStoryContext } from '../context/story';
@@ -8,8 +9,9 @@
 	import './styles.css';
 
 	setContext('websocket', websocket);
-	setContext('story', getStoryContext());
+	setContext('event', getEventContext());
 	setContext('participant', getParticipantContext());
+	setContext('story', getStoryContext());
 	setContext('poker', getPokerContext());
 
 	onMount(() => {

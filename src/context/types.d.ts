@@ -48,6 +48,8 @@ interface IWebSocketContext {
     sendAndWait(message: EmittedMessage): Promise<RPCResponse>;
     listen(event: string, callback: (message: ReceivedMessage) => void): void;
     asap(callback: () => void): void;
+    subscribe(channel: string): void;
+    unsubscribe(channel: string): void;
 }
 
 interface IEntityContext<T> {
@@ -69,4 +71,10 @@ interface IStoryContext extends IEntityContext<Story> {
     activate(id: string | undefined): void;
 }
 
-interface IParticipantContext extends IEntityContext<Participant> {}
+interface IParticipantContext extends IEntityContext<Participant> {
+    getParticipantName(id: string): string | undefined;
+}
+
+interface IEventContext extends IEntityContext<PokerEvent> {
+    unrevealedVotes: Writable<PokerEvent[]>;
+}
