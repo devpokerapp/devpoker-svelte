@@ -12,6 +12,8 @@ export const getStoryContext = (): IStoryContext => {
     const activeStoryId = writable<string | undefined>(undefined);
     const activeStory = writable<Story | undefined>(undefined);
 
+    // TODO: listen for story_revealed
+
     activeStoryId.subscribe((value: string | undefined) => {
         if (value === undefined) {
             activeStory.set(undefined);
@@ -47,10 +49,21 @@ export const getStoryContext = (): IStoryContext => {
 
     }
 
+    async function reveal(id: string): Promise<void> {
+        await websocket.sendAndWait({
+            service: 'story_service',
+            method: 'reveal',
+            data: {
+                entity_id: id
+            }
+        });
+    }
+
     return {
         ...context,
         activeStoryId,
         activeStory,
         activate,
+        reveal,
     }
 };

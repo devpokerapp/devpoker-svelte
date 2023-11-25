@@ -69,6 +69,7 @@ interface IStoryContext extends IEntityContext<Story> {
     activeStoryId: Writable<string | undefined>;
     activeStory: Writable<Story | undefined>;
     activate(id: string | undefined): void;
+    reveal(id: string): Promise<void>;
 }
 
 interface IParticipantContext extends IEntityContext<Participant> {
@@ -77,4 +78,5 @@ interface IParticipantContext extends IEntityContext<Participant> {
 
 interface IEventContext extends IEntityContext<PokerEvent> {
     unrevealedVotes: Writable<PokerEvent[]>;
+    currentVotes: Writable<PokerEvent[]>;
 }
