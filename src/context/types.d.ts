@@ -80,3 +80,6 @@ interface IEventContext extends IEntityContext<PokerEvent> {
     unrevealedVotes: Writable<PokerEvent[]>;
     currentVotes: Writable<PokerEvent[]>;
 }
+
+interface IPollingContext extends IEntityContext<Polling> {}
+// TODO: IVoteContext

@@ -20,6 +20,7 @@ interface Story extends Model {
     value?: string;
     pokerId: string;
     events: PokerEvent[];
+    pollings: Polling[];
 }
 
 interface Participant extends Model {
@@ -34,6 +35,20 @@ interface PokerEvent extends Model {
     creator: string;
     revealed: boolean;
     storyId: string;
+}
+
+interface Polling extends Model {
+    value?: string;
+    completed: boolean;
+    revealed: boolean;
+    storyId: string;
+}
+
+interface Vote extends Model {
+    value: string;
+    pollingId: string;
+    participantId: string;
+    participant: Participant;
 }
 
 /**
