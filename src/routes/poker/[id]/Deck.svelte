@@ -5,17 +5,23 @@
 	const cards = ['0', '1', '2', '3', '5', '8', '13', '?', '☕'];
 	const websocket = getContext<IWebSocketContext>('websocket');
 	const storyContext = getContext<IStoryContext>('story');
+	const pollingContext = getContext<IPollingContext>('polling');
 
 	const { activeStoryId }: { activeStoryId: Writable<string> } = storyContext;
+	const { current: currentPolling }: { current: Writable<Polling | undefined> } = pollingContext;
 
 	const sendVote = (value: string) => {
+		const pollingId = get(currentPolling)?.id;
+		if (pollingId === undefined) {
+			return;
+		}
 		websocket.send({
 			service: 'vote_service',
 			method: 'place',
 			data: {
 				payload: {
-					content: value,
-					storyId: get(activeStoryId)
+					value,
+					pollingId
 				}
 			}
 		});
@@ -24,6 +30,7 @@
 
 <div class="flex flex-row flex-wrap justify-center align-bottom">
 	{#each cards as card}
+		<!-- TODO: disable cards when dont have a polling -->
 		<button
 			class="poker-card btn btn-secondary shadow-xl w-20 rounded-xl relative"
 			on:click={() => sendVote(card)}
