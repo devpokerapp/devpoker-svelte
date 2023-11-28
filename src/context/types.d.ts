@@ -69,7 +69,6 @@ interface IStoryContext extends IEntityContext<Story> {
     activeStoryId: Writable<string | undefined>;
     activeStory: Writable<Story | undefined>;
     activate(story: Story | undefined): void;
-    reveal(id: string): Promise<void>;
 }
 
 interface IParticipantContext extends IEntityContext<Participant> {

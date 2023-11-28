@@ -44,21 +44,10 @@ export const getStoryContext = (): IStoryContext => {
         }
     }
 
-    async function reveal(id: string): Promise<void> {
-        await websocket.sendAndWait({
-            service: 'story_service',
-            method: 'reveal',
-            data: {
-                entity_id: id
-            }
-        });
-    }
-
     return {
         ...context,
         activeStoryId,
         activeStory,
         activate,
-        reveal,
     }
 };

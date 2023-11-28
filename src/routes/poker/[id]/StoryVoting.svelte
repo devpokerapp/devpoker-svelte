@@ -5,6 +5,7 @@
 	const websocket = getContext<IWebSocketContext>('websocket');
 	const storyContext = getContext<IStoryContext>('story');
 	const eventContext = getContext<IEventContext>('event');
+	const pollingContext = getContext<IPollingContext>('polling');
 	const voteContext = getContext<IVoteContext>('vote');
 	const {
 		entities,
@@ -15,17 +16,21 @@
 	} = eventContext;
 	const { activeStoryId }: { activeStoryId: Writable<string | undefined> } = storyContext;
 	const { entities: votes }: { entities: Writable<Vote[]> } = voteContext;
+	const { current: currentPolling }: { current: Writable<Polling | undefined> } = pollingContext;
 
 	websocket.listen('poker_selected_story', (message) => {
 		entities.set([]);
 	});
 
 	const handleReveal = () => {
-		const currentId = get(activeStoryId);
-		if (currentId === undefined) {
+		const polling = get(currentPolling);
+		if (polling === undefined) {
 			return;
 		}
-		storyContext.reveal(currentId);
+		pollingContext.update(polling.id, {
+			...polling,
+			revealed: true
+		});
 	};
 </script>
 
@@ -38,15 +43,19 @@
 			class="btn btn-circle btn-info tooltip tooltip-info tooltip-bottom"
 			data-tip={`Voto de ${vote.participant.name}`}
 		>
-			{vote.value}
+			{#if $currentPolling?.revealed}
+				{vote.value}
+			{:else}
+				<span class="loading loading-dots loading-xs" />
+			{/if}
 		</button>
 	{/each}
 	<div class="flex-grow" />
 	<button
 		class="btn btn-circle btn-accent tooltip tooltip-accent tooltip-bottom"
-		class:tooltip-open={$unrevealedVotes.length > 0}
+		class:tooltip-open={$votes.length > 0 && !$currentPolling?.revealed}
 		data-tip="Revelar votos"
-		disabled={$unrevealedVotes.length <= 0}
+		disabled={$votes.length <= 0 || $currentPolling?.revealed}
 		on:click={handleReveal}
 	>
 		👁️
