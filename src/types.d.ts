@@ -42,6 +42,7 @@ interface Polling extends Model {
     completed: boolean;
     revealed: boolean;
     storyId: string;
+    votes: Vote[];
 }
 
 interface Vote extends Model {

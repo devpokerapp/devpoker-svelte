@@ -84,4 +84,5 @@ interface IEventContext extends IEntityContext<PokerEvent> {
 interface IPollingContext extends IEntityContext<Polling> {
     current: Writable<Polling | undefined>;
 }
-// TODO: IVoteContext
+
+interface IVoteContext extends IEntityContext<Vote> {}

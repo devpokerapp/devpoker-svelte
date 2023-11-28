@@ -5,18 +5,16 @@
 	const websocket = getContext<IWebSocketContext>('websocket');
 	const storyContext = getContext<IStoryContext>('story');
 	const eventContext = getContext<IEventContext>('event');
-	const participantContext = getContext<IParticipantContext>('participant');
+	const voteContext = getContext<IVoteContext>('vote');
 	const {
 		entities,
-		unrevealedVotes,
-		currentVotes
+		unrevealedVotes
 	}: {
 		entities: Writable<PokerEvent[]>;
 		unrevealedVotes: Writable<PokerEvent[]>;
-		currentVotes: Writable<PokerEvent[]>;
 	} = eventContext;
 	const { activeStoryId }: { activeStoryId: Writable<string | undefined> } = storyContext;
-	const { getParticipantName } = participantContext;
+	const { entities: votes }: { entities: Writable<Vote[]> } = voteContext;
 
 	websocket.listen('poker_selected_story', (message) => {
 		entities.set([]);
@@ -32,19 +30,15 @@
 </script>
 
 <div id="poker-voting" class="flex gap-2">
-	{#if $currentVotes.length < 1}
+	{#if $votes.length < 1}
 		<button class="btn btn-secondary">Vote!</button>
 	{/if}
-	{#each $currentVotes as vote}
+	{#each $votes as vote}
 		<button
 			class="btn btn-circle btn-info tooltip tooltip-info tooltip-bottom"
-			data-tip={`Voto de ${getParticipantName(vote.creator)}`}
+			data-tip={`Voto de ${vote.participant.name}`}
 		>
-			{#if vote.revealed}
-				{vote.content}
-			{:else}
-				...
-			{/if}
+			{vote.value}
 		</button>
 	{/each}
 	<div class="flex-grow" />
