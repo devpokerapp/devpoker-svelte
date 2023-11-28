@@ -15,14 +15,6 @@ export const getStoryContext = (): IStoryContext => {
 
     // TODO: listen for story_revealed
 
-    activeStoryId.subscribe((value: string | undefined) => {
-        if (value === undefined) {
-            activeStory.set(undefined);
-        }
-        const entity = get<Story[]>(context.entities).find((entity) => entity.id === value);
-        activeStory.set(entity);
-    });
-
     activeStory.subscribe((value: Story | undefined) => {
         eventContext.entities.set(value?.events || []);
         pollingContext.entities.set(value?.pollings || []);
@@ -37,18 +29,19 @@ export const getStoryContext = (): IStoryContext => {
         return `story:${id}`
     }
 
-    function activate(id: string | undefined): void {
-        const oldId = get(activeStoryId);
-        activeStoryId.set(id);
+    function activate(story: Story | undefined): void {
+        const oldId = get(activeStory)?.id;
+        const storyId = story?.id;
+        activeStory.set(story);
+        activeStoryId.set(storyId);
 
         if (oldId !== undefined) {
             websocket.unsubscribe(getStoryChannel(oldId));
         }
 
-        if (id !== undefined) {
-            websocket.subscribe(getStoryChannel(id));
+        if (storyId !== undefined) {
+            websocket.subscribe(getStoryChannel(storyId));
         }
-
     }
 
     async function reveal(id: string): Promise<void> {

@@ -68,7 +68,7 @@ interface IPokerContext extends IEntityContext<Poker> {
 interface IStoryContext extends IEntityContext<Story> {
     activeStoryId: Writable<string | undefined>;
     activeStory: Writable<Story | undefined>;
-    activate(id: string | undefined): void;
+    activate(story: Story | undefined): void;
     reveal(id: string): Promise<void>;
 }
 
@@ -81,5 +81,7 @@ interface IEventContext extends IEntityContext<PokerEvent> {
     currentVotes: Writable<PokerEvent[]>;
 }
 
-interface IPollingContext extends IEntityContext<Polling> {}
+interface IPollingContext extends IEntityContext<Polling> {
+    current: Writable<Polling | undefined>;
+}
 // TODO: IVoteContext
