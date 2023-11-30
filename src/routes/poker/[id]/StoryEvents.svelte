@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
-	import { type Writable } from 'svelte/store';
+	import type { Writable } from 'svelte/store';
 
 	const websocket = getContext<IWebSocketContext>('websocket');
 	const eventContext = getContext<IEventContext>('event');

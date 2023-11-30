@@ -5,6 +5,7 @@ import { getEntityContext } from "./entity";
 export const getStoryContext = (): IStoryContext => {
     const websocket = getContext<IWebSocketContext>('websocket');
     const eventContext = getContext<IEventContext>('event');
+    const pollingContext = getContext<IPollingContext>('polling');
     const context = getEntityContext<Story>({
         entity: 'story'
     });
@@ -12,16 +13,11 @@ export const getStoryContext = (): IStoryContext => {
     const activeStoryId = writable<string | undefined>(undefined);
     const activeStory = writable<Story | undefined>(undefined);
 
-    activeStoryId.subscribe((value: string | undefined) => {
-        if (value === undefined) {
-            activeStory.set(undefined);
-        }
-        const entity = get<Story[]>(context.entities).find((entity) => entity.id === value);
-        activeStory.set(entity);
-    });
+    // TODO: listen for story_revealed
 
     activeStory.subscribe((value: Story | undefined) => {
         eventContext.entities.set(value?.events || []);
+        pollingContext.entities.set(value?.pollings || []);
     });
 
     context.entities.subscribe((value: Story[]) => {
@@ -33,18 +29,19 @@ export const getStoryContext = (): IStoryContext => {
         return `story:${id}`
     }
 
-    function activate(id: string | undefined): void {
-        const oldId = get(activeStoryId);
-        activeStoryId.set(id);
+    function activate(story: Story | undefined): void {
+        const oldId = get(activeStory)?.id;
+        const storyId = story?.id;
+        activeStory.set(story);
+        activeStoryId.set(storyId);
 
         if (oldId !== undefined) {
             websocket.unsubscribe(getStoryChannel(oldId));
         }
 
-        if (id !== undefined) {
-            websocket.subscribe(getStoryChannel(id));
+        if (storyId !== undefined) {
+            websocket.subscribe(getStoryChannel(storyId));
         }
-
     }
 
     return {

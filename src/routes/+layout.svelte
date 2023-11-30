@@ -3,13 +3,17 @@
 	import { getEventContext } from '../context/event';
 	import { getParticipantContext } from '../context/participant';
 	import { getPokerContext } from '../context/poker';
+	import { getPollingContext } from '../context/polling';
 	import { getStoryContext } from '../context/story';
+	import { getVoteContext } from '../context/vote';
 	import { websocket } from '../context/websocket';
 	import ConnectionManager from './ConnectionManager.svelte';
 	import './styles.css';
 
 	setContext('websocket', websocket);
+	setContext('vote', getVoteContext());
 	setContext('event', getEventContext());
+	setContext('polling', getPollingContext());
 	setContext('participant', getParticipantContext());
 	setContext('story', getStoryContext());
 	setContext('poker', getPokerContext());

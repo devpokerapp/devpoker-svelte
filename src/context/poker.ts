@@ -13,7 +13,7 @@ export const getPokerContext = (): IPokerContext => {
 
     websocket.listen('poker_selected_story', (message) => {
         const story = message.data as Story;
-        storyContext.activate(story.id);
+        storyContext.activate(story);
     });
 
     async function selectStory(id: string | undefined): Promise<void> {

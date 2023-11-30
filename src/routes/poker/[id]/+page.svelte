@@ -38,8 +38,10 @@
 		storyContext.entities.set(poker.stories);
 		current.set(poker);
 
-		if (get(current)?.currentStoryId !== undefined) {
-			storyContext.activate(get(current)?.currentStoryId);
+		if (poker.currentStoryId !== undefined) {
+			const currentStoryId = poker.currentStoryId;
+			const story = poker.stories.find((story) => story.id === currentStoryId);
+			storyContext.activate(story);
 		}
 	});
 
