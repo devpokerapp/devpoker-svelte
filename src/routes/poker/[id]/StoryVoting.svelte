@@ -32,6 +32,18 @@
 			revealed: true
 		});
 	};
+
+	const handleComplete = () => {
+		const polling = get(currentPolling);
+		if (polling === undefined) {
+			return;
+		}
+		pollingContext.update(polling.id, {
+			...polling,
+			completed: true,
+			revealed: true
+		});
+	};
 </script>
 
 <div id="poker-voting" class="flex gap-2">
@@ -63,6 +75,8 @@
 	<button
 		class="btn btn-circle btn-accent tooltip tooltip-success tooltip-bottom"
 		data-tip="Finalizar"
+		disabled={$currentPolling?.completed}
+		on:click={handleComplete}
 	>
 		✅
 	</button>
