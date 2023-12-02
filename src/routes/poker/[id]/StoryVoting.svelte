@@ -71,7 +71,19 @@
 			disabled={$votes.length <= 0 || $currentPolling?.revealed}
 			on:click={handleReveal}
 		>
-			👁️
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				viewBox="0 0 20 20"
+				fill="currentColor"
+				class="w-5 h-5"
+			>
+				<path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" />
+				<path
+					fill-rule="evenodd"
+					d="M.664 10.59a1.651 1.651 0 010-1.186A10.004 10.004 0 0110 3c4.257 0 7.893 2.66 9.336 6.41.147.381.146.804 0 1.186A10.004 10.004 0 0110 17c-4.257 0-7.893-2.66-9.336-6.41zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+					clip-rule="evenodd"
+				/>
+			</svg>
 		</button>
 		{#if $currentPolling?.revealed}
 			<div class="dropdown dropdown-hover">
@@ -81,7 +93,18 @@
 					data-tip="Finalizar"
 					disabled={$currentPolling?.completed}
 				>
-					✅
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 20 20"
+						fill="currentColor"
+						class="w-5 h-5"
+					>
+						<path
+							fill-rule="evenodd"
+							d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+							clip-rule="evenodd"
+						/>
+					</svg>
 				</button>
 				{#if !$currentPolling?.completed}
 					<ul class="dropdown-content z-[1] menu p-2 shadow bg-accent rounded-box w-40">
