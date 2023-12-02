@@ -5,20 +5,9 @@
 
 	const VALID_VALUES = ['0', '1', '2', '3', '5', '8', '13']; // '?', '☕'];
 
-	const websocket = getContext<IWebSocketContext>('websocket');
-	const storyContext = getContext<IStoryContext>('story');
-	const eventContext = getContext<IEventContext>('event');
 	const pollingContext = getContext<IPollingContext>('polling');
 	const voteContext = getContext<IVoteContext>('vote');
 
-	const {
-		entities,
-		unrevealedVotes
-	}: {
-		entities: Writable<PokerEvent[]>;
-		unrevealedVotes: Writable<PokerEvent[]>;
-	} = eventContext;
-	const { activeStoryId }: { activeStoryId: Writable<string | undefined> } = storyContext;
 	const { entities: votes }: { entities: Writable<Vote[]> } = voteContext;
 	const { current: currentPolling }: { current: Writable<Polling | undefined> } = pollingContext;
 
