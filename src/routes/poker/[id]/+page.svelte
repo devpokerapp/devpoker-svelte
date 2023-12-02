@@ -175,7 +175,7 @@
 				</div>
 			{/if}
 			{#if $activeStory !== undefined}
-				<div class="text-[2.3rem] lg:text-5xl leading-9 font-bold text-center">
+				<div class="text-5xl leading-snug font-bold text-center pt-6">
 					<h2>{$activeStory.name}</h2>
 				</div>
 				<p class="text-gray-500">
