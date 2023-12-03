@@ -6,7 +6,7 @@
 	const pokerContext = getContext<IPokerContext>('poker');
 	const storyContext = getContext<IStoryContext>('story');
 	const {
-		entities,
+		entities: stories,
 		activeStoryId
 	}: { entities: Writable<Story[]>; activeStoryId: Writable<string> } = storyContext;
 
@@ -22,7 +22,7 @@
 		event.preventDefault();
 		loading = true;
 
-		const wasEmptyBefore = get(entities).length < 1;
+		const wasEmptyBefore = get(stories).length < 1;
 
 		try {
 			const story = await storyContext.create({
@@ -32,7 +32,9 @@
 				id: '',
 				createdAt: '',
 				updatedAt: '',
-				value: undefined
+				value: undefined,
+				events: [],
+				pollings: []
 			});
 
 			if (story === undefined) {
@@ -115,31 +117,31 @@
 	<div class="card-body">
 		<h3 class="card-title text-center text-2xl">User Stories</h3>
 		<div class="py-6">
-			{#if $entities.length < 1}
+			{#if $stories.length < 1}
 				<p class="text-gray-500">Você ainda não criou nenhuma User Story.</p>
 			{/if}
-			{#each $entities as entity, index}
+			{#each $stories as story, index}
 				{#if index !== 0}
 					<div class="divider my-0" />
 				{/if}
 				<div class="flex flex-row">
 					<button
-						class="flex-grow py-3 text-left {$activeStoryId === entity.id ? 'font-bold' : ''}"
-						on:click={() => pokerContext.selectStory(entity.id)}
+						class="flex-grow py-3 text-left {$activeStoryId === story.id ? 'font-bold' : ''}"
+						on:click={() => pokerContext.selectStory(story.id)}
 					>
-						{entity.name}
+						{story.name}
 					</button>
 					<div>
 						<!-- buttons -->
 						<!-- <button class="btn btn-sm btn-circle btn-info">5</button> -->
 						<div class="dropdown dropdown-end">
-							<button tabindex="-1" class="btn btn-sm btn-circle btn-ghost">...</button>
+							<button tabindex="0" class="btn btn-sm btn-circle btn-ghost"> ... </button>
 							<ul
 								tabindex="-1"
 								class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
 							>
 								<li>
-									<button on:click={() => pokerContext.selectStory(entity.id)}>
+									<button on:click={() => pokerContext.selectStory(story.id)}>
 										<svg
 											xmlns="http://www.w3.org/2000/svg"
 											viewBox="0 0 20 20"
@@ -156,7 +158,7 @@
 									</button>
 								</li>
 								<li>
-									<button on:click={() => handleStartUpdateStory(entity)}>
+									<button on:click={() => handleStartUpdateStory(story)}>
 										<svg
 											xmlns="http://www.w3.org/2000/svg"
 											viewBox="0 0 20 20"
@@ -174,7 +176,7 @@
 									</button>
 								</li>
 								<li>
-									<button class="text-error" on:click={() => handleStartDeleteStory(entity)}>
+									<button class="text-error" on:click={() => handleStartDeleteStory(story)}>
 										<svg
 											xmlns="http://www.w3.org/2000/svg"
 											viewBox="0 0 20 20"
