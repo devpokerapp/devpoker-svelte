@@ -16,9 +16,17 @@ export const getPollingContext = (): IPollingContext => {
             current.set(undefined);
             return;
         }
-        const polling = value[0]; // TODO: get the latest. for now will only have one so its okay
+        let polling = value.find((polling) => !polling.completed) // should always have only ONE not completed 
+        if (polling === undefined) {
+            polling = value[0];
+        }
         current.set(polling);
     });
+
+    websocket.listen('polling_restarted', (message) => {
+        const polling = message.data as Polling;
+        current.set(polling);
+    })
 
     current.subscribe((value) => {
         voteContext.entities.set(value?.votes || []);
@@ -37,9 +45,20 @@ export const getPollingContext = (): IPollingContext => {
         });
     };
 
+    async function restart(id: string): Promise<void> {
+        await websocket.sendAndWait({
+            service: 'polling_service',
+            method: 'restart',
+            data: {
+                entity_id: id
+            }
+        });
+    }
+
     return {
         ...context,
         current,
         complete,
+        restart
     }
 }

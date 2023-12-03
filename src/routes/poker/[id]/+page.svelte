@@ -175,13 +175,11 @@
 				</div>
 			{/if}
 			{#if $activeStory !== undefined}
-				<div class="text-5xl leading-snug font-bold text-center pt-6">
-					<div class="indicator">
-						{#if $activeStory.value !== null}
-							<span class="indicator-item badge badge-accent">{$activeStory.value}</span>
-						{/if}
-						<h2>{$activeStory.name}</h2>
-					</div>
+				<div class="text-5xl leading-snug font-bold text-center pt-6 relative">
+					{#if $activeStory.value !== null}
+						<span class="badge badge-accent absolute right-0 top-4">{$activeStory.value}</span>
+					{/if}
+					<h2>{$activeStory.name}</h2>
 				</div>
 				<p class="text-gray-500">
 					{#if $activeStory.description !== null && $activeStory.description !== undefined && $activeStory.description?.length > 0}
