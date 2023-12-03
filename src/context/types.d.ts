@@ -83,6 +83,7 @@ interface IEventContext extends IEntityContext<PokerEvent> {
 interface IPollingContext extends IEntityContext<Polling> {
     current: Writable<Polling | undefined>;
     complete(id: string, value: string): Promise<void>;
+    restart(id: string): Promise<void>;
 }
 
 interface IVoteContext extends IEntityContext<Vote> {}

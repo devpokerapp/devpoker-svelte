@@ -38,6 +38,14 @@
 		}
 		pollingContext.complete(polling.id, value);
 	};
+
+	const handleRestart = () => {
+		const polling = get(currentPolling);
+		if (polling === undefined) {
+			return;
+		}
+		pollingContext.restart(polling.id);
+	};
 </script>
 
 <div id="poker-voting">
@@ -133,10 +141,10 @@
 					</ul>
 				{/if}
 			</div>
-			<!-- TODO -->
 			<button
 				class="btn btn-secondary join-item tooltip tooltip-secondary tooltip-bottom"
 				data-tip="Votar novamente"
+				on:click={handleRestart}
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
