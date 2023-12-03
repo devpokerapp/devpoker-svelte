@@ -36,12 +36,7 @@
 		if (polling === undefined) {
 			return;
 		}
-		pollingContext.update(polling.id, {
-			...polling,
-			completed: true,
-			revealed: true,
-			value
-		});
+		pollingContext.complete(polling.id, value);
 	};
 </script>
 

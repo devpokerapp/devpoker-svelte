@@ -3,6 +3,7 @@ import { writable } from "svelte/store";
 import { getEntityContext } from "./entity";
 
 export const getPollingContext = (): IPollingContext => {
+    const websocket = getContext<IWebSocketContext>('websocket');
     const voteContext = getContext<IVoteContext>('vote');
     const context = getEntityContext<Polling>({
         entity: 'polling'
@@ -23,8 +24,22 @@ export const getPollingContext = (): IPollingContext => {
         voteContext.entities.set(value?.votes || []);
     })
 
+    async function complete(id: string, value: string): Promise<void> {
+        await websocket.sendAndWait({
+            service: 'polling_service',
+            method: 'complete',
+            data: {
+                payload: {
+                    id,
+                    value
+                }
+            }
+        });
+    };
+
     return {
         ...context,
         current,
+        complete,
     }
 }
