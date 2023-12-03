@@ -31,7 +31,7 @@
 </script>
 
 <div>
-	{#if $currentPolling !== undefined}
+	{#if $currentPolling !== undefined && !$currentPolling.completed}
 		<div
 			class="flex flex-row flex-wrap justify-center align-bottom"
 			transition:fly={{
