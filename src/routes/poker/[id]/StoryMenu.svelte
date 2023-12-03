@@ -129,7 +129,14 @@
 						class="flex-grow py-3 text-left {$activeStoryId === story.id ? 'font-bold' : ''}"
 						on:click={() => pokerContext.selectStory(story.id)}
 					>
-						{story.name}
+						<span class="pr-1">
+							{story.name}
+						</span>
+						{#if story.value !== null}
+							<span class="badge badge-accent">
+								{story.value}
+							</span>
+						{/if}
 					</button>
 					<div>
 						<!-- buttons -->
