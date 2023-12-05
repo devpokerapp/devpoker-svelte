@@ -147,6 +147,9 @@
 	};
 </script>
 
+<svelte:head>
+	<title>Sessão de Planning Poker - DevPoker</title>
+</svelte:head>
 <section class="p-4" style="padding-bottom: 10em;">
 	<div class="flex flex-row justify-center">
 		<div id="poker-main" class="flex flex-col gap-6 max-w-lg">
