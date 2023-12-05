@@ -1,13 +1,11 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { getContext, onMount } from 'svelte';
-	import { cubicOut } from 'svelte/easing';
 	import { get, writable, type Writable } from 'svelte/store';
-	import { fly } from 'svelte/transition';
 	import { closeModal, openModal } from '../../../util/modal';
 	import type { PageData } from './$types';
 	import Deck from './Deck.svelte';
-	import ParticipantList from './ParticipantList.svelte';
+	import ParticipantMenu from './ParticipantMenu.svelte';
 	import StoryEvents from './StoryEvents.svelte';
 	import StoryMenu from './StoryMenu.svelte';
 	import StoryVoting from './StoryVoting.svelte';
@@ -153,20 +151,11 @@
 </svelte:head>
 <div class="drawer lg:drawer-open">
 	<input id="poker-drawer" type="checkbox" class="drawer-toggle" />
-	<!-- SIDEBAR -->
-	<div class="drawer-side">
-		<label for="poker-drawer" aria-label="close sidebar" class="drawer-overlay" />
-		<div class="p-4 w-80 min-h-full bg-base-200 text-base-content">
-			<div class="card">
-				<div class="card-content">Side bar</div>
-			</div>
-		</div>
-	</div>
 	<!-- MAIN -->
 	<div class="drawer-content py-4 px-12 lg:pr-80" style="padding-bottom: 10em;">
 		<label
 			for="poker-drawer"
-			class="btn btn-circle btn-primary drawer-button fixed top-4 left-4 z-auto lg:hidden"
+			class="btn btn-circle btn-primary drawer-button fixed top-4 left-4 lg:hidden"
 		>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
@@ -236,67 +225,25 @@
 						<StoryEvents />
 					{/if}
 				</div>
-				<div class="p-4 fixed right-0 pointer-events-none">
-					<div class="flex flex-row">
-						<div class="p-4">
-							<button
-								class="btn btn-circle btn-neutral pointer-events-auto"
-								on:click={handleUSMenuSwitcher}
-							>
-								{#if $showUSMenu}
-									&gt;
-								{:else}
-									&lt;
-								{/if}
-							</button>
-						</div>
-						{#if $current !== undefined && $showUSMenu}
-							<div
-								class="flex flex-col gap-4 pointer-events-auto"
-								transition:fly={{
-									delay: 250,
-									duration: 300,
-									x: 400,
-									y: 0,
-									opacity: 0.5,
-									easing: cubicOut
-								}}
-							>
-								<!-- NOTE: might be better to show in another place -->
-								<div class="card border border-base-200 shadow w-72 bg-base-100">
-									<!--  -->
-									<div class="card-body">
-										<h3 class="card-title text-center text-2xl pb-2">Participantes</h3>
-										<ParticipantList />
-										<button
-											class="btn btn-primary"
-											on:click={() => openModal('modal-participant-invite')}
-										>
-											<svg
-												xmlns="http://www.w3.org/2000/svg"
-												viewBox="0 0 20 20"
-												fill="currentColor"
-												class="w-5 h-5"
-											>
-												<path
-													d="M11 5a3 3 0 11-6 0 3 3 0 016 0zM2.615 16.428a1.224 1.224 0 01-.569-1.175 6.002 6.002 0 0111.908 0c.058.467-.172.92-.57 1.174A9.953 9.953 0 018 18a9.953 9.953 0 01-5.385-1.572zM16.25 5.75a.75.75 0 00-1.5 0v2h-2a.75.75 0 000 1.5h2v2a.75.75 0 001.5 0v-2h2a.75.75 0 000-1.5h-2v-2z"
-												/>
-											</svg>
-											Convidar
-										</button>
-									</div>
-								</div>
-								<!-- NOTE: might work well as a modal... -->
-								<StoryMenu pokerId={$current?.id} />
-							</div>
-						{/if}
-					</div>
-				</div>
 				<div class="fixed bottom-0 pb-8">
 					<Deck />
 				</div>
 			</div>
 		</section>
+	</div>
+	<!-- SIDEBAR -->
+	<div class="drawer-side">
+		<label for="poker-drawer" aria-label="close sidebar" class="drawer-overlay" />
+		<div class="w-80 min-h-full bg-base-200 text-base-content">
+			<div class="card">
+				<div class="card-content">
+					{#if $current !== undefined}
+						<ParticipantMenu />
+						<StoryMenu pokerId={$current?.id} />
+					{/if}
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 <!-- Create Participant -->
