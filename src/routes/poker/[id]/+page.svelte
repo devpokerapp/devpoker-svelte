@@ -7,6 +7,7 @@
 	import { closeModal, openModal } from '../../../util/modal';
 	import type { PageData } from './$types';
 	import Deck from './Deck.svelte';
+	import ParticipantList from './ParticipantList.svelte';
 	import StoryEvents from './StoryEvents.svelte';
 	import StoryMenu from './StoryMenu.svelte';
 	import StoryVoting from './StoryVoting.svelte';
@@ -228,24 +229,10 @@
 					>
 						<!-- NOTE: might be better to show in another place -->
 						<div class="card border border-base-200 shadow w-72 bg-base-100">
+							<!--  -->
 							<div class="card-body">
 								<h3 class="card-title text-center text-2xl pb-2">Participantes</h3>
-								<div class="-space-x-4">
-									{#each $participants as participant}
-										<button
-											class="btn btn-circle btn-secondary tooltip tooltip-info tooltip-bottom border-base-100 border-4 hover:border-base-100"
-											data-tip={participant.name}
-										>
-											{participant.name[0].toUpperCase()}
-										</button>
-									{/each}
-									<button
-										class="btn btn-circle btn-neutral tooltip tooltip-info tooltip-bottom border-base-100 border-4 hover:border-base-100"
-									>
-										+4
-										<!-- TODO: participants modal -->
-									</button>
-								</div>
+								<ParticipantList />
 								<button
 									class="btn btn-primary"
 									on:click={() => openModal('modal-participant-invite')}
