@@ -234,19 +234,24 @@
 	<!-- SIDEBAR -->
 	<div class="drawer-side">
 		<label for="poker-drawer" aria-label="close sidebar" class="drawer-overlay" />
-		<div class="w-80 min-h-full bg-base-200 text-base-content">
-			<div class="card">
-				<div class="card-content">
-					{#if $current !== undefined}
+		<div class="w-80 min-h-full bg-transparent text-base-content p-4 flex flex-col gap-4">
+			{#if $current !== undefined}
+				<div class="card border border-base-300 shadow-lg bg-base-100">
+					<div class="card-content">
 						<ParticipantMenu />
-						<StoryMenu pokerId={$current?.id} />
-					{/if}
+					</div>
 				</div>
-			</div>
+				<div class="card border border-base-300 shadow-lg bg-base-100">
+					<div class="card-content">
+						<StoryMenu pokerId={$current?.id} />
+					</div>
+				</div>
+			{/if}
 		</div>
 	</div>
 </div>
 <!-- Create Participant -->
+<!-- TODO: make it permanent. should not be able to press esc or cancel -->
 <dialog id="modal-participant-create" class="modal modal-bottom sm:modal-middle">
 	<form method="dialog" class="modal-box flex flex-col gap-4" on:submit={handleParticipantCreate}>
 		<h3 class="font-bold text-xl pb-2">Insira seu nome para entrar na sessão:</h3>
