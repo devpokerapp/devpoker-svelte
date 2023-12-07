@@ -238,6 +238,9 @@
 			{#if $current !== undefined}
 				<div class="card">
 					<div class="card-content">
+						<div class="px-8 pt-8">
+							<h2 class="card-title text-center text-3xl pb-2">DevPoker</h2>
+						</div>
 						<ParticipantMenu />
 						<StoryMenu pokerId={$current?.id} maxListHeight="calc(100vh - 400px)" />
 					</div>
