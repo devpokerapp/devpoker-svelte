@@ -234,16 +234,12 @@
 	<!-- SIDEBAR -->
 	<div class="drawer-side">
 		<label for="poker-drawer" aria-label="close sidebar" class="drawer-overlay" />
-		<div class="w-80 min-h-full bg-transparent text-base-content p-4 flex flex-col gap-4">
+		<div class="w-80 min-h-full bg-base-200 border text-base-content flex flex-col gap-4">
 			{#if $current !== undefined}
-				<div class="card border border-base-300 shadow-lg bg-base-100">
+				<div class="card">
 					<div class="card-content">
 						<ParticipantMenu />
-					</div>
-				</div>
-				<div class="card border border-base-300 shadow-lg bg-base-100">
-					<div class="card-content">
-						<StoryMenu pokerId={$current?.id} maxListHeight="calc(100vh - 450px)" />
+						<StoryMenu pokerId={$current?.id} maxListHeight="calc(100vh - 400px)" />
 					</div>
 				</div>
 			{/if}

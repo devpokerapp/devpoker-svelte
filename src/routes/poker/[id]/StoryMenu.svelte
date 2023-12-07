@@ -207,7 +207,7 @@
 			</div>
 		{/each}
 	</div>
-	<div class="card-actions px-8 pb-8">
+	<div class="card-actions px-8 pt-2 pb-8">
 		<button class="btn btn-primary w-full" on:click={() => openModal('modal-story-create')}>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
