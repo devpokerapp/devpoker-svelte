@@ -11,6 +11,7 @@
 	}: { entities: Writable<Story[]>; activeStoryId: Writable<string> } = storyContext;
 
 	export let pokerId: string;
+	export let maxListHeight: string = '100px';
 
 	let name: string = '';
 	let description: string | undefined;
@@ -113,17 +114,19 @@
 	};
 </script>
 
-<div id="story-menu" class="card-body">
-	<h3 class="card-title text-center text-2xl">User Stories</h3>
-	<div class="py-6">
+<div id="story-menu" class="card-body p-0">
+	<h3 class="card-title text-center text-2xl px-8 pt-8 pb-2">User Stories</h3>
+	<div class="overflow-y-auto" style="max-height: {maxListHeight}; min-height: 6rem;">
 		{#if $stories.length < 1}
-			<p class="text-gray-500">Você ainda não criou nenhuma User Story.</p>
+			<div class="px-8 py-4">
+				<p class="text-gray-500">Você ainda não criou nenhuma User Story.</p>
+			</div>
 		{/if}
 		{#each $stories as story, index}
 			{#if index !== 0}
-				<div class="divider my-0" />
+				<div class="divider my-0 px-8" />
 			{/if}
-			<div class="flex flex-row">
+			<div class="flex flex-row px-8">
 				<button
 					class="flex-grow truncate py-3 text-left {$activeStoryId === story.id ? 'font-bold' : ''}"
 					on:click={() => pokerContext.selectStory(story.id)}
@@ -204,7 +207,7 @@
 			</div>
 		{/each}
 	</div>
-	<div class="card-actions">
+	<div class="card-actions px-8 pb-8">
 		<button class="btn btn-primary w-full" on:click={() => openModal('modal-story-create')}>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"

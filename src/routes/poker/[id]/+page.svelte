@@ -243,7 +243,7 @@
 				</div>
 				<div class="card border border-base-300 shadow-lg bg-base-100">
 					<div class="card-content">
-						<StoryMenu pokerId={$current?.id} />
+						<StoryMenu pokerId={$current?.id} maxListHeight="calc(100vh - 450px)" />
 					</div>
 				</div>
 			{/if}
