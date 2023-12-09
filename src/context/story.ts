@@ -13,8 +13,6 @@ export const getStoryContext = (): IStoryContext => {
     const activeStoryId = writable<string | undefined>(undefined);
     const activeStory = writable<Story | undefined>(undefined);
 
-    // TODO: listen for story_revealed
-
     activeStory.subscribe((value: Story | undefined) => {
         eventContext.entities.set(value?.events || []);
         pollingContext.entities.set(value?.pollings || []);
