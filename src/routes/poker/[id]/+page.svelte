@@ -246,8 +246,11 @@
 	</div>
 </div>
 <!-- Create Participant -->
-<!-- TODO: make it permanent. should not be able to press esc or cancel -->
-<dialog id="modal-participant-create" class="modal modal-bottom sm:modal-middle">
+<dialog
+	id="modal-participant-create"
+	class="modal modal-bottom sm:modal-middle"
+	on:cancel={(e) => e.preventDefault()}
+>
 	<form method="dialog" class="modal-box flex flex-col gap-4" on:submit={handleParticipantCreate}>
 		<h3 class="font-bold text-xl pb-2">Insira seu nome para entrar na sessão:</h3>
 		<input
