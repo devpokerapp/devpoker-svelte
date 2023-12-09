@@ -24,12 +24,9 @@
 			+4
 			<!-- TODO: participants modal -->
 		</button>
-		<div class="flex-grow">
-			<!-- spacer -->
-		</div>
 	</div>
 	<button
-		class="btn btn-primary border-base-200 border-4 hover:border-base-200"
+		class="btn btn-primary border-base-200 border-4 hover:border-base-200 tooltip tooltip-bottom tooltip-primary"
 		data-tip="Convidar"
 		on:click={() => openModal('modal-participant-invite')}
 	>
