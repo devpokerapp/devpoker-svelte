@@ -8,7 +8,6 @@ export const getEventContext = (): IEventContext => {
 
     const unrevealedVotes = writable<PokerEvent[]>([]);
     const currentVotes = writable<PokerEvent[]>([]);
-    // FIXME: current votes should not include votes placed after the reveal
 
     context.entities.subscribe((value: PokerEvent[]) => {
         currentVotes.set(value.filter((event) => {
