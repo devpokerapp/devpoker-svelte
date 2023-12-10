@@ -3,8 +3,9 @@
 	import { cubicOut } from 'svelte/easing';
 	import { get, type Writable } from 'svelte/store';
 	import { fly } from 'svelte/transition';
+	import VoteLabel from '../../../components/VoteLabel.svelte';
 
-	const cards = ['0', '1', '2', '3', '5', '8', '13', '?', '☕'];
+	const cards = ['0', '1', '2', '3', '5', '8', '13', '?', '__coffee'];
 	const websocket = getContext<IWebSocketContext>('websocket');
 	const storyContext = getContext<IStoryContext>('story');
 	const pollingContext = getContext<IPollingContext>('polling');
@@ -48,7 +49,7 @@
 					class="poker-card btn btn-secondary shadow-xl w-20 rounded-xl relative"
 					on:click={() => sendVote(card)}
 				>
-					{card}
+					<VoteLabel value={card} />
 				</button>
 			{/each}
 		</div>

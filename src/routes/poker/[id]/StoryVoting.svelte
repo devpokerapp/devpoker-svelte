@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
 	import { get, type Writable } from 'svelte/store';
+	import VoteLabel from '../../../components/VoteLabel.svelte';
 	import { getMostUsed } from '../../../util/operations';
 
 	const VALID_VALUES = ['0', '1', '2', '3', '5', '8', '13']; // '?', '☕'];
@@ -60,7 +61,7 @@
 				data-tip={`Voto de ${vote.participant.name}`}
 			>
 				{#if $currentPolling?.revealed}
-					{vote.value}
+					<VoteLabel value={vote.value} />
 				{:else}
 					<span class="loading loading-dots loading-xs" />
 				{/if}
