@@ -31,7 +31,7 @@
 	const pokerContext = getContext<IPokerContext>('poker');
 	const { current: currentPoker }: { current: Writable<Poker | undefined> } = pokerContext;
 
-	let votePattern = '';
+	let votePattern = '0,1,2,3,5,8,13,?,__coffee';
 	let voteType = 'fibo';
 
 	currentPoker.subscribe((value) => {
@@ -51,10 +51,6 @@
 				...current,
 				votePattern: votePattern
 			});
-
-			if (poker) {
-				pokerContext.retrieve(poker?.id);
-			}
 
 			closeModal('modal-poker-config');
 		} catch (error) {
