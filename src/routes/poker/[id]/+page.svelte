@@ -25,7 +25,7 @@
 	let inviteLink: string = '';
 
 	const { activeStory }: { activeStory: Writable<Story | undefined> } = storyContext;
-	const { current }: { current: Writable<Poker | undefined> } = pokerContext;
+	const { current: currentPoker }: { current: Writable<Poker | undefined> } = pokerContext;
 	const { entities: participants }: { entities: Writable<Participant[]> } = participantContext;
 
 	const showUSMenu = writable(true);
@@ -35,7 +35,7 @@
 
 		participantContext.entities.set(poker.participants);
 		storyContext.entities.set(poker.stories);
-		current.set(poker);
+		currentPoker.set(poker);
 
 		if (poker.currentStoryId !== undefined) {
 			const currentStoryId = poker.currentStoryId;
@@ -175,7 +175,7 @@
 		<section>
 			<div class="flex flex-row justify-center">
 				<div id="poker-main" class="flex flex-col gap-6 max-w-lg">
-					<h3>Sessão de planning poker #{$current?.id || ''}</h3>
+					<h3>Sessão de planning poker #{$currentPoker?.id || ''}</h3>
 					{#if $activeStory === undefined}
 						<div class="w-full flex flex-row justify-center">
 							<div class="alert alert-info">
@@ -235,12 +235,12 @@
 	<div class="drawer-side">
 		<label for="poker-drawer" aria-label="close sidebar" class="drawer-overlay" />
 		<div class="w-80 min-h-full bg-base-200 border text-base-content">
-			{#if $current !== undefined}
+			{#if $currentPoker !== undefined}
 				<div class="px-8 pt-8">
 					<h2 class="card-title text-center text-3xl pb-2">DevPoker</h2>
 				</div>
 				<ParticipantMenu />
-				<StoryMenu pokerId={$current?.id} maxListHeight="calc(100vh - 19em)" />
+				<StoryMenu pokerId={$currentPoker?.id} maxListHeight="calc(100vh - 19em)" />
 			{/if}
 		</div>
 	</div>

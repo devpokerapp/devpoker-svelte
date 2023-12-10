@@ -7,10 +7,12 @@
 
 	const cards = ['0', '1', '2', '3', '5', '8', '13', '?', '__coffee'];
 	const websocket = getContext<IWebSocketContext>('websocket');
+	const pokerContext = getContext<IPokerContext>('poker');
 	const storyContext = getContext<IStoryContext>('story');
 	const pollingContext = getContext<IPollingContext>('polling');
 
 	const { activeStoryId }: { activeStoryId: Writable<string> } = storyContext;
+	const { current: currentPoker }: { current: Writable<Poker | undefined> } = pokerContext;
 	const { current: currentPolling }: { current: Writable<Polling | undefined> } = pollingContext;
 
 	const sendVote = (value: string) => {
@@ -32,7 +34,7 @@
 </script>
 
 <div>
-	{#if $currentPolling !== undefined && !$currentPolling.completed}
+	{#if $currentPoker !== undefined && $currentPolling !== undefined && !$currentPolling.completed}
 		<div
 			class="flex flex-row flex-wrap justify-center align-bottom"
 			transition:fly={{
@@ -44,12 +46,12 @@
 				easing: cubicOut
 			}}
 		>
-			{#each cards as card}
+			{#each $currentPoker.votePattern.split(',') as value}
 				<button
 					class="poker-card btn btn-secondary shadow-xl w-20 rounded-xl relative"
-					on:click={() => sendVote(card)}
+					on:click={() => sendVote(value)}
 				>
-					<VoteLabel value={card} />
+					<VoteLabel {value} />
 				</button>
 			{/each}
 		</div>
