@@ -4,6 +4,7 @@
 	import VoteLabel from '../../../components/VoteLabel.svelte';
 	import { getMostUsed } from '../../../util/operations';
 
+	// FIXME: get this from poker.votePattern
 	const VALID_VALUES = ['0', '1', '2', '3', '5', '8', '13']; // '?', '☕'];
 
 	const pollingContext = getContext<IPollingContext>('polling');

@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
-	import { get, type Writable } from 'svelte/store';
+	import { get, writable, type Writable } from 'svelte/store';
 	import VoteLabel from '../../../components/VoteLabel.svelte';
 	import { closeModal } from '../../../util/modal';
+	import VotePatternManager from './VotePatternManager.svelte';
 
 	interface VotePattern {
 		type: string;
@@ -10,16 +11,18 @@
 		value?: string;
 	}
 
+	const PATTERN_FIBONACCI = '0,1,2,3,5,8,13,?,__coffee';
+	const PATTERN_TSHIRT = 'PP,P,M,G,GG,?,__coffee';
 	const PATTERNS: VotePattern[] = [
 		{
 			type: 'fibo',
 			name: 'Fibonacci',
-			value: '0,1,2,3,5,8,13,?,__coffee'
+			value: PATTERN_FIBONACCI
 		},
 		{
 			type: 'tshirt',
 			name: 'T-Shirt sizing',
-			value: 'PP,P,M,G,GG,?,__coffee'
+			value: PATTERN_TSHIRT
 		},
 		{
 			type: 'custom',
@@ -31,8 +34,9 @@
 	const pokerContext = getContext<IPokerContext>('poker');
 	const { current: currentPoker }: { current: Writable<Poker | undefined> } = pokerContext;
 
-	let votePattern = '0,1,2,3,5,8,13,?,__coffee';
+	let votePattern = PATTERN_FIBONACCI;
 	let voteType = 'fibo';
+	const customVoteOptions = writable(PATTERN_FIBONACCI.split(','));
 
 	currentPoker.subscribe((value) => {
 		votePattern = value?.votePattern || '';
@@ -44,6 +48,10 @@
 		const current = get(currentPoker);
 		if (current === undefined) {
 			return;
+		}
+
+		if (voteType === 'custom') {
+			votePattern = get(customVoteOptions).join(',');
 		}
 
 		try {
@@ -121,9 +129,21 @@
 				{/each}
 			</div>
 		</div>
+		{#if voteType === 'custom'}
+			<div class="form-control w-full">
+				<div class="label">
+					<span class="label-text">Opções de voto</span>
+				</div>
+				<div class="card border">
+					<VotePatternManager options={$customVoteOptions} />
+				</div>
+			</div>
+		{/if}
 		<div class="modal-action">
 			<div class="flex flex-row gap-4">
-				<button class="btn" on:click={() => closeModal('modal-poker-config')}> Cancelar </button>
+				<button type="button" class="btn" on:click={() => closeModal('modal-poker-config')}>
+					Cancelar
+				</button>
 				<button type="submit" class="btn btn-primary"> Confirmar </button>
 			</div>
 		</div>
