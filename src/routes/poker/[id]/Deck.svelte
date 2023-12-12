@@ -48,7 +48,7 @@
 		>
 			{#each $currentPoker.votePattern.split(',') as value}
 				<button
-					class="poker-card btn btn-secondary shadow-xl w-20 rounded-xl relative"
+					class="btn btn-secondary shadow-xl h-28 w-20 rounded-xl -mr-4 hover:scale-125 hover:z-10"
 					on:click={() => sendVote(value)}
 				>
 					<VoteLabel {value} />
@@ -57,20 +57,3 @@
 		</div>
 	{/if}
 </div>
-
-<style>
-	.poker-card {
-		min-height: 8em;
-		z-index: 100;
-		scale: 1;
-		margin-right: -1em;
-		transition-property: -moz-filter, -ms-filter, -o-filter, -webkit-filter, filter, bottom,
-			margin-right, scale;
-		transition-duration: 0.25s;
-	}
-	.poker-card:hover {
-		z-index: 101;
-		scale: 1.15;
-		margin-right: 0.25em;
-	}
-</style>
