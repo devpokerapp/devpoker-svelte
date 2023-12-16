@@ -21,6 +21,24 @@
 		}
 	};
 
+	const updatePatternFromPoker = () => {
+		votePattern = get(currentPoker)?.votePattern || PATTERN_FIBONACCI;
+
+		// tries to recognize which pattern was chosen
+		const currentUsedPattern = PATTERNS.find((pattern) => votePattern === pattern.value);
+		if (currentUsedPattern !== undefined) {
+			changePattern(currentUsedPattern);
+		} else {
+			changePattern({
+				name: 'Customizado',
+				type: 'custom',
+				value: votePattern
+			});
+		}
+	};
+
+	currentPoker.subscribe(updatePatternFromPoker);
+
 	const handlePokerUpdate = async (event: SubmitEvent) => {
 		event.preventDefault();
 
@@ -45,21 +63,10 @@
 		voteOptions = getOptionsFromPattern(votePattern);
 	};
 
-	currentPoker.subscribe((value) => {
-		votePattern = value?.votePattern || PATTERN_FIBONACCI;
-
-		// tries to recognize which pattern was chosen
-		const currentUsedPattern = PATTERNS.find((pattern) => votePattern === pattern.value);
-		if (currentUsedPattern !== undefined) {
-			changePattern(currentUsedPattern);
-		} else {
-			changePattern({
-				name: 'Customizado',
-				type: 'custom',
-				value: votePattern
-			});
-		}
-	});
+	const handleCancel = () => {
+		updatePatternFromPoker();
+		closeModal('modal-poker-config');
+	};
 </script>
 
 <!-- Config Poker -->
@@ -134,9 +141,7 @@
 		</div>
 		<div class="modal-action">
 			<div class="flex flex-row gap-4">
-				<button type="button" class="btn" on:click={() => closeModal('modal-poker-config')}>
-					Cancelar
-				</button>
+				<button type="button" class="btn" on:click={handleCancel}> Cancelar </button>
 				<button type="submit" class="btn btn-primary"> Confirmar </button>
 			</div>
 		</div>
