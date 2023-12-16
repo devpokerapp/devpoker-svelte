@@ -43,10 +43,6 @@
 	let voteType: VotePatternType = 'fibo';
 	let voteOptions = getOptionsFromPattern(votePattern);
 
-	currentPoker.subscribe((value) => {
-		votePattern = value?.votePattern || PATTERN_FIBONACCI;
-	});
-
 	const changePattern = (pattern: VotePattern) => {
 		voteType = pattern.type;
 		if (pattern.value !== undefined) {
@@ -78,23 +74,28 @@
 	const handleCustomPatternKeydown: KeyboardEventHandler<HTMLInputElement> = async (event) => {
 		voteOptions = getOptionsFromPattern(votePattern);
 	};
+
+	currentPoker.subscribe((value) => {
+		votePattern = value?.votePattern || PATTERN_FIBONACCI;
+
+		// tries to recognize which pattern was chosen
+		const currentUsedPattern = PATTERNS.find((pattern) => votePattern === pattern.value);
+		if (currentUsedPattern !== undefined) {
+			changePattern(currentUsedPattern);
+		} else {
+			changePattern({
+				name: 'Customizado',
+				type: 'custom',
+				value: votePattern
+			});
+		}
+	});
 </script>
 
 <!-- Config Poker -->
 <dialog id="modal-poker-config" class="modal modal-bottom sm:modal-middle">
 	<form method="dialog" class="modal-box flex flex-col gap-4" on:submit={handlePokerUpdate}>
-		<h3 class="font-bold text-xl pb-2">Editar sessão de Planning Poker</h3>
-		<!-- <div class="form-control w-full">
-			<div class="label">
-				<span class="label-text">Padrão de votos válidos</span>
-			</div>
-			<input
-				type="text"
-				placeholder="0,1,2,3,5,8"
-				class="input input-bordered w-full max-w-xs"
-				bind:value={votePattern}
-			/>
-		</div> -->
+		<h3 class="font-bold text-xl pb-2">Configurar sessão de Planning Poker</h3>
 		<div class="form-control w-full">
 			<div class="label">
 				<span class="label-text">Padrão de votação</span>
