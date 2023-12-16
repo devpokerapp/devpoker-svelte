@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { getOptionsFromPattern, PATTERN_FIBONACCI } from '$lib/pattern';
 	import { getContext } from 'svelte';
 	import { get, type Writable } from 'svelte/store';
 	import VoteLabel from '../../../components/VoteLabel.svelte';
@@ -9,11 +10,14 @@
 
 	const pollingContext = getContext<IPollingContext>('polling');
 	const voteContext = getContext<IVoteContext>('vote');
+	const pokerContext = getContext<IPokerContext>('poker');
 
 	const { entities: votes }: { entities: Writable<Vote[]> } = voteContext;
 	const { current: currentPolling }: { current: Writable<Polling | undefined> } = pollingContext;
+	const { current: currentPoker }: { current: Writable<Poker | undefined> } = pokerContext;
 
 	let mostVoted: string[] = [];
+	let voteOptions: string[] = [];
 
 	const computedMostVoted = () => {
 		const values = get(votes).map((e) => e.value);
@@ -21,6 +25,12 @@
 	};
 
 	votes.subscribe(computedMostVoted);
+	currentPoker.subscribe((value) => {
+		const pattern = value?.votePattern || PATTERN_FIBONACCI;
+		voteOptions = getOptionsFromPattern(pattern).filter(
+			(vote) => vote !== '?' && vote !== '__coffee'
+		);
+	});
 
 	const handleReveal = () => {
 		const polling = get(currentPolling);
@@ -114,7 +124,7 @@
 				{#if !$currentPolling?.completed}
 					<ul class="dropdown-content z-[1] menu p-2 shadow bg-accent rounded-box w-40">
 						<h2 class="menu-title">Estimativa</h2>
-						{#each VALID_VALUES as value}
+						{#each voteOptions as value}
 							<li>
 								<button
 									on:click={() => handleComplete(value)}
