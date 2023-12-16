@@ -89,7 +89,7 @@
 								<div>
 									{pattern.name}
 								</div>
-								<div class="flex flex-row gap-1 pt-2">
+								<div class="flex flex-row flex-wrap gap-1 pt-2">
 									{#if pattern.value}
 										{#each getOptionsFromPattern(pattern.value) as value}
 											<div class="badge badge-secondary">
