@@ -9,6 +9,7 @@
 	import PokerConfigModal from './PokerConfigModal.svelte';
 	import StoryEvents from './StoryEvents.svelte';
 	import StoryMenu from './StoryMenu.svelte';
+	import StoryPollings from './StoryPollings.svelte';
 	import StoryVoting from './StoryVoting.svelte';
 
 	const LS_PARTICIPANT = 'devpokerapp:participant';
@@ -216,6 +217,7 @@
 							{/if}
 						</p>
 						<StoryVoting />
+						<StoryPollings />
 						<div id="poker-comment-area">
 							<input
 								type="text"
