@@ -23,12 +23,20 @@
 		{#if event.type === 'vote'}
 			<div class="text-center">{getParticipantName(event.creator)} votou!</div>
 		{/if}
+		{#if event.type === 'complete'}
+			<div class="text-center">
+				Estimativa definida como <strong>{event.content}</strong> story points.
+			</div>
+		{/if}
+		{#if event.type === 'restart'}
+			<div class="text-center">Iniciada nova votação.</div>
+		{/if}
 		<!-- TODO: get participant name by event.creator -->
 		<!-- TODO: comments -->
 		<!-- TODO: actions -->
 	{/each}
 
-	{#each comments as comment}
+	<!-- {#each comments as comment}
 		<div class="card border border-base-300">
 			<div class="card-body flex flex-row gap-8">
 				<button class="btn btn-circle btn-info" />
@@ -46,5 +54,5 @@
 
 	<p class="text-center">
 		Estimativa definida como <strong>5</strong> story points
-	</p>
+	</p> -->
 </div>
