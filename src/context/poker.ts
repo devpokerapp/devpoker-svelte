@@ -16,6 +16,20 @@ export const getPokerContext = (): IPokerContext => {
         storyContext.activate(story);
     });
 
+    context.entities.subscribe((value: Poker[]) => {
+        if (value.length < 1) {
+            current.set(undefined);
+            return;
+        }
+        const old = get(current);
+        if (old === undefined) {
+            return;
+        }
+        const entity = value.find((entity) => entity.id === old.id);
+        console.log({ entity });
+        current.set(entity);
+    });
+
     async function selectStory(id: string | undefined): Promise<void> {
         if (get(current) === undefined) {
             return;

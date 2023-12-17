@@ -9,6 +9,7 @@ interface Model {
 
 interface Poker extends Model {
     creator: string;
+    votePattern: string;
     currentStoryId?: string;
     stories: Story[];
     participants: Participant[];
@@ -66,4 +67,15 @@ interface PokerContext {
     poker: Poker;
     stories: Story[];
     participants: Participant[];
+}
+
+
+/**
+ * Others
+ */
+type VotePatternType = 'fibo' | 'tshirt' | 'custom';
+interface VotePattern {
+    type: VotePatternType;
+    name: string;
+    value?: string;
 }

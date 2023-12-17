@@ -128,6 +128,7 @@
 			{/if}
 			<div class="flex flex-row px-8">
 				<button
+					title={story.name}
 					class="flex-grow truncate py-3 text-left {$activeStoryId === story.id ? 'font-bold' : ''}"
 					on:click={() => pokerContext.selectStory(story.id)}
 				>
