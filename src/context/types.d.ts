@@ -75,10 +75,7 @@ interface IParticipantContext extends IEntityContext<Participant> {
     getParticipantName(id: string): string | undefined;
 }
 
-interface IEventContext extends IEntityContext<PokerEvent> {
-    unrevealedVotes: Writable<PokerEvent[]>;
-    currentVotes: Writable<PokerEvent[]>;
-}
+interface IEventContext extends IEntityContext<PokerEvent> {}
 
 interface IPollingContext extends IEntityContext<Polling> {
     current: Writable<Polling | undefined>;

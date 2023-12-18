@@ -7,6 +7,7 @@
 	import Deck from './Deck.svelte';
 	import ParticipantMenu from './ParticipantMenu.svelte';
 	import PokerConfigModal from './PokerConfigModal.svelte';
+	import StoryCommentArea from './StoryCommentArea.svelte';
 	import StoryEvents from './StoryEvents.svelte';
 	import StoryMenu from './StoryMenu.svelte';
 	import StoryPollings from './StoryPollings.svelte';
@@ -218,13 +219,7 @@
 						</p>
 						<StoryVoting />
 						<StoryPollings />
-						<div id="poker-comment-area">
-							<input
-								type="text"
-								placeholder="Adicionar comentário"
-								class="input input-bordered w-full"
-							/>
-						</div>
+						<StoryCommentArea />
 						<StoryEvents />
 					{/if}
 				</div>
