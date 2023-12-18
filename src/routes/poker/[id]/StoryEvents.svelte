@@ -28,31 +28,25 @@
 				Estimativa definida como <strong>{event.content}</strong> story points.
 			</div>
 		{/if}
-		{#if event.type === 'restart'}
-			<div class="text-center">Iniciada nova votação.</div>
-		{/if}
-		<!-- TODO: get participant name by event.creator -->
-		<!-- TODO: comments -->
-		<!-- TODO: actions -->
-	{/each}
-
-	<!-- {#each comments as comment}
-		<div class="card border border-base-300">
-			<div class="card-body flex flex-row gap-8">
-				<button class="btn btn-circle btn-info" />
-				<div>
-					<p>
-						{comment}
-					</p>
-					<div class="text-right">
-						<p class="text-gray-500">01/10/2023, 18:27</p>
+		{#if event.type === 'comment'}
+			<div class="card border border-base-300">
+				<div class="card-body flex flex-row gap-8">
+					<button
+						class="btn btn-circle btn-info tooltip tooltip-bottom"
+						data-tip={getParticipantName(event.creator)}
+					/>
+					<div class="w-full h-full">
+						<p>
+							{event.content}
+						</p>
+						<div class="text-right">
+							<p class="text-gray-500">
+								{new Date(event.createdAt).toLocaleString()}
+							</p>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		{/if}
 	{/each}
-
-	<p class="text-center">
-		Estimativa definida como <strong>5</strong> story points
-	</p> -->
 </div>
