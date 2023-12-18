@@ -30,30 +30,28 @@
 			</div>
 		{/if}
 		{#if event.type === 'comment'}
-			<div class="card border border-base-300">
-				<div class="card-body flex flex-row gap-8">
-					<!-- TODO: maybe show vote... this was in the prototype but maybe not necessary -->
-					<button
-						class="btn btn-circle btn-secondary tooltip tooltip-info tooltip-bottom"
-						data-tip={participantName}
-					>
-						{#if participantName !== undefined}
-							{participantName[0].toUpperCase()}
-						{/if}
-					</button>
-					<div class="w-full h-full">
-						<p class="font-bold">
+			<div class="flex flex-row gap-8">
+				<!-- TODO: maybe show vote value... this was in the prototype but maybe not necessary -->
+				<button
+					class="btn btn-circle btn-secondary tooltip tooltip-info tooltip-bottom"
+					data-tip={participantName}
+				>
+					{#if participantName !== undefined}
+						{participantName[0].toUpperCase()}
+					{/if}
+				</button>
+				<div class="w-full h-full">
+					<div class="flex flex-row">
+						<span class="font-bold flex-grow">
 							{participantName}
-						</p>
-						<p>
-							{event.content}
-						</p>
-						<div class="text-right">
-							<p class="text-gray-500">
-								{new Date(event.createdAt).toLocaleString()}
-							</p>
-						</div>
+						</span>
+						<span class="text-gray-500">
+							{new Date(event.createdAt).toLocaleString()}
+						</span>
 					</div>
+					<p>
+						{event.content}
+					</p>
 				</div>
 			</div>
 		{/if}
