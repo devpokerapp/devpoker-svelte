@@ -3,7 +3,10 @@
 	import type { Writable } from 'svelte/store';
 
 	const pollingContext = getContext<IPollingContext>('polling');
-	const { entities: pollings }: { entities: Writable<Polling[]> } = pollingContext;
+	const {
+		current: currentPolling,
+		entities: pollings
+	}: { current: Writable<Polling | undefined>; entities: Writable<Polling[]> } = pollingContext;
 
 	let showing = false;
 </script>
@@ -46,6 +49,9 @@
 				{#each $pollings as polling}
 					<div class="first:pt-0 pt-2">
 						<p>
+							{#if $currentPolling?.id === polling.id}
+								<span class="badge badge-sm badge-primary">Ativa</span>
+							{/if}
 							<span>
 								Votação iniciada em {new Date(polling.createdAt).toLocaleString()}.
 							</span>
