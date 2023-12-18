@@ -20,8 +20,9 @@
 
 <div id="poker-event-feed" class="flex flex-col gap-6">
 	{#each $events as event}
+		{@const participantName = event.creator !== '' ? getParticipantName(event.creator) : ''}
 		{#if event.type === 'vote'}
-			<div class="text-center">{getParticipantName(event.creator)} votou!</div>
+			<div class="text-center">{participantName} votou!</div>
 		{/if}
 		{#if event.type === 'complete'}
 			<div class="text-center">
@@ -31,11 +32,19 @@
 		{#if event.type === 'comment'}
 			<div class="card border border-base-300">
 				<div class="card-body flex flex-row gap-8">
+					<!-- TODO: maybe show vote... this was in the prototype but maybe not necessary -->
 					<button
-						class="btn btn-circle btn-info tooltip tooltip-bottom"
-						data-tip={getParticipantName(event.creator)}
-					/>
+						class="btn btn-circle btn-secondary tooltip tooltip-info tooltip-bottom"
+						data-tip={participantName}
+					>
+						{#if participantName !== undefined}
+							{participantName[0].toUpperCase()}
+						{/if}
+					</button>
 					<div class="w-full h-full">
+						<p class="font-bold">
+							{participantName}
+						</p>
 						<p>
 							{event.content}
 						</p>
