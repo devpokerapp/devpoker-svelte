@@ -16,9 +16,10 @@ export const getPollingContext = (): IPollingContext => {
             current.set(undefined);
             return;
         }
-        let polling = value.find((polling) => !polling.completed) // should always have only ONE not completed 
+        // current polling is defined by searching the latest not marked as completed
+        let polling = value.findLast((polling) => !polling.completed)
         if (polling === undefined) {
-            polling = value[0];
+            polling = value[value.length - 1];
         }
         current.set(polling);
     });

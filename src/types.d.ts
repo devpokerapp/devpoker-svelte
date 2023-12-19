@@ -31,7 +31,7 @@ interface Participant extends Model {
 }
 
 interface PokerEvent extends Model {
-    type: "vote" | "comment" | "action";
+    type: "vote" | "comment" | "action" | "complete" | "restart";
     content: string;
     creator: string;
     revealed: boolean;

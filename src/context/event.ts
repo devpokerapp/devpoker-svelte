@@ -1,4 +1,3 @@
-import { writable } from "svelte/store";
 import { getEntityContext } from "./entity";
 
 export const getEventContext = (): IEventContext => {
@@ -6,21 +5,7 @@ export const getEventContext = (): IEventContext => {
         entity: 'event'
     });
 
-    const unrevealedVotes = writable<PokerEvent[]>([]);
-    const currentVotes = writable<PokerEvent[]>([]);
-
-    context.entities.subscribe((value: PokerEvent[]) => {
-        currentVotes.set(value.filter((event) => {
-            return event.type === "vote"
-        }));
-        unrevealedVotes.set(value.filter((event) => {
-            return event.type === "vote" && event.revealed === false
-        }));
-    });
-
     return {
-        ...context,
-        unrevealedVotes,
-        currentVotes,
+        ...context
     }
 }

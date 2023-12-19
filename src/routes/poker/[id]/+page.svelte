@@ -7,8 +7,10 @@
 	import Deck from './Deck.svelte';
 	import ParticipantMenu from './ParticipantMenu.svelte';
 	import PokerConfigModal from './PokerConfigModal.svelte';
+	import StoryCommentArea from './StoryCommentArea.svelte';
 	import StoryEvents from './StoryEvents.svelte';
 	import StoryMenu from './StoryMenu.svelte';
+	import StoryPollings from './StoryPollings.svelte';
 	import StoryVoting from './StoryVoting.svelte';
 
 	const LS_PARTICIPANT = 'devpokerapp:participant';
@@ -216,13 +218,8 @@
 							{/if}
 						</p>
 						<StoryVoting />
-						<div id="poker-comment-area">
-							<input
-								type="text"
-								placeholder="Adicionar comentário"
-								class="input input-bordered w-full"
-							/>
-						</div>
+						<StoryPollings />
+						<StoryCommentArea />
 						<StoryEvents />
 					{/if}
 				</div>

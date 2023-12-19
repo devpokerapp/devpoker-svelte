@@ -20,31 +20,40 @@
 
 <div id="poker-event-feed" class="flex flex-col gap-6">
 	{#each $events as event}
+		{@const participantName = event.creator !== '' ? getParticipantName(event.creator) : ''}
 		{#if event.type === 'vote'}
-			<div class="text-center">{getParticipantName(event.creator)} votou!</div>
+			<div class="text-center">{participantName} votou!</div>
 		{/if}
-		<!-- TODO: get participant name by event.creator -->
-		<!-- TODO: comments -->
-		<!-- TODO: actions -->
-	{/each}
-
-	{#each comments as comment}
-		<div class="card border border-base-300">
-			<div class="card-body flex flex-row gap-8">
-				<button class="btn btn-circle btn-info" />
-				<div>
-					<p>
-						{comment}
-					</p>
-					<div class="text-right">
-						<p class="text-gray-500">01/10/2023, 18:27</p>
+		{#if event.type === 'complete'}
+			<div class="text-center">
+				Estimativa definida como <strong>{event.content}</strong> story points.
+			</div>
+		{/if}
+		{#if event.type === 'comment'}
+			<div class="flex flex-row gap-8">
+				<!-- TODO: maybe show vote value... this was in the prototype but maybe not necessary -->
+				<button
+					class="btn btn-circle btn-secondary tooltip tooltip-info tooltip-bottom"
+					data-tip={participantName}
+				>
+					{#if participantName !== undefined}
+						{participantName[0].toUpperCase()}
+					{/if}
+				</button>
+				<div class="w-full h-full">
+					<div class="flex flex-row">
+						<span class="font-bold flex-grow">
+							{participantName}
+						</span>
+						<span class="text-gray-500">
+							{new Date(event.createdAt).toLocaleString()}
+						</span>
 					</div>
+					<p>
+						{event.content}
+					</p>
 				</div>
 			</div>
-		</div>
+		{/if}
 	{/each}
-
-	<p class="text-center">
-		Estimativa definida como <strong>5</strong> story points
-	</p>
 </div>
