@@ -11,6 +11,11 @@
 
 	const handleSubmit = async (event: SubmitEvent) => {
 		event.preventDefault();
+
+		if (text.length < 1) {
+			return;
+		}
+
 		try {
 			const result = await eventContext.create({
 				id: '',
