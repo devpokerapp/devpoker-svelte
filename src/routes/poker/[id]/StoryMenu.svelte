@@ -3,6 +3,8 @@
 	import { get, type Writable } from 'svelte/store';
 	import { closeModal, openModal } from '../../../util/modal';
 
+	const SMALL_DELAY_TO_ALLOW_CLICKS = 100;
+
 	const pokerContext = getContext<IPokerContext>('poker');
 	const storyContext = getContext<IStoryContext>('story');
 	const {
@@ -164,7 +166,9 @@
 						}}
 						on:blur={() => {
 							if (focusing !== undefined && focusing.id === story.id) {
-								showFocused = false;
+								setTimeout(() => {
+									showFocused = false;
+								}, SMALL_DELAY_TO_ALLOW_CLICKS);
 							}
 						}}
 					>
