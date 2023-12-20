@@ -21,6 +21,7 @@
 	let focusing: Story | undefined = undefined;
 	let showFocused = false;
 	let focusMenuHeight = 0;
+	let scrollingContainer: HTMLDivElement;
 
 	const handleCreateStory = async (event: SubmitEvent) => {
 		event.preventDefault();
@@ -119,7 +120,15 @@
 
 <div id="story-menu" class="card-body p-0">
 	<h3 class="card-title text-center text-2xl px-8 pt-8 pb-2">User Stories</h3>
-	<div class="overflow-y-auto" style="max-height: {maxListHeight}; min-height: 6rem;">
+	<div
+		id="story-menu-list"
+		class="overflow-y-auto"
+		style="max-height: {maxListHeight}; min-height: 6rem;"
+		bind:this={scrollingContainer}
+		on:scroll={() => {
+			showFocused = false;
+		}}
+	>
 		{#if $stories.length < 1}
 			<div class="px-8 py-4">
 				<p class="text-gray-500">Você ainda não criou nenhuma User Story.</p>
@@ -149,8 +158,7 @@
 						tabindex="0"
 						class="btn btn-sm btn-circle btn-ghost"
 						on:focus={(ev) => {
-							// FIXME: scrollTop is modified by scroll
-							focusMenuHeight = ev.currentTarget.offsetTop;
+							focusMenuHeight = ev.currentTarget.offsetTop - scrollingContainer.scrollTop;
 							focusing = story;
 							showFocused = true;
 						}}
