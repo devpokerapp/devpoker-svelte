@@ -19,6 +19,8 @@
 	let updating: Story | undefined = undefined;
 	let deleting: Story | undefined = undefined;
 	let focusing: Story | undefined = undefined;
+	let showFocused = false;
+	let focusMenuHeight = 0;
 
 	const handleCreateStory = async (event: SubmitEvent) => {
 		event.preventDefault();
@@ -146,10 +148,15 @@
 					<button
 						tabindex="0"
 						class="btn btn-sm btn-circle btn-ghost"
-						on:focus={() => (focusing = story)}
+						on:focus={(ev) => {
+							// FIXME: scrollTop is modified by scroll
+							focusMenuHeight = ev.currentTarget.offsetTop;
+							focusing = story;
+							showFocused = true;
+						}}
 						on:blur={() => {
 							if (focusing !== undefined && focusing.id === story.id) {
-								focusing = undefined;
+								showFocused = false;
 							}
 						}}
 					>
@@ -266,11 +273,12 @@
 	<!-- Story context menu -->
 	<ul
 		tabindex="-1"
-		class="z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 absolute top-2 right-2"
-		class:hidden={focusing === undefined}
+		class="z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 absolute right-6"
+		class:hidden={!showFocused}
+		style="top: {focusMenuHeight + 32}px;"
 	>
 		<li>
-			<button on:click={() => focusing && pokerContext.selectStory(focusing.id)}>
+			<button on:click={() => focusing !== undefined && pokerContext.selectStory(focusing.id)}>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					viewBox="0 0 20 20"
@@ -287,7 +295,7 @@
 			</button>
 		</li>
 		<li>
-			<button on:click={() => focusing && handleStartUpdateStory(focusing)}>
+			<button on:click={() => focusing !== undefined && handleStartUpdateStory(focusing)}>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					viewBox="0 0 20 20"
@@ -305,7 +313,10 @@
 			</button>
 		</li>
 		<li>
-			<button class="text-error" on:click={() => focusing && handleStartDeleteStory(focusing)}>
+			<button
+				class="text-error"
+				on:click={() => focusing !== undefined && handleStartDeleteStory(focusing)}
+			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					viewBox="0 0 20 20"
