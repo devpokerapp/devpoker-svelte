@@ -89,6 +89,7 @@
 		} finally {
 			loading = false;
 			closeModal('modal-story-update');
+			closeModal('modal-story-options');
 		}
 	};
 
@@ -116,6 +117,19 @@
 		} finally {
 			loading = false;
 			closeModal('modal-story-delete');
+			closeModal('modal-story-options');
+		}
+	};
+
+	const handleSelectStory = async (entity: Story) => {
+		loading = true;
+		try {
+			await pokerContext.selectStory(entity.id);
+		} catch (error) {
+			console.error(error);
+		} finally {
+			loading = false;
+			closeModal('modal-story-options');
 		}
 	};
 </script>
@@ -276,13 +290,13 @@
 		</form>
 	</dialog>
 	<!-- Story context menu -->
-	<dialog id="modal-story-options" class="modal">
+	<dialog id="modal-story-options" class="modal modal-bottom sm:modal-middle">
 		<ul
-			class="modal-box p-2 menu rounded-box w-52 absolute left-20"
+			class="modal-box p-2 menu sm:rounded-box sm:w-52 sm:absolute sm:left-20"
 			style="top: {focusMenuHeight + 32}px;"
 		>
 			<li>
-				<button on:click={() => focusing !== undefined && pokerContext.selectStory(focusing.id)}>
+				<button on:click={() => focusing !== undefined && handleSelectStory(focusing)}>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						viewBox="0 0 20 20"
@@ -342,3 +356,9 @@
 		</form>
 	</dialog>
 </div>
+
+<style>
+	#modal-story-options::backdrop {
+		background-color: transparent;
+	}
+</style>
