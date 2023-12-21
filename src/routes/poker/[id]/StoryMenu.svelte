@@ -358,7 +358,9 @@
 </div>
 
 <style>
-	#modal-story-options::backdrop {
-		background-color: transparent;
+	@media (min-width: 640px) {
+		#modal-story-options::backdrop {
+			background-color: transparent;
+		}
 	}
 </style>
