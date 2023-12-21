@@ -356,9 +356,3 @@
 		</form>
 	</dialog>
 </div>
-
-<style>
-	#modal-story-options::backdrop {
-		background-color: transparent;
-	}
-</style>
