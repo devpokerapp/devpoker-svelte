@@ -21,8 +21,7 @@ export const getAuthContext = (): IAuthContext => {
             });
 
         keycloakInstance.onTokenExpired = () => {
-            // TODO
-            // keycloakInstance?.login();
+            keycloakInstance?.login();
         }
         keycloakInstance.onAuthLogout = () => {
             console.log('logout!');
