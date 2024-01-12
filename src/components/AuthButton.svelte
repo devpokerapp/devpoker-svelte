@@ -31,8 +31,8 @@
 			{$profile?.username || 'Perfil'}
 		</div>
 		<ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-			<li><a>Editar perfil</a></li>
-			<li><a on:click={authContext.logout}>Logout</a></li>
+			<li><button on:click={authContext.manageProfile}>Editar perfil</button></li>
+			<li><button on:click={authContext.logout}>Logout</button></li>
 		</ul>
 	</div>
 {:else}

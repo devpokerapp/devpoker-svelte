@@ -38,6 +38,10 @@ export const getAuthContext = (): IAuthContext => {
         keycloakInstance?.logout();
     };
 
+    const manageProfile = (): void => {
+        keycloakInstance?.accountManagement();
+    }
+
     return {
         loading,
         authenticated,
@@ -45,5 +49,6 @@ export const getAuthContext = (): IAuthContext => {
         init,
         login,
         logout,
+        manageProfile,
     }
 }

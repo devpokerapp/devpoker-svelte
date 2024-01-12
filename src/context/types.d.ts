@@ -77,6 +77,7 @@ interface IAuthContext {
     init(config: KeycloakConfig): void;
     login(): void;
     logout(): void;
+    manageProfile(): void;
 }
 
 interface IEntityContext<T> {
