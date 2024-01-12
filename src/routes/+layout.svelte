@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount, setContext } from 'svelte';
+	import { getAuthContext } from '../context/auth';
 	import { getEventContext } from '../context/event';
 	import { getParticipantContext } from '../context/participant';
 	import { getPokerContext } from '../context/poker';
@@ -10,7 +11,12 @@
 	import ConnectionManager from './ConnectionManager.svelte';
 	import './styles.css';
 
+	export const ssr = false;
+
+	const auth = getAuthContext();
+
 	setContext('websocket', websocket);
+	setContext('auth', auth);
 	setContext('vote', getVoteContext());
 	setContext('event', getEventContext());
 	setContext('polling', getPollingContext());
@@ -20,6 +26,11 @@
 
 	onMount(() => {
 		websocket.init('ws://localhost:8000/ws');
+		auth.init({
+			url: 'http://localhost:8080',
+			realm: 'devpoker',
+			clientId: 'app'
+		});
 	});
 </script>
 
