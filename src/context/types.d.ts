@@ -73,6 +73,7 @@ interface IWebSocketContext {
 interface IAuthContext {
     loading: Writable<boolean>;
     authenticated: Writable<boolean>;
+    profile: Writable<KeycloakProfile | undefined>;
     init(config: KeycloakConfig): void;
     login(): void;
     logout(): void;
