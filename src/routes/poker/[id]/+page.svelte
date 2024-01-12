@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { getContext, onMount } from 'svelte';
 	import { get, writable, type Writable } from 'svelte/store';
+	import AuthButton from '../../../components/AuthButton.svelte';
 	import { closeModal, openModal } from '../../../util/modal';
 	import type { PageData } from './$types';
 	import Deck from './Deck.svelte';
@@ -156,6 +157,9 @@
 	<input id="poker-drawer" type="checkbox" class="drawer-toggle" />
 	<!-- MAIN -->
 	<div class="drawer-content py-4 px-12 lg:pr-80" style="padding-bottom: 10em;">
+		<div class="absolute top-2 right-2">
+			<AuthButton />
+		</div>
 		<label
 			for="poker-drawer"
 			class="btn btn-circle btn-primary drawer-button fixed top-4 left-4 lg:hidden"
