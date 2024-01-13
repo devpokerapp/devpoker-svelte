@@ -23,6 +23,9 @@ export const getAuthContext = (): IAuthContext => {
             })
             .catch((e) => {
                 console.error('unable to initialize keycloak', e);
+            })
+            .finally(() => {
+                loading.set(false);
             });
 
         keycloakInstance.onTokenExpired = () => {
