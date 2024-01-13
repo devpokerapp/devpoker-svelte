@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { getContext } from 'svelte';
-	import { closeModal, openModal } from '../util/modal';
+	import AuthButton from '../components/AuthButton.svelte';
 
 	let name: string = '';
 	let loading = false;
@@ -36,8 +36,11 @@
 	<meta name="description" content="Svelte demo app" />
 </svelte:head>
 
-<section>
-	<div class="hero min-h-screen bg-base-200">
+<section class="bg-base-200">
+	<div class="absolute top-2 right-2">
+		<AuthButton />
+	</div>
+	<div class="hero min-h-screen">
 		<div class="hero-content text-center">
 			<div class="max-w-md">
 				<h1 class="text-5xl font-bold">DevPoker</h1>

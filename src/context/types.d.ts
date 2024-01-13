@@ -39,6 +39,24 @@ interface WSResultListener extends WSListener {
     transactionId: string;
 }
 
+interface KeycloakConfig {
+    url: string;
+    realm: string;
+    clientId: string;
+}
+
+interface KeycloakProfile {
+	id?: string;
+	username?: string;
+	email?: string;
+	firstName?: string;
+	lastName?: string;
+	enabled?: boolean;
+	emailVerified?: boolean;
+	totp?: boolean;
+	createdTimestamp?: number;
+}
+
 interface IWebSocketContext {
     connected: Writable<boolean>;
     initiated: Writable<boolean>;
@@ -50,6 +68,16 @@ interface IWebSocketContext {
     asap(callback: () => void): void;
     subscribe(channel: string): void;
     unsubscribe(channel: string): void;
+}
+
+interface IAuthContext {
+    loading: Writable<boolean>;
+    authenticated: Writable<boolean>;
+    profile: Writable<KeycloakProfile | undefined>;
+    init(config: KeycloakConfig): void;
+    login(): void;
+    logout(): void;
+    manageProfile(): void;
 }
 
 interface IEntityContext<T> {
