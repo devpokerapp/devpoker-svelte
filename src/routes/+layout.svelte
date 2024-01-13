@@ -11,8 +11,6 @@
 	import ConnectionManager from './ConnectionManager.svelte';
 	import './styles.css';
 
-	export const ssr = false;
-
 	const auth = getAuthContext();
 
 	setContext('websocket', websocket);
