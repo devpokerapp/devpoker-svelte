@@ -133,11 +133,15 @@
 		showUSMenu.set(!get(showUSMenu));
 	};
 
-	const createParticipantAndStart = async (participantName: string) => {
+	const createParticipantAndStart = async (
+		participantName: string,
+		keycloakId: string | undefined = undefined
+	) => {
 		try {
 			const participant = await participantContext.create({
 				pokerId: data.id,
 				name: participantName,
+				keycloakUserId: keycloakId,
 				id: '',
 				sid: '',
 				createdAt: '',
@@ -168,7 +172,8 @@
 	const createParticipantFromUser = async () => {
 		if (get(profile) !== undefined) {
 			const name = get(profile)?.username || 'Usuário';
-			createParticipantAndStart(name);
+			const id = get(profile)?.id;
+			createParticipantAndStart(name, id);
 		}
 	};
 
