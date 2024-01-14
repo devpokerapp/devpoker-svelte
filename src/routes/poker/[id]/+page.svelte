@@ -314,6 +314,11 @@
 	>
 		<div>
 			<h3 class="font-bold text-xl pb-2">Acesse sua conta</h3>
+			<p class="text-gray-500">Ao logar, você pode:</p>
+			<ul class="list-disc text-gray-500 pl-4 pb-4">
+				<li>Acessar sua lista de sessões atuais</li>
+				<li>Manter histórico das sessões realizadas</li>
+			</ul>
 			<button type="button" class="btn btn-block btn-primary" on:click={authContext.login}>
 				{#if $authLoading}
 					<span class="loading loading-spinner loading-xs" />
