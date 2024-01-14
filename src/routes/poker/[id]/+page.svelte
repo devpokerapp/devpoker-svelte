@@ -254,9 +254,13 @@
 						</svg>
 					</button>
 				</div>
-				<div class="px-8 pt-8">
-					<h2 class="card-title text-center text-3xl pb-2">DevPoker</h2>
-				</div>
+			{/if}
+			<div class="px-8 pt-8">
+				<h2 class="card-title text-center text-3xl pb-2">
+					<a href="/">DevPoker</a>
+				</h2>
+			</div>
+			{#if $currentPoker !== undefined}
 				<ParticipantMenu />
 				<StoryMenu pokerId={$currentPoker?.id} maxListHeight="calc(100vh - 19em)" />
 			{/if}
