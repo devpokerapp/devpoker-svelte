@@ -27,6 +27,7 @@ interface Story extends Model {
 interface Participant extends Model {
     name: string;
     pokerId: string;
+    keycloakUserId?: string;
     sid: string;
 }
 

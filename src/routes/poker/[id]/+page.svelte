@@ -20,17 +20,29 @@
 	const pokerContext = getContext<IPokerContext>('poker');
 	const storyContext = getContext<IStoryContext>('story');
 	const participantContext = getContext<IParticipantContext>('participant');
+	const authContext = getContext<IAuthContext>('auth');
 
 	export let data: PageData;
 
 	let me: Participant | undefined = undefined;
 	let name: string = '';
 	let loading: boolean = false;
+	let waitingParticipant = false;
 	let inviteLink: string = '';
 
 	const { activeStory }: { activeStory: Writable<Story | undefined> } = storyContext;
 	const { current: currentPoker }: { current: Writable<Poker | undefined> } = pokerContext;
 	const { entities: participants }: { entities: Writable<Participant[]> } = participantContext;
+
+	const {
+		loading: authLoading,
+		authenticated,
+		profile
+	}: {
+		loading: Writable<boolean>;
+		authenticated: Writable<boolean>;
+		profile: Writable<KeycloakProfile | undefined>;
+	} = authContext;
 
 	const showUSMenu = writable(true);
 
@@ -53,6 +65,13 @@
 		const found = get(participants).find((entity) => entity.id === participant.id);
 		if (found === undefined) {
 			participants.set([...get(participants), participant]);
+		}
+	});
+
+	profile.subscribe((value) => {
+		// entered page from url and was already authenticated
+		if (waitingParticipant == true && value !== undefined) {
+			createParticipantFromUser();
 		}
 	});
 
@@ -98,9 +117,13 @@
 			const participantId = loadCurrentParticipantId();
 			if (participantId !== undefined) {
 				prepareSession(participantId);
+			} else if (get(profile) !== undefined) {
+				// already logged in when navigated to the page
+				createParticipantFromUser();
 			} else {
-				// if you are not linked to a participant
+				// if you are not linked to a participant nor logged in
 				openModal('modal-participant-create');
+				waitingParticipant = true;
 				return;
 			}
 		});
@@ -110,13 +133,15 @@
 		showUSMenu.set(!get(showUSMenu));
 	};
 
-	const handleParticipantCreate = async (event: SubmitEvent) => {
-		event.preventDefault();
-
+	const createParticipantAndStart = async (
+		participantName: string,
+		keycloakId: string | undefined = undefined
+	) => {
 		try {
 			const participant = await participantContext.create({
 				pokerId: data.id,
-				name: name,
+				name: participantName,
+				keycloakUserId: keycloakId,
 				id: '',
 				sid: '',
 				createdAt: '',
@@ -135,12 +160,26 @@
 
 			prepareSession(participantId);
 
+			waitingParticipant = false;
 			closeModal('modal-participant-create');
 		} catch (error) {
 			console.log(error);
 		} finally {
 			loading = false;
 		}
+	};
+
+	const createParticipantFromUser = async () => {
+		if (get(profile) !== undefined) {
+			const name = get(profile)?.username || 'Usuário';
+			const id = get(profile)?.id;
+			createParticipantAndStart(name, id);
+		}
+	};
+
+	const handleParticipantCreate = async (event: SubmitEvent) => {
+		event.preventDefault();
+		createParticipantAndStart(name);
 	};
 
 	const handleCopyInvite = async (event: SubmitEvent) => {
@@ -254,9 +293,13 @@
 						</svg>
 					</button>
 				</div>
-				<div class="px-8 pt-8">
-					<h2 class="card-title text-center text-3xl pb-2">DevPoker</h2>
-				</div>
+			{/if}
+			<div class="px-8 pt-8">
+				<h2 class="card-title text-center text-3xl pb-2">
+					<a href="/">DevPoker</a>
+				</h2>
+			</div>
+			{#if $currentPoker !== undefined}
 				<ParticipantMenu />
 				<StoryMenu pokerId={$currentPoker?.id} maxListHeight="calc(100vh - 19em)" />
 			{/if}
@@ -269,18 +312,39 @@
 	class="modal modal-bottom sm:modal-middle"
 	on:cancel={(e) => e.preventDefault()}
 >
-	<form method="dialog" class="modal-box flex flex-col gap-4" on:submit={handleParticipantCreate}>
-		<h3 class="font-bold text-xl pb-2">Insira seu nome para entrar na sessão:</h3>
-		<input
-			type="text"
-			placeholder="Seu nome"
-			class="input input-bordered w-full"
-			bind:value={name}
-		/>
-		<div class="modal-action">
-			<div class="flex flex-row gap-4">
-				<button type="reset" class="btn" on:click={() => goto('/')}> Cancelar </button>
-				<button type="submit" class="btn btn-primary" disabled={loading}> Confirmar </button>
+	<form
+		method="dialog"
+		class="modal-box flex gap-4 flex-col-reverse sm:flex-col"
+		on:submit={handleParticipantCreate}
+	>
+		<div>
+			<h3 class="font-bold text-xl pb-2">Acesse sua conta</h3>
+			<p class="text-gray-500">Ao logar, você pode:</p>
+			<ul class="list-disc text-gray-500 pl-4 pb-4">
+				<li>Acessar sua lista de sessões atuais</li>
+				<li>Manter histórico das sessões realizadas</li>
+			</ul>
+			<button type="button" class="btn btn-block btn-primary" on:click={authContext.login}>
+				{#if $authLoading}
+					<span class="loading loading-spinner loading-xs" />
+				{/if}
+				Logar com SSO
+			</button>
+		</div>
+		<div class="divider">ou</div>
+		<div>
+			<h3 class="font-bold text-xl pb-2">Insira seu nome para entrar na sessão</h3>
+			<input
+				type="text"
+				placeholder="Seu nome"
+				class="input input-bordered w-full"
+				bind:value={name}
+			/>
+			<div class="modal-action">
+				<div class="flex flex-row gap-4">
+					<button type="reset" class="btn" on:click={() => goto('/')}> Cancelar </button>
+					<button type="submit" class="btn btn-primary" disabled={loading}> Confirmar </button>
+				</div>
 			</div>
 		</div>
 	</form>

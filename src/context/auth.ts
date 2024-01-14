@@ -13,13 +13,16 @@ export const getAuthContext = (): IAuthContext => {
             .init({
                 onLoad: 'check-sso'
             })
-            .then((result) => {
-                authenticated.set(result);
+            .then((logged) => {
+                authenticated.set(logged);
                 loading.set(false);
+                return logged;
             })
-            .then(keycloakInstance.loadUserProfile)
-            .then(() => {
-                profile.set(keycloakInstance?.profile);
+            .then(async (logged) => {
+                if (logged && keycloakInstance !== undefined) {
+                    await keycloakInstance.loadUserProfile();
+                    profile.set(keycloakInstance?.profile);
+                }
             })
             .catch((e) => {
                 console.error('unable to initialize keycloak', e);
