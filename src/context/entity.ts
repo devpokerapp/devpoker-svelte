@@ -33,7 +33,7 @@ export function getEntityContext<T extends Model>(params: GetEntityContextParams
         entities.set(get(entities).filter((entity) => entity.id !== value.id));
     });
 
-    async function query(filters: QueryFilter[]): Promise<T[]> {
+    async function query(filters: QueryFilter[], config?: QueryFunctionConfig): Promise<T[]> {
         const response = await websocket.sendAndWait({
             service,
             method: 'query',
@@ -41,8 +41,15 @@ export function getEntityContext<T extends Model>(params: GetEntityContextParams
                 filters,
             }
         });
+
         const value = response.result as QueryRead<T>;
-        return value.items;
+        const items = value.items;
+
+        if (config?.save) {
+            entities.set(items);
+        }
+
+        return items;
     }
 
     async function retrieve(id: string): Promise<T | undefined> {
