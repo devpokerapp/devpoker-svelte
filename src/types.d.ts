@@ -57,10 +57,15 @@ interface Vote extends Model {
 /**
  * DTOs
  */
+interface QueryFilter {
+    attr: string;
+    value: string;
+}
+
 interface QueryRead<T> {
     items: T[];
     metadata: {
-        filters: [];
+        filters: QueryFilter[];
     }
 }
 
