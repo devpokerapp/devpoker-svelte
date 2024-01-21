@@ -1,12 +1,15 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { getContext } from 'svelte';
-	import { get, type Writable } from 'svelte/store';
+	import { get, writable, type Writable } from 'svelte/store';
 	import NavSidebar from '../NavSidebar.svelte';
 
 	const websocket = getContext<IWebSocketContext>('websocket');
 	const authContext = getContext<IAuthContext>('auth');
+	const pokerContext = getContext<IPokerContext>('poker');
 	const participantContext = getContext<IParticipantContext>('participant');
+
+	const pokers = writable<Poker[]>([]);
 
 	const {
 		loading: authLoading,
@@ -19,6 +22,28 @@
 	} = authContext;
 
 	const { entities: participations }: { entities: Writable<Participant[]> } = participantContext;
+
+	const loadPoker = async (id: string): Promise<void> => {
+		const poker = await pokerContext.retrieve(id);
+		if (poker !== undefined) {
+			pokers.set([...get(pokers), poker]);
+		}
+	};
+
+	const loadParticipations = async (profileId: string) => {
+		const participants = await participantContext.query(
+			[
+				{
+					attr: 'keycloak_user_id',
+					value: profileId
+				}
+			],
+			{
+				save: true
+			}
+		);
+		Promise.allSettled(participants.map((participant) => loadPoker(participant.pokerId)));
+	};
 
 	authLoading.subscribe(() => {
 		if (!get(authenticated)) {
@@ -35,18 +60,8 @@
 			goto('/');
 			return;
 		}
-		// grants its logged in
-		participantContext.query(
-			[
-				{
-					attr: 'keycloak_user_id',
-					value: value?.id || ''
-				}
-			],
-			{
-				save: true
-			}
-		);
+		// grants its logged in before running
+		loadParticipations(value?.id || '');
 	});
 </script>
 
