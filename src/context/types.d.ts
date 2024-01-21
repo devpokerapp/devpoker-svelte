@@ -80,8 +80,13 @@ interface IAuthContext {
     manageProfile(): void;
 }
 
+interface QueryFunctionConfig {
+    save: boolean;
+}
+
 interface IEntityContext<T> {
     entities: Writable<T[]>;
+    query(filters: QueryFilter[], config?: QueryFunctionConfig): Promise<T[]>;
     retrieve(id: string): Promise<T | undefined>;
     create(entity: T): Promise<T | undefined>;
     update(id: string, entity: T): Promise<T | undefined>;

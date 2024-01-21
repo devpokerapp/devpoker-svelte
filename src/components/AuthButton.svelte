@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { getContext } from 'svelte';
 	import type { Writable } from 'svelte/store';
 
@@ -31,8 +32,15 @@
 			{$profile?.username || 'Perfil'}
 		</div>
 		<ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-			<li><button on:click={authContext.manageProfile}>Editar perfil</button></li>
-			<li><button on:click={authContext.logout}>Logout</button></li>
+			<li>
+				<button on:click={() => goto('/history')}>Minhas sessões </button>
+			</li>
+			<li>
+				<button on:click={authContext.manageProfile}>Editar perfil </button>
+			</li>
+			<li>
+				<button on:click={authContext.logout}>Logout </button>
+			</li>
 		</ul>
 	</div>
 {:else}

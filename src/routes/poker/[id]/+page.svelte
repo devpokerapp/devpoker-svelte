@@ -249,7 +249,7 @@
 						</div>
 					{/if}
 					{#if $activeStory !== undefined}
-						<div class="text-5xl leading-snug font-bold text-center pt-6 relative">
+						<div class="text-5xl leading-snug font-bold text-left pt-6 relative">
 							{#if $activeStory.value !== null}
 								<span class="badge badge-accent absolute right-0 top-4">{$activeStory.value}</span>
 							{/if}
