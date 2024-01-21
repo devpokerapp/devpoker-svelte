@@ -110,7 +110,7 @@
 										<span>
 											{story.name}
 											{#if story.value !== null}
-												<span class="badge badge-secondary">
+												<span class="badge badge-accent">
 													{story.value}
 												</span>
 											{/if}
