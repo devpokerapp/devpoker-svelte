@@ -24,6 +24,18 @@
 	let showFocused = false;
 	let focusMenuHeight = 0;
 	let scrollingContainer: HTMLDivElement;
+	let storiesCSVDatauri = '';
+
+	const generateCSV = () => {
+		const content = get(stories)
+			.map((story) => `${story.name},${story.value || ''}`)
+			.join('\n');
+		const value = `User story,Valor\n${content}`;
+		const encoded = encodeURIComponent(value);
+		const datauri = `data:text/csv;charset=UTF-8,${encoded}`;
+		storiesCSVDatauri = datauri;
+		console.log(datauri);
+	};
 
 	const handleCreateStory = async (event: SubmitEvent) => {
 		event.preventDefault();
@@ -132,10 +144,71 @@
 			closeModal('modal-story-options');
 		}
 	};
+
+	const handleStartExport = async () => {
+		openModal('modal-story-export');
+		generateCSV();
+	};
+
+	const handleExport = async () => {
+		// exportAsCSV();
+	};
 </script>
 
 <div id="story-menu" class="card-body p-0">
-	<h3 class="card-title text-center text-2xl px-8 pt-8 pb-2">User Stories</h3>
+	<div class="flex flex-row px-8 pt-8 pb-2">
+		<h3 class="card-title text-2xl flex-grow">User Stories</h3>
+		<div class="dropdown dropdown-end">
+			<button tabindex="0" class="btn btn-circle btn-sm">
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					viewBox="0 0 20 20"
+					fill="currentColor"
+					class="w-5 h-5"
+				>
+					<path
+						d="M10 3a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM10 8.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM11.5 15.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0Z"
+					/>
+				</svg>
+			</button>
+			<ul tabindex="-1" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+				<li>
+					<button on:click={() => openModal('modal-story-create')}>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 20 20"
+							fill="currentColor"
+							class="w-5 h-5"
+						>
+							<path
+								d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z"
+							/>
+						</svg>
+						Adicionar
+					</button>
+				</li>
+				<li>
+					<button on:click={handleStartExport}>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 20 20"
+							fill="currentColor"
+							class="w-5 h-5"
+						>
+							<path
+								d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.614L6.295 8.235a.75.75 0 1 0-1.09 1.03l4.25 4.5a.75.75 0 0 0 1.09 0l4.25-4.5a.75.75 0 0 0-1.09-1.03l-2.955 3.129V2.75Z"
+							/>
+							<path
+								d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5Z"
+							/>
+						</svg>
+						Exportar
+						<div class="badge badge-primary">CSV</div>
+					</button>
+				</li>
+			</ul>
+		</div>
+	</div>
 	<div
 		id="story-menu-list"
 		class="overflow-y-auto"
@@ -352,6 +425,66 @@
 			</li>
 		</ul>
 		<form method="dialog" class="modal-backdrop bg-transparent">
+			<button>close</button>
+		</form>
+	</dialog>
+	<!-- Export Modal -->
+	<dialog id="modal-story-export" class="modal modal-bottom sm:modal-middle">
+		<form method="dialog" class="modal-box flex flex-col gap-4 p-0" on:submit={handleExport}>
+			<h3 class="font-bold text-xl p-6 pb-2">Exportar User Stories</h3>
+			<p class="px-6">Os valores serão exportado em formato de arquivos CSV.</p>
+			<div class="max-h-44 overflow-x-auto">
+				<table class="table table-zebra table-pin-rows">
+					<thead>
+						<tr>
+							<th class="pl-6"> Story </th>
+							<th class="pr-6"> Valor </th>
+						</tr>
+					</thead>
+					<tbody>
+						{#each $stories as story, index}
+							<tr>
+								<td class="pl-6">
+									{story.name}
+								</td>
+								<td class="pr-6">
+									{story.value || ''}
+								</td>
+							</tr>
+						{/each}
+					</tbody>
+				</table>
+			</div>
+			<div class="modal-action p-6 pt-0">
+				<div class="flex flex-row gap-4">
+					<button type="reset" class="btn" on:click={() => closeModal('modal-story-export')}>
+						Cancelar
+					</button>
+					<a
+						class="btn btn-info"
+						download={`stories-${pokerId}.csv`}
+						href={storiesCSVDatauri}
+						on:click={() => closeModal('modal-story-export')}
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 20 20"
+							fill="currentColor"
+							class="w-5 h-5"
+						>
+							<path
+								d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.614L6.295 8.235a.75.75 0 1 0-1.09 1.03l4.25 4.5a.75.75 0 0 0 1.09 0l4.25-4.5a.75.75 0 0 0-1.09-1.03l-2.955 3.129V2.75Z"
+							/>
+							<path
+								d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5Z"
+							/>
+						</svg>
+						Baixar
+					</a>
+				</div>
+			</div>
+		</form>
+		<form method="dialog" class="modal-backdrop">
 			<button>close</button>
 		</form>
 	</dialog>
