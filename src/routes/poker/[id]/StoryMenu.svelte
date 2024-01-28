@@ -140,6 +140,10 @@
 			closeModal('modal-story-options');
 		}
 	};
+
+	const handleExport = async () => {
+		exportAsCSV();
+	};
 </script>
 
 <div id="story-menu" class="card-body p-0">
@@ -175,7 +179,7 @@
 					</button>
 				</li>
 				<li>
-					<button on:click={exportAsCSV}>
+					<button on:click={() => openModal('modal-story-export')}>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							viewBox="0 0 20 20"
@@ -412,6 +416,61 @@
 			</li>
 		</ul>
 		<form method="dialog" class="modal-backdrop bg-transparent">
+			<button>close</button>
+		</form>
+	</dialog>
+	<!-- Export Modal -->
+	<dialog id="modal-story-export" class="modal modal-bottom sm:modal-middle">
+		<form method="dialog" class="modal-box flex flex-col gap-4 p-0" on:submit={handleExport}>
+			<h3 class="font-bold text-xl p-6 pb-2">Exportar User Stories</h3>
+			<p class="px-6">Os valores serão exportado em formato de arquivos CSV.</p>
+			<div class="max-h-44 overflow-x-auto">
+				<table class="table table-zebra table-pin-rows">
+					<thead>
+						<tr>
+							<th class="pl-6"> Story </th>
+							<th class="pr-6"> Valor </th>
+						</tr>
+					</thead>
+					<tbody>
+						{#each $stories as story, index}
+							<tr>
+								<td class="pl-6">
+									{story.name}
+								</td>
+								<td class="pr-6">
+									{story.value || ''}
+								</td>
+							</tr>
+						{/each}
+					</tbody>
+				</table>
+			</div>
+			<div class="modal-action p-6 pt-0">
+				<div class="flex flex-row gap-4">
+					<button type="reset" class="btn" on:click={() => closeModal('modal-story-export')}>
+						Cancelar
+					</button>
+					<button type="submit" class="btn btn-info" disabled={loading}>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 20 20"
+							fill="currentColor"
+							class="w-5 h-5"
+						>
+							<path
+								d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.614L6.295 8.235a.75.75 0 1 0-1.09 1.03l4.25 4.5a.75.75 0 0 0 1.09 0l4.25-4.5a.75.75 0 0 0-1.09-1.03l-2.955 3.129V2.75Z"
+							/>
+							<path
+								d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5Z"
+							/>
+						</svg>
+						Baixar
+					</button>
+				</div>
+			</div>
+		</form>
+		<form method="dialog" class="modal-backdrop">
 			<button>close</button>
 		</form>
 	</dialog>
