@@ -24,13 +24,17 @@
 	let showFocused = false;
 	let focusMenuHeight = 0;
 	let scrollingContainer: HTMLDivElement;
+	let storiesCSVDatauri = '';
 
-	const exportAsCSV = () => {
+	const generateCSV = () => {
 		const content = get(stories)
 			.map((story) => `${story.name},${story.value || ''}`)
 			.join('\n');
-		const csv = `User story,Valor\n${content}`;
-		console.log(csv);
+		const value = `User story,Valor\n${content}`;
+		const encoded = encodeURIComponent(value);
+		const datauri = `data:text/csv;charset=UTF-8,${encoded}`;
+		storiesCSVDatauri = datauri;
+		console.log(datauri);
 	};
 
 	const handleCreateStory = async (event: SubmitEvent) => {
@@ -141,8 +145,13 @@
 		}
 	};
 
+	const handleStartExport = async () => {
+		openModal('modal-story-export');
+		generateCSV();
+	};
+
 	const handleExport = async () => {
-		exportAsCSV();
+		// exportAsCSV();
 	};
 </script>
 
@@ -179,7 +188,7 @@
 					</button>
 				</li>
 				<li>
-					<button on:click={() => openModal('modal-story-export')}>
+					<button on:click={handleStartExport}>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							viewBox="0 0 20 20"
@@ -451,7 +460,12 @@
 					<button type="reset" class="btn" on:click={() => closeModal('modal-story-export')}>
 						Cancelar
 					</button>
-					<button type="submit" class="btn btn-info" disabled={loading}>
+					<a
+						class="btn btn-info"
+						download={`stories-${pokerId}.csv`}
+						href={storiesCSVDatauri}
+						on:click={() => closeModal('modal-story-export')}
+					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							viewBox="0 0 20 20"
@@ -466,7 +480,7 @@
 							/>
 						</svg>
 						Baixar
-					</button>
+					</a>
 				</div>
 			</div>
 		</form>
