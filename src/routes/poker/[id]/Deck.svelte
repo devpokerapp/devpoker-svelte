@@ -5,7 +5,8 @@
 	import { fly } from 'svelte/transition';
 	import VoteLabel from '../../../components/VoteLabel.svelte';
 
-	const cards = ['0', '1', '2', '3', '5', '8', '13', '?', '__coffee'];
+	const CARD_SYMBOLS = '♠♥♦♣';
+
 	const websocket = getContext<IWebSocketContext>('websocket');
 	const pokerContext = getContext<IPokerContext>('poker');
 	const storyContext = getContext<IStoryContext>('story');
@@ -36,7 +37,7 @@
 <div>
 	{#if $currentPoker !== undefined && $currentPolling !== undefined && !$currentPolling.completed}
 		<div
-			class="flex flex-row flex-wrap justify-center align-bottom"
+			class="flex flex-row flex-wrap justify-center align-bottom px-4"
 			transition:fly={{
 				delay: 250,
 				duration: 300,
@@ -46,12 +47,14 @@
 				easing: cubicOut
 			}}
 		>
-			{#each $currentPoker.votePattern.split(',') as value}
+			{#each $currentPoker.votePattern.split(',') as value, index}
 				<button
-					class="btn btn-secondary shadow-xl h-28 w-20 rounded-xl -mr-4 hover:scale-125 hover:z-10"
+					class="btn btn-secondary relative shadow-xl h-28 w-20 rounded-xl -mr-4 -mt-8 hover:scale-125 hover:z-10"
 					on:click={() => sendVote(value)}
 				>
 					<VoteLabel {value} />
+					<span class="absolute top-2 left-2">{CARD_SYMBOLS[index % CARD_SYMBOLS.length]}</span>
+					<span class="absolute bottom-2 right-2">{CARD_SYMBOLS[index % CARD_SYMBOLS.length]}</span>
 				</button>
 			{/each}
 		</div>
