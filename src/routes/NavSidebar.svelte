@@ -10,7 +10,7 @@
 <div class="drawer lg:drawer-open">
 	<input id="poker-drawer" type="checkbox" class="drawer-toggle" />
 	<!-- MAIN -->
-	<div class="drawer-content py-4 px-12 lg:pr-80" style="padding-bottom: 10em;">
+	<div class="drawer-content py-4 lg:px-12 lg:pr-80" style="padding-bottom: 10em;">
 		<div class="absolute top-2 right-2">
 			<AuthButton />
 		</div>
