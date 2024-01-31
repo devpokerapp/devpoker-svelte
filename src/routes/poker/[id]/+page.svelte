@@ -201,7 +201,7 @@
 		</div>
 		<label
 			for="poker-drawer"
-			class="btn btn-circle btn-primary drawer-button fixed top-4 left-4 lg:hidden"
+			class="btn btn-sm btn-primary drawer-button rounded-l-none absolute top-2 left-0 lg:hidden h-24"
 		>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
