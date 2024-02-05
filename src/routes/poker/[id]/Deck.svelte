@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
+	import { cubicOut } from 'svelte/easing';
 	import { get, type Writable } from 'svelte/store';
+	import { fly } from 'svelte/transition';
 	import VoteLabel from '../../../components/VoteLabel.svelte';
 
 	const CARD_SYMBOLS = '♠♥♦♣';
@@ -38,6 +40,14 @@
 	<div
 		id="deck-bottom-bar"
 		class="fixed bottom-0 w-full flex flex-row justify-center pointer-events-none"
+		transition:fly={{
+			delay: 250,
+			duration: 300,
+			x: 0,
+			y: 200,
+			opacity: 0.5,
+			easing: cubicOut
+		}}
 	>
 		<div id="deck-content">
 			<div id="deck-actions" class="px-8 w-full flex flex-row justify-end">
