@@ -261,12 +261,11 @@
 					<StoryEvents />
 				{/if}
 			</div>
-			<div class="fixed bottom-0 pb-8">
-				<Deck />
-			</div>
 		</div>
 	</section>
 </NavSidebar>
+<!-- Deck -->
+<Deck />
 <!-- Create Participant -->
 <dialog
 	id="modal-participant-create"
