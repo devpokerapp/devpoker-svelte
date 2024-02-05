@@ -36,19 +36,29 @@
 	};
 </script>
 
-<button
-	class="btn btn-secondary rounded-b-none fixed bottom-0 right-2 tooltip tooltip-secondary tooltip-left"
-	data-tip="Alternar cartas"
-	on:click={() => (showing = !showing)}
->
-	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
-		<path
-			fill-rule="evenodd"
-			d="M10.53 3.47a.75.75 0 0 0-1.06 0L6.22 6.72a.75.75 0 0 0 1.06 1.06L10 5.06l2.72 2.72a.75.75 0 1 0 1.06-1.06l-3.25-3.25Zm-4.31 9.81 3.25 3.25a.75.75 0 0 0 1.06 0l3.25-3.25a.75.75 0 1 0-1.06-1.06L10 14.94l-2.72-2.72a.75.75 0 0 0-1.06 1.06Z"
-			clip-rule="evenodd"
-		/>
-	</svg>
-</button>
+{#if $currentPolling !== undefined && !$currentPolling.completed}
+	<button
+		class="btn btn-secondary rounded-b-none fixed bottom-0 right-2 tooltip tooltip-secondary tooltip-left"
+		data-tip="Alternar cartas"
+		on:click={() => (showing = !showing)}
+		transition:fly={{
+			delay: 250,
+			duration: 300,
+			x: 0,
+			y: 200,
+			opacity: 0.5,
+			easing: cubicOut
+		}}
+	>
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+			<path
+				fill-rule="evenodd"
+				d="M10.53 3.47a.75.75 0 0 0-1.06 0L6.22 6.72a.75.75 0 0 0 1.06 1.06L10 5.06l2.72 2.72a.75.75 0 1 0 1.06-1.06l-3.25-3.25Zm-4.31 9.81 3.25 3.25a.75.75 0 0 0 1.06 0l3.25-3.25a.75.75 0 1 0-1.06-1.06L10 14.94l-2.72-2.72a.75.75 0 0 0-1.06 1.06Z"
+				clip-rule="evenodd"
+			/>
+		</svg>
+	</button>
+{/if}
 <div class="fixed bottom-0 pb-16 lg:pb-8 lg:px-24 w-full pointer-events-none">
 	{#if showing && $currentPoker !== undefined && $currentPolling !== undefined && !$currentPolling.completed}
 		<div
