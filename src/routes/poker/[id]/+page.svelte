@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { getContext, onMount } from 'svelte';
 	import { get, writable, type Writable } from 'svelte/store';
+	import QrCode from '../../../components/QrCode.svelte';
 	import { closeModal, openModal } from '../../../util/modal';
 	import NavSidebar from '../../NavSidebar.svelte';
 	import type { PageData } from './$types';
@@ -313,9 +314,13 @@
 <dialog id="modal-participant-invite" class="modal modal-bottom sm:modal-middle">
 	<form method="dialog" class="modal-box flex flex-col gap-4" on:submit={handleCopyInvite}>
 		<h3 class="font-bold text-xl pb-2">Convidar participantes</h3>
-		<p class="text-gray-500">
-			Convide mais pessoas para a sessão enviando este link para novos participantes:
-		</p>
+		<p class="text-gray-500">Convide mais pessoas para a sessão através do QRCode:</p>
+		{#if inviteLink.length > 0}
+			<div class="px-32">
+				<QrCode uri={inviteLink} />
+			</div>
+		{/if}
+		<p class="text-gray-500">Ou copie este link:</p>
 		<textarea
 			class="textarea textarea-bordered text-gray-500 resize-none"
 			placeholder="Link de acesso"
