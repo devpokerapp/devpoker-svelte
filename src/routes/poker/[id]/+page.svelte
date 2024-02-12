@@ -316,7 +316,7 @@
 		<h3 class="font-bold text-xl pb-2">Convidar participantes</h3>
 		<p class="text-gray-500">Convide mais pessoas para a sessão através do QRCode:</p>
 		{#if inviteLink.length > 0}
-			<div class="px-32">
+			<div class="px-4 lg:px-32">
 				<QrCode uri={inviteLink} />
 			</div>
 		{/if}
