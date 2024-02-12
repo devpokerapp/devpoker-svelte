@@ -214,7 +214,7 @@
 			<StoryMenu pokerId={$currentPoker?.id} maxListHeight="calc(100vh - 19em)" />
 		{/if}
 	</div>
-	<section>
+	<section class="pb-56">
 		<div class="flex flex-row justify-center">
 			<div id="poker-main" class="flex flex-col gap-6 max-w-lg">
 				<h3>Sessão de planning poker #{$currentPoker?.id || ''}</h3>
