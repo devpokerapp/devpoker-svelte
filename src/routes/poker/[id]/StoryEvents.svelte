@@ -2,20 +2,10 @@
 	import { getContext } from 'svelte';
 	import type { Writable } from 'svelte/store';
 
-	const websocket = getContext<IWebSocketContext>('websocket');
 	const eventContext = getContext<IEventContext>('event');
 	const participantContext = getContext<IParticipantContext>('participant');
 	const { entities: events }: { entities: Writable<PokerEvent[]> } = eventContext;
 	const { getParticipantName } = participantContext;
-
-	const comments = [
-		'Acho que seria importante considerar os testes para a estimativa de esforços.',
-		'Precisa definir bem quais tipos de ingredientes poderão estar na checklist.'
-	];
-
-	websocket.listen('poker_selected_story', (message) => {
-		events.set([]);
-	});
 </script>
 
 <div id="poker-event-feed" class="flex flex-col gap-6">
