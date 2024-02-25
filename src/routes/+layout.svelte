@@ -23,11 +23,11 @@
 	setContext('poker', getPokerContext());
 
 	onMount(() => {
-		websocket.init('ws://localhost:8000/ws');
+		websocket.init(import.meta.env.VITE_GATEWAY_URL);
 		auth.init({
-			url: 'http://localhost:8080',
-			realm: 'devpoker',
-			clientId: 'app'
+			url: import.meta.env.VITE_KEYCLOAK_URL,
+			realm: import.meta.env.VITE_KEYCLOAK_REALM,
+			clientId: import.meta.env.VITE_KEYCLOAK_CLIENT_ID
 		});
 	});
 </script>
