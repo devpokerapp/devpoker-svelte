@@ -8,8 +8,11 @@
 	import { getStoryContext } from '../context/story';
 	import { getVoteContext } from '../context/vote';
 	import { websocket } from '../context/websocket';
+	import type { LayoutData } from './$types';
 	import ConnectionManager from './ConnectionManager.svelte';
 	import './styles.css';
+
+	export let data: LayoutData;
 
 	const auth = getAuthContext();
 
@@ -23,11 +26,11 @@
 	setContext('poker', getPokerContext());
 
 	onMount(() => {
-		websocket.init('ws://localhost:8000/ws');
+		websocket.init(data.gateway.url || 'ws://localhost');
 		auth.init({
-			url: 'http://localhost:8080',
-			realm: 'devpoker',
-			clientId: 'app'
+			url: data.keycloak.url || 'http://localhost:8080',
+			realm: data.keycloak.realm || 'devpoker',
+			clientId: data.keycloak.clientId || 'app'
 		});
 	});
 </script>
