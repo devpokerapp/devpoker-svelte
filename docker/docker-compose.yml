@@ -3,8 +3,14 @@ version: "3"
 services:
   web:
     image: devpoker-svelte
+    container_name: devpoker-web
     build:
       context: ..
       dockerfile: Dockerfile
     ports:
       - 3000:3000
+    environment:
+      - GATEWAY_URL=ws://localhost:8000/ws
+      - KEYCLOAK_URL=http://localhost:8080
+      - KEYCLOAK_REALM=devpoker
+      - KEYCLOAK_CLIENT_ID=app

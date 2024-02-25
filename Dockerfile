@@ -8,4 +8,4 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-CMD [ "node", "-r", "dotenv/config", "build" ]
+CMD [ "/usr/local/bin/node", "build" ]
