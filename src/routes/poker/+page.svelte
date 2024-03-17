@@ -1,4 +1,3 @@
-<!-- TODO: poker create page -->
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { getContext, onMount } from 'svelte';
@@ -20,19 +19,6 @@
 		profile: Writable<KeycloakProfile | undefined>;
 	} = authContext;
 
-	profile.subscribe((value) => {
-		if (value == null) {
-			return;
-		}
-		const profileName = value.username || 'Usuário';
-		createPoker(profileName);
-	});
-
-	websocket.listen('invite_created', (response) => {
-		const invite = response.data as Invite;
-		console.log({ response });
-	});
-
 	const createPoker = (creator: string) => {
 		websocket.send({
 			service: 'poker_service',
@@ -44,6 +30,19 @@
 			}
 		});
 	};
+
+	profile.subscribe((value) => {
+		if (value == null) {
+			return;
+		}
+		const profileName = value.username || 'Usuário';
+		createPoker(profileName);
+	});
+
+	websocket.listen('invite_created', (response) => {
+		const invite = response.data as Invite;
+		goto(`/poker/${invite.pokerId}?i=${invite.code}`);
+	});
 
 	const handlePokerCreate = async () => {
 		createPoker(name);

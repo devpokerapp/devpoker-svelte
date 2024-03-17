@@ -113,11 +113,18 @@
 	};
 
 	onMount(() => {
-		inviteLink = window.location.href;
+		// FIXME
+		// inviteLink = window.location.href;
 		websocket.asap(() => {
+			// join with created participant
 			const participantId = loadCurrentParticipantId();
 			if (participantId !== undefined) {
 				prepareSession(participantId);
+			} else if (data.inviteCode === null) {
+				// not invited to the party
+				// TODO: show error
+				goto('/');
+				return;
 			} else if (get(profile) !== undefined) {
 				// already logged in when navigated to the page
 				createParticipantFromUser();
@@ -143,6 +150,7 @@
 				pokerId: data.id,
 				name: participantName,
 				keycloakUserId: keycloakId,
+				inviteCode: data.inviteCode,
 				id: '',
 				sid: '',
 				createdAt: '',
@@ -164,6 +172,7 @@
 			waitingParticipant = false;
 			closeModal('modal-participant-create');
 		} catch (error) {
+			// TODO: handle invalid code exception case
 			console.log(error);
 		} finally {
 			loading = false;
