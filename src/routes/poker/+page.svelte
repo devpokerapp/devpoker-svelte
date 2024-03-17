@@ -2,7 +2,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { getContext, onMount } from 'svelte';
-	import { type Writable } from 'svelte/store';
+	import { get, type Writable } from 'svelte/store';
 
 	let name: string = '';
 	let loading: boolean = false;
@@ -20,25 +20,42 @@
 		profile: Writable<KeycloakProfile | undefined>;
 	} = authContext;
 
+	profile.subscribe((value) => {
+		if (value == null) {
+			return;
+		}
+		const profileName = value.username || 'Usuário';
+		createPoker(profileName);
+	});
+
 	websocket.listen('invite_created', (response) => {
 		const invite = response.data as Invite;
 		console.log({ response });
 	});
 
-	const handlePokerCreate = async () => {
+	const createPoker = (creator: string) => {
 		websocket.send({
 			service: 'poker_service',
 			method: 'start',
 			data: {
 				payload: {
-					creator: name
+					creator: creator
 				}
 			}
 		});
 	};
 
+	const handlePokerCreate = async () => {
+		createPoker(name);
+	};
+
 	onMount(() => {
-		// TODO: if profile exists create poker with it
+		websocket.asap(() => {
+			if (get(profile) !== undefined) {
+				const profileName = get(profile)?.username || 'Usuário';
+				createPoker(profileName);
+			}
+		});
 	});
 </script>
 
