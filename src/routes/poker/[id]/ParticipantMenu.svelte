@@ -3,14 +3,27 @@
 	import type { Writable } from 'svelte/store';
 	import { openModal } from '../../../util/modal';
 
+	const MAX_DISPLAYED = 4;
+
+	let listedPartipants: Participant[] = [];
+	let additionalParticipants = 0;
+
 	const participantContext = getContext<IParticipantContext>('participant');
 	const { entities: participants }: { entities: Writable<Participant[]> } = participantContext;
+
+	participants.subscribe((value) => {
+		listedPartipants = value.slice(0, MAX_DISPLAYED);
+		if (value.length < MAX_DISPLAYED) {
+			additionalParticipants = 0;
+		} else {
+			additionalParticipants = value.length - MAX_DISPLAYED;
+		}
+	});
 </script>
 
 <div class="px-8 flex flex-row">
 	<div class="-space-x-4">
-		<!-- TODO: apply maximum of 4 participants -->
-		{#each $participants as participant}
+		{#each listedPartipants as participant}
 			<button
 				class="btn btn-circle btn-secondary tooltip tooltip-info tooltip-bottom border-base-200 border-4 hover:border-base-200"
 				data-tip={participant.name}
@@ -21,7 +34,7 @@
 		<button
 			class="btn btn-circle btn-neutral tooltip tooltip-info tooltip-bottom border-base-200 border-4 hover:border-base-200"
 		>
-			+4
+			+{additionalParticipants}
 			<!-- TODO: participants modal -->
 		</button>
 	</div>
