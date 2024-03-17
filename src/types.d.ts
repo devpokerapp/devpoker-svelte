@@ -54,6 +54,12 @@ interface Vote extends Model {
     participant: Participant;
 }
 
+interface Invite extends Model {
+    code: string;
+    expiresAt: string;
+    pokerId: string;
+}
+
 /**
  * DTOs
  */
