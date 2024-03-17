@@ -2,7 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import { get, writable, type Writable } from 'svelte/store';
-	import { openModal } from '../../../util/modal';
+	import { closeModal, openModal } from '../../../util/modal';
 	import { getLocalStorageParticipantKey } from '../../../util/storage';
 	import NavSidebar from '../../NavSidebar.svelte';
 	import type { PageData } from './$types';
@@ -180,6 +180,12 @@
 
 			// removes invite code
 			goto(`/poker/${data.id}`);
+
+			// setup
+			prepareSession(participantId);
+
+			waitingParticipant = false;
+			closeModal('modal-participant-create');
 		} catch (error) {
 			console.log(error);
 			goto('/');
