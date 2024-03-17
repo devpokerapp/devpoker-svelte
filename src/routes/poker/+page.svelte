@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { getContext, onMount } from 'svelte';
 	import { get, type Writable } from 'svelte/store';
+	import { getLocalStorageParticipantKey } from '../../util/storage';
 
 	let name: string = '';
 	let loading: boolean = false;
@@ -31,6 +32,58 @@
 		});
 	};
 
+	const createParticipantFromInvite = async (invite: Invite) => {
+		try {
+			console.log({
+				pokerId: invite.pokerId,
+				name: name,
+				keycloakUserId: get(profile)?.id,
+				inviteCode: invite.code
+			});
+
+			const response = await websocket.sendAndWait({
+				service: 'participant_service',
+				method: 'create',
+				data: {
+					payload: {
+						pokerId: invite.pokerId,
+						name: name,
+						keycloakUserId: get(profile)?.id,
+						inviteCode: invite.code
+					}
+				}
+			});
+
+			if (response.error?.exc_type === 'InvalidInviteCode') {
+				// TODO: show error
+				throw Error('Inserted invalid invite code');
+			}
+
+			const participant = response.result as Participant | undefined;
+
+			if (participant === undefined) {
+				throw Error('Failed to create participant');
+			}
+
+			const participantId = participant.id;
+
+			// store participant for later
+			localStorage.setItem(
+				getLocalStorageParticipantKey(invite.pokerId),
+				JSON.stringify(participantId)
+			);
+			// TODO: implement key system to prevent users from simply switching their ids
+
+			// removes invite code
+			goto(`/poker/${invite.pokerId}`);
+		} catch (error) {
+			console.log(error);
+			goto('/');
+		} finally {
+			loading = false;
+		}
+	};
+
 	profile.subscribe((value) => {
 		if (value == null) {
 			return;
@@ -39,9 +92,10 @@
 		createPoker(profileName);
 	});
 
-	websocket.listen('invite_created', (response) => {
+	websocket.listen('invite_created', async (response) => {
 		const invite = response.data as Invite;
-		goto(`/poker/${invite.pokerId}?i=${invite.code}`);
+		await createParticipantFromInvite(invite);
+		goto(`/poker/${invite.pokerId}`);
 	});
 
 	const handlePokerCreate = async () => {
@@ -58,6 +112,7 @@
 	});
 </script>
 
+<!-- TODO: sidebar -->
 <dialog
 	id="modal-poker-create"
 	class="modal modal-bottom sm:modal-middle modal-open"

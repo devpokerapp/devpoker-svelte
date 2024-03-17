@@ -4,6 +4,7 @@
 	import { get, writable, type Writable } from 'svelte/store';
 	import QrCode from '../../../components/QrCode.svelte';
 	import { closeModal, openModal } from '../../../util/modal';
+	import { getLocalStorageParticipantKey } from '../../../util/storage';
 	import NavSidebar from '../../NavSidebar.svelte';
 	import type { PageData } from './$types';
 	import Deck from './Deck.svelte';
@@ -14,8 +15,6 @@
 	import StoryMenu from './StoryMenu.svelte';
 	import StoryPollings from './StoryPollings.svelte';
 	import StoryVoting from './StoryVoting.svelte';
-
-	const LS_PARTICIPANT = 'devpokerapp:participant';
 
 	const websocket = getContext<IWebSocketContext>('websocket');
 	const pokerContext = getContext<IPokerContext>('poker');
@@ -76,10 +75,6 @@
 		}
 	});
 
-	const getLocalStorageParticipantKey = (): string => {
-		return `${LS_PARTICIPANT}:${data.id}`;
-	};
-
 	const prepareSession = async (participantId: string) => {
 		const pokerId = data.id;
 
@@ -104,7 +99,7 @@
 	};
 
 	const loadCurrentParticipantId = (): string | undefined => {
-		const stored = localStorage.getItem(getLocalStorageParticipantKey());
+		const stored = localStorage.getItem(getLocalStorageParticipantKey(data.id));
 		if (stored === null) {
 			return undefined;
 		}
@@ -120,20 +115,26 @@
 			const participantId = loadCurrentParticipantId();
 			if (participantId !== undefined) {
 				prepareSession(participantId);
-			} else if (data.inviteCode === null) {
-				// not invited to the party
+				return;
+			}
+
+			// not invited to the party
+			if (data.inviteCode === null) {
 				// TODO: show error
 				goto('/');
 				return;
-			} else if (get(profile) !== undefined) {
-				// already logged in when navigated to the page
+			}
+
+			// already logged in when navigated to the page
+			if (get(profile) !== undefined) {
 				createParticipantFromUser();
-			} else {
-				// if you are not linked to a participant nor logged in
-				openModal('modal-participant-create');
-				waitingParticipant = true;
 				return;
 			}
+
+			// if you are not linked to a participant nor logged in. all options are exausted.
+			openModal('modal-participant-create');
+			waitingParticipant = true;
+			return;
 		});
 	});
 
@@ -173,13 +174,11 @@
 			const participantId = participant.id;
 
 			// store participant for later
-			localStorage.setItem(getLocalStorageParticipantKey(), JSON.stringify(participantId));
+			localStorage.setItem(getLocalStorageParticipantKey(data.id), JSON.stringify(participantId));
 			// TODO: implement key system to prevent users from simply switching their ids
 
-			prepareSession(participantId);
-
-			waitingParticipant = false;
-			closeModal('modal-participant-create');
+			// removes invite code
+			goto(`/poker/${data.id}`);
 		} catch (error) {
 			console.log(error);
 			goto('/');
