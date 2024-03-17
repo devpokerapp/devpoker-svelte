@@ -15,7 +15,7 @@
 				class="btn btn-circle btn-secondary tooltip tooltip-info tooltip-bottom border-base-200 border-4 hover:border-base-200"
 				data-tip={participant.name}
 			>
-				{participant.name[0].toUpperCase()}
+				{participant.name.length > 0 ? participant.name[0].toUpperCase() : '♣'}
 			</button>
 		{/each}
 		<button
