@@ -28,7 +28,6 @@ interface Participant extends Model {
     name: string;
     pokerId: string;
     keycloakUserId?: string;
-    inviteCode: string | null; // TODO: remove
     sid: string;
 }
 

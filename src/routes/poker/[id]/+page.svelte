@@ -146,16 +146,25 @@
 		keycloakId: string | undefined = undefined
 	) => {
 		try {
-			const participant = await participantContext.create({
-				pokerId: data.id,
-				name: participantName,
-				keycloakUserId: keycloakId,
-				inviteCode: data.inviteCode,
-				id: '',
-				sid: '',
-				createdAt: '',
-				updatedAt: ''
+			const response = await websocket.sendAndWait({
+				service: 'participant_service',
+				method: 'create',
+				data: {
+					payload: {
+						pokerId: data.id,
+						name: participantName,
+						keycloakUserId: keycloakId,
+						inviteCode: data.inviteCode
+					}
+				}
 			});
+
+			if (response.error?.exc_type === 'InvalidInviteCode') {
+				// TODO: show error
+				throw Error('Inserted invalid invite code');
+			}
+
+			const participant = response.result as Participant | undefined;
 
 			if (participant === undefined) {
 				throw Error('Failed to create participant');
@@ -172,8 +181,8 @@
 			waitingParticipant = false;
 			closeModal('modal-participant-create');
 		} catch (error) {
-			// TODO: handle invalid code exception case
 			console.log(error);
+			goto('/');
 		} finally {
 			loading = false;
 		}
