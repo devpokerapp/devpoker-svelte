@@ -26,8 +26,6 @@
 			}
 		});
 
-		console.log({ response });
-
 		if (!response.success) {
 			// TODO: show error
 			return;
@@ -38,8 +36,6 @@
 		inviteFullURL.searchParams.set('i', invite.code);
 
 		inviteLink = inviteFullURL.toString();
-
-		console.log({ inviteLink });
 	};
 
 	onMount(() => {
