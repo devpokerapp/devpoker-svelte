@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { getContext, onMount } from 'svelte';
+	import { getContext, onDestroy, onMount } from 'svelte';
 	import { get, writable, type Writable } from 'svelte/store';
-	import QrCode from '../../../components/QrCode.svelte';
 	import { closeModal, openModal } from '../../../util/modal';
+	import { getLocalStorageParticipantKey } from '../../../util/storage';
 	import NavSidebar from '../../NavSidebar.svelte';
 	import type { PageData } from './$types';
 	import Deck from './Deck.svelte';
+	import InviteParticipantModal from './InviteParticipantModal.svelte';
 	import ParticipantMenu from './ParticipantMenu.svelte';
 	import PokerConfigModal from './PokerConfigModal.svelte';
 	import StoryCommentArea from './StoryCommentArea.svelte';
@@ -14,8 +15,6 @@
 	import StoryMenu from './StoryMenu.svelte';
 	import StoryPollings from './StoryPollings.svelte';
 	import StoryVoting from './StoryVoting.svelte';
-
-	const LS_PARTICIPANT = 'devpokerapp:participant';
 
 	const websocket = getContext<IWebSocketContext>('websocket');
 	const pokerContext = getContext<IPokerContext>('poker');
@@ -29,7 +28,6 @@
 	let name: string = '';
 	let loading: boolean = false;
 	let waitingParticipant = false;
-	let inviteLink: string = '';
 
 	const { activeStory }: { activeStory: Writable<Story | undefined> } = storyContext;
 	const { current: currentPoker }: { current: Writable<Poker | undefined> } = pokerContext;
@@ -76,10 +74,6 @@
 		}
 	});
 
-	const getLocalStorageParticipantKey = (): string => {
-		return `${LS_PARTICIPANT}:${data.id}`;
-	};
-
 	const prepareSession = async (participantId: string) => {
 		const pokerId = data.id;
 
@@ -104,7 +98,7 @@
 	};
 
 	const loadCurrentParticipantId = (): string | undefined => {
-		const stored = localStorage.getItem(getLocalStorageParticipantKey());
+		const stored = localStorage.getItem(getLocalStorageParticipantKey(data.id));
 		if (stored === null) {
 			return undefined;
 		}
@@ -113,21 +107,36 @@
 	};
 
 	onMount(() => {
-		inviteLink = window.location.href;
 		websocket.asap(() => {
+			// join with created participant
 			const participantId = loadCurrentParticipantId();
 			if (participantId !== undefined) {
 				prepareSession(participantId);
-			} else if (get(profile) !== undefined) {
-				// already logged in when navigated to the page
-				createParticipantFromUser();
-			} else {
-				// if you are not linked to a participant nor logged in
-				openModal('modal-participant-create');
-				waitingParticipant = true;
 				return;
 			}
+
+			// not invited to the party
+			if (data.inviteCode === null) {
+				// TODO: show error
+				goto('/');
+				return;
+			}
+
+			// already logged in when navigated to the page
+			if (get(profile) !== undefined) {
+				createParticipantFromUser();
+				return;
+			}
+
+			// if you are not linked to a participant nor logged in. all options are exausted.
+			openModal('modal-participant-create');
+			waitingParticipant = true;
+			return;
 		});
+	});
+
+	onDestroy(() => {
+		// TODO: fix duplicated poker creators
 	});
 
 	const handleUSMenuSwitcher = () => {
@@ -139,15 +148,25 @@
 		keycloakId: string | undefined = undefined
 	) => {
 		try {
-			const participant = await participantContext.create({
-				pokerId: data.id,
-				name: participantName,
-				keycloakUserId: keycloakId,
-				id: '',
-				sid: '',
-				createdAt: '',
-				updatedAt: ''
+			const response = await websocket.sendAndWait({
+				service: 'participant_service',
+				method: 'create',
+				data: {
+					payload: {
+						pokerId: data.id,
+						name: participantName,
+						keycloakUserId: keycloakId,
+						inviteCode: data.inviteCode
+					}
+				}
 			});
+
+			if (response.error?.exc_type === 'InvalidInviteCode') {
+				// TODO: show error
+				throw Error('Inserted invalid invite code');
+			}
+
+			const participant = response.result as Participant | undefined;
 
 			if (participant === undefined) {
 				throw Error('Failed to create participant');
@@ -156,15 +175,20 @@
 			const participantId = participant.id;
 
 			// store participant for later
-			localStorage.setItem(getLocalStorageParticipantKey(), JSON.stringify(participantId));
+			localStorage.setItem(getLocalStorageParticipantKey(data.id), JSON.stringify(participantId));
 			// TODO: implement key system to prevent users from simply switching their ids
 
+			// removes invite code
+			goto(`/poker/${data.id}`);
+
+			// setup
 			prepareSession(participantId);
 
 			waitingParticipant = false;
 			closeModal('modal-participant-create');
 		} catch (error) {
 			console.log(error);
+			goto('/');
 		} finally {
 			loading = false;
 		}
@@ -181,12 +205,6 @@
 	const handleParticipantCreate = async (event: SubmitEvent) => {
 		event.preventDefault();
 		createParticipantAndStart(name);
-	};
-
-	const handleCopyInvite = async (event: SubmitEvent) => {
-		event.preventDefault();
-		navigator.clipboard.writeText(inviteLink);
-		closeModal('modal-participant-invite');
 	};
 </script>
 
@@ -310,45 +328,5 @@
 		</div>
 	</form>
 </dialog>
-<!-- Invite Participant -->
-<dialog id="modal-participant-invite" class="modal modal-bottom sm:modal-middle">
-	<form method="dialog" class="modal-box flex flex-col gap-4" on:submit={handleCopyInvite}>
-		<h3 class="font-bold text-xl pb-2">Convidar participantes</h3>
-		<p class="text-gray-500">Convide mais pessoas para a sessão através do QRCode:</p>
-		{#if inviteLink.length > 0}
-			<div class="px-4 lg:px-32">
-				<QrCode uri={inviteLink} />
-			</div>
-		{/if}
-		<p class="text-gray-500">Ou copie este link:</p>
-		<textarea
-			class="textarea textarea-bordered text-gray-500 resize-none"
-			placeholder="Link de acesso"
-			readonly
-			value={inviteLink}
-		/>
-		<div class="modal-action">
-			<div class="flex flex-row gap-4">
-				<button class="btn" on:click={() => closeModal('modal-participant-invite')}>
-					Cancelar
-				</button>
-				<button type="submit" class="btn btn-info">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 20 20"
-						fill="currentColor"
-						class="w-5 h-5"
-					>
-						<path
-							fill-rule="evenodd"
-							d="M13.887 3.182c.396.037.79.08 1.183.128C16.194 3.45 17 4.414 17 5.517V16.75A2.25 2.25 0 0114.75 19h-9.5A2.25 2.25 0 013 16.75V5.517c0-1.103.806-2.068 1.93-2.207.393-.048.787-.09 1.183-.128A3.001 3.001 0 019 1h2c1.373 0 2.531.923 2.887 2.182zM7.5 4A1.5 1.5 0 019 2.5h2A1.5 1.5 0 0112.5 4v.5h-5V4z"
-							clip-rule="evenodd"
-						/>
-					</svg>
-					Copiar
-				</button>
-			</div>
-		</div>
-	</form>
-</dialog>
+<InviteParticipantModal url={data.currentURL} pokerId={data.id} />
 <PokerConfigModal />

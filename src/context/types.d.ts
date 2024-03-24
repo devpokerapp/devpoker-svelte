@@ -4,12 +4,18 @@ interface EmittedMessage {
     data: object;
 }
 
+interface RPCError {
+    args: string[];
+    exc_type: string;
+    value: string;
+}
+
 interface RPCResponse {
     success: boolean;
     service: string;
     method: string;
     result: object;
-    error: object;
+    error: RPCError?;
     transaction_id: string;
 }
 

@@ -1,34 +1,5 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { getContext } from 'svelte';
 	import AuthButton from '../components/AuthButton.svelte';
-
-	let name: string = '';
-	let loading = false;
-
-	const websocket = getContext<IWebSocketContext>('websocket');
-
-	const start = async () => {
-		let loading = true;
-		try {
-			const response = await websocket.sendAndWait({
-				service: 'poker_service',
-				method: 'create',
-				data: {
-					payload: {
-						creator: name
-						// TODO: get a better source for the creator code
-					}
-				}
-			});
-			const poker = response.result as Poker;
-			goto(`/poker/${poker.id}`);
-		} catch (error) {
-			console.error('REJECTED: ', error);
-		} finally {
-			loading = false;
-		}
-	};
 </script>
 
 <svelte:head>
@@ -49,12 +20,7 @@
 					soluta. Unde itaque reprehenderit voluptatibus sed tempore? Inventore vel excepturi ab
 					blanditiis laborum nulla itaque enim saepe deleniti.
 				</p>
-				<button class="btn btn-primary" on:click={start} disabled={loading}>
-					{#if loading}
-						<span class="loading loading-spinner loading-xs" />
-					{/if}
-					Começar
-				</button>
+				<a class="btn btn-primary" href="/poker"> Começar </a>
 			</div>
 		</div>
 	</div>
