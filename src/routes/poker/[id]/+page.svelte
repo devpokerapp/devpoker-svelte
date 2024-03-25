@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import { get, writable, type Writable } from 'svelte/store';
+	import { localStored } from '../../../lib/storage/local';
 	import { closeModal, openModal } from '../../../util/modal';
 	import { getLocalStorageParticipantKey } from '../../../util/storage';
 	import NavSidebar from '../../NavSidebar.svelte';
@@ -44,6 +45,7 @@
 	} = authContext;
 
 	const showUSMenu = writable(true);
+	const participantData = localStored<ParticipantLSO>(getLocalStorageParticipantKey(data.id));
 
 	websocket.listen('poker_retrieved', (message) => {
 		const poker = message.data as Poker;
@@ -74,15 +76,26 @@
 		}
 	});
 
-	const prepareSession = async (participantId: string) => {
+	// FIXME
+	const prepareSession = async () => {
 		const pokerId = data.id;
 
+		const participantStored = participantData.get();
+
+		if (participantStored == undefined) {
+			// TODO: show error
+			goto('/');
+			return;
+		}
+
 		const message = await websocket.sendAndWait({
-			service: 'poker_service',
+			service: 'participant_service',
 			method: 'join',
 			data: {
-				poker_id: pokerId,
-				participant_id: participantId
+				entity_id: participantStored.id,
+				payload: {
+					secretKey: participantStored.secretKey
+				}
 			}
 		});
 		const participant = message.result as Participant;
@@ -97,21 +110,12 @@
 		});
 	};
 
-	const loadCurrentParticipantId = (): string | undefined => {
-		const stored = localStorage.getItem(getLocalStorageParticipantKey(data.id));
-		if (stored === null) {
-			return undefined;
-		}
-		const participant = JSON.parse(stored) as string;
-		return participant;
-	};
-
 	onMount(() => {
 		websocket.asap(() => {
 			// join with created participant
-			const participantId = loadCurrentParticipantId();
-			if (participantId !== undefined) {
-				prepareSession(participantId);
+			const participantStored = participantData.get();
+			if (participantStored !== undefined) {
+				prepareSession();
 				return;
 			}
 
@@ -173,16 +177,19 @@
 			}
 
 			const participantId = participant.id;
+			const participantSecretKey = participant.secretKey || '';
 
 			// store participant for later
-			localStorage.setItem(getLocalStorageParticipantKey(data.id), JSON.stringify(participantId));
-			// TODO: implement key system to prevent users from simply switching their ids
+			participantData.set({
+				id: participantId,
+				secretKey: participantSecretKey
+			});
 
 			// removes invite code
 			goto(`/poker/${data.id}`);
 
 			// setup
-			prepareSession(participantId);
+			prepareSession();
 
 			waitingParticipant = false;
 			closeModal('modal-participant-create');
