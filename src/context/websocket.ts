@@ -10,9 +10,18 @@ export const websocket: IWebSocketContext = (() => {
     const initiated = writable(false);
     const connected = writable(false);
 
-    function listen(event: string, callback: (message: ReceivedMessage) => void): void {
-		listeners.push({ event, callback });
+    function listen(event: string, callback: (message: ReceivedMessage) => void): number {
+		const length = listeners.push({
+            event,
+            callback,
+            active: true
+        });
+        return length - 1;
 	}
+
+    function unlisten(index: number) {
+        listeners[index].active = false;
+    }
 
     function buildPayload(
         data: object,
@@ -82,7 +91,7 @@ export const websocket: IWebSocketContext = (() => {
 
         if (message.type === "event") {
             affected.push(...listeners.filter((listener) => {
-                return listener.event === message.event
+                return listener.active && listener.event === message.event
             }));
         }
 
@@ -156,6 +165,7 @@ export const websocket: IWebSocketContext = (() => {
         init,
         restart,
         listen,
+        unlisten,
         send,
         sendAndWait,
         asap,

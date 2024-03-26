@@ -93,7 +93,7 @@
 		createPoker(profileName);
 	});
 
-	websocket.listen('invite_created', async (response) => {
+	const listenerInviteCreated = websocket.listen('invite_created', async (response) => {
 		const invite = response.data as Invite;
 		await createParticipantFromInvite(invite);
 		goto(`/poker/${invite.pokerId}`);
@@ -114,6 +114,7 @@
 
 	onDestroy(() => {
 		name = '';
+		websocket.unlisten(listenerInviteCreated);
 	});
 </script>
 
