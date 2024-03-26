@@ -39,6 +39,7 @@ interface WSListener {
 
 interface WSEventListener extends WSListener {
     event: string;
+    active: boolean;
 }
 
 interface WSResultListener extends WSListener {
@@ -70,7 +71,8 @@ interface IWebSocketContext {
     restart(): void;
     send(message: EmittedMessage): string;
     sendAndWait(message: EmittedMessage): Promise<RPCResponse>;
-    listen(event: string, callback: (message: ReceivedMessage) => void): void;
+    listen(event: string, callback: (message: ReceivedMessage) => void): number;
+    unlisten(index: number): void;
     asap(callback: () => void): void;
     subscribe(channel: string): void;
     unsubscribe(channel: string): void;

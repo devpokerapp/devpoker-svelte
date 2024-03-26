@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { localStored } from '$lib/storage/local';
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import { get, type Writable } from 'svelte/store';
 	import { getLocalStorageParticipantKey } from '../../util/storage';
@@ -63,16 +64,16 @@
 			}
 
 			const participantId = participant.id;
+			const participantSecretKey = participant.secretKey || '';
 
 			// store participant for later
-			localStorage.setItem(
-				getLocalStorageParticipantKey(invite.pokerId),
-				JSON.stringify(participantId)
+			const participantData = localStored<ParticipantLSO>(
+				getLocalStorageParticipantKey(invite.pokerId)
 			);
-			// TODO: implement key system to prevent users from simply switching their ids
-
-			// removes invite code
-			goto(`/poker/${invite.pokerId}`);
+			participantData.set({
+				id: participantId,
+				secretKey: participantSecretKey
+			});
 		} catch (error) {
 			console.log(error);
 			goto('/');
@@ -89,8 +90,14 @@
 		createPoker(profileName);
 	});
 
-	websocket.listen('invite_created', async (response) => {
+	const listenerInviteCreated = websocket.listen('invite_created', async (response) => {
 		const invite = response.data as Invite;
+
+		if (get(authenticated)) {
+			goto(`/poker/${invite.pokerId}?i=${invite.code}`);
+			return;
+		}
+
 		await createParticipantFromInvite(invite);
 		goto(`/poker/${invite.pokerId}`);
 	});
@@ -110,6 +117,7 @@
 
 	onDestroy(() => {
 		name = '';
+		websocket.unlisten(listenerInviteCreated);
 	});
 </script>
 

@@ -28,6 +28,7 @@ interface Participant extends Model {
     name: string;
     pokerId: string;
     keycloakUserId?: string;
+    secretKey?: string;
     sid: string;
 }
 
@@ -90,4 +91,18 @@ interface VotePattern {
     type: VotePatternType;
     name: string;
     value?: string;
+}
+
+/**
+ * Local Storage Objects
+ */
+interface ManagedLocalStorage<T> {
+    get(): T | undefined;
+    set(value: T): void;
+    clear(): void;
+}
+
+interface ParticipantLSO {
+    id: string;
+    secretKey: string;
 }
