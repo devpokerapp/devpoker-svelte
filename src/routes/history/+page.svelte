@@ -45,6 +45,18 @@
 		Promise.allSettled(participants.map((participant) => loadPoker(participant.pokerId)));
 	};
 
+	const loadHistory = async (keycloakId: string) => {
+		const response = await websocket.sendAndWait({
+			service: 'poker_service',
+			method: 'history',
+			data: {
+				keycloak_id: keycloakId
+			}
+		});
+		const listing = response.result as SimpleListing<Poker>;
+		pokers.set(listing.items);
+	};
+
 	authLoading.subscribe(() => {
 		if (!get(authenticated)) {
 			goto('/');
@@ -61,7 +73,7 @@
 			return;
 		}
 		// grants its logged in before running
-		loadParticipations(value?.id || '');
+		loadHistory(value.id || '');
 	});
 </script>
 
