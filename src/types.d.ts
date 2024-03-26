@@ -76,6 +76,10 @@ interface QueryRead<T> {
     }
 }
 
+interface SimpleListing<T> {
+    items: T[];
+}
+
 interface PokerContext {
     poker: Poker;
     stories: Story[];
