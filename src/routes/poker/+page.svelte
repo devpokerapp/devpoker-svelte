@@ -74,9 +74,6 @@
 				id: participantId,
 				secretKey: participantSecretKey
 			});
-
-			// removes invite code
-			goto(`/poker/${invite.pokerId}`);
 		} catch (error) {
 			console.log(error);
 			goto('/');
@@ -95,6 +92,12 @@
 
 	const listenerInviteCreated = websocket.listen('invite_created', async (response) => {
 		const invite = response.data as Invite;
+
+		if (get(authenticated)) {
+			goto(`/poker/${invite.pokerId}?i=${invite.code}`);
+			return;
+		}
+
 		await createParticipantFromInvite(invite);
 		goto(`/poker/${invite.pokerId}`);
 	});

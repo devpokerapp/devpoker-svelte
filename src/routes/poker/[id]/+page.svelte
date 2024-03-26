@@ -140,7 +140,7 @@
 	});
 
 	onDestroy(() => {
-		// TODO: fix duplicated poker creators
+		participants.set([]);
 	});
 
 	const handleUSMenuSwitcher = () => {
