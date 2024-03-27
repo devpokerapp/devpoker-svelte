@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { getContext } from 'svelte';
 	import { get, writable, type Writable } from 'svelte/store';
+	import { formatUTC } from '../../util/date';
 	import NavSidebar from '../NavSidebar.svelte';
 
 	const websocket = getContext<IWebSocketContext>('websocket');
@@ -110,7 +111,7 @@
 					<article class="card border">
 						<div class="card-body">
 							<div class="card-title text-2xl">
-								Sessão de {new Date(poker.createdAt).toLocaleString()}
+								Sessão de {formatUTC(poker.createdAt)}
 							</div>
 							<ul class="menu px-0">
 								<li class="menu-title">User Stories</li>

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
 	import type { Writable } from 'svelte/store';
+	import { formatUTC } from '../../../util/date';
 
 	const eventContext = getContext<IEventContext>('event');
 	const participantContext = getContext<IParticipantContext>('participant');
@@ -36,7 +37,7 @@
 							{participantName}
 						</span>
 						<span class="text-gray-500">
-							{new Date(event.createdAt).toLocaleString()}
+							{formatUTC(event.createdAt)}
 						</span>
 					</div>
 					<p>

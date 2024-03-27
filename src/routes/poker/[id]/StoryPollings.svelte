@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
 	import type { Writable } from 'svelte/store';
+	import { formatUTC } from '../../../util/date';
 
 	const pollingContext = getContext<IPollingContext>('polling');
 	const {
@@ -53,7 +54,7 @@
 								<span class="badge badge-sm badge-primary">Ativa</span>
 							{/if}
 							<span>
-								Votação iniciada em {new Date(polling.createdAt).toLocaleString()}.
+								Votação iniciada em {formatUTC(polling.createdAt)}.
 							</span>
 							<span>
 								Status:
