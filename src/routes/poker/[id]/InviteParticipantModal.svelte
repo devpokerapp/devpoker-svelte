@@ -27,7 +27,7 @@
 		});
 
 		if (!response.success) {
-			// TODO: show error
+			// TODO: show toast error
 			return;
 		}
 

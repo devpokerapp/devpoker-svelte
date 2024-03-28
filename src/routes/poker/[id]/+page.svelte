@@ -76,15 +76,13 @@
 		}
 	});
 
-	// FIXME
 	const prepareSession = async () => {
 		const pokerId = data.id;
 
 		const participantStored = participantData.get();
 
 		if (participantStored == undefined) {
-			// TODO: show error
-			goto('/');
+			goto('/error/forbidden');
 			return;
 		}
 
@@ -121,8 +119,7 @@
 
 			// not invited to the party
 			if (data.inviteCode === null) {
-				// TODO: show error
-				goto('/');
+				goto('/error/forbidden');
 				return;
 			}
 
@@ -168,8 +165,8 @@
 			});
 
 			if (response.error?.exc_type === 'InvalidInviteCode') {
-				// TODO: show error
-				throw Error('Inserted invalid invite code');
+				goto('/error/forbidden');
+				return;
 			}
 
 			const participant = response.result as Participant | undefined;

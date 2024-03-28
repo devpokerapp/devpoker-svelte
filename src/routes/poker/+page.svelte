@@ -53,7 +53,7 @@
 			});
 
 			if (response.error?.exc_type === 'InvalidInviteCode') {
-				// TODO: show error
+				// TODO: show toast error
 				throw Error('Inserted invalid invite code');
 			}
 
