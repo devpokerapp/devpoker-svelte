@@ -140,6 +140,8 @@
 	});
 
 	onDestroy(() => {
+		activeStory.set(undefined);
+		currentPoker.set(undefined);
 		participants.set([]);
 	});
 
