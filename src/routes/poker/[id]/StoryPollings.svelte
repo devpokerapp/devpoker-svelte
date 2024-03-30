@@ -70,7 +70,10 @@
 						<div class="flex flex-row flex-wrap gap-2">
 							{#each polling.votes as vote}
 								<div class="badge badge-sm badge-secondary">
-									{vote.participant.name}: {vote.value}
+									{#if !polling.anonymous}
+										<span>{vote.participant.name}:</span>
+									{/if}
+									<span>{vote.value}</span>
 								</div>
 							{/each}
 						</div>

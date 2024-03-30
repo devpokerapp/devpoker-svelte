@@ -45,6 +45,7 @@ interface Polling extends Model {
     value?: string;
     completed: boolean;
     revealed: boolean;
+    anonymous: boolean;
     storyId: string;
     votes: Vote[];
 }
