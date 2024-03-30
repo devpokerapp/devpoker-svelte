@@ -69,7 +69,7 @@
 		{#each $votes as vote}
 			<button
 				class="btn btn-circle btn-info tooltip tooltip-info tooltip-bottom"
-				data-tip={`Voto de ${vote.participant.name}`}
+				data-tip={$currentPolling?.anonymous ? 'Voto anônimo' : `Voto de ${vote.participant.name}`}
 			>
 				{#if $currentPolling?.revealed}
 					<VoteLabel value={vote.value} />

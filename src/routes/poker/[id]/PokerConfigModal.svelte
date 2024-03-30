@@ -13,6 +13,8 @@
 	let voteType: VotePatternType = 'fibo';
 	let voteOptions = getOptionsFromPattern(votePattern);
 
+	let anonymousVoting: boolean = false;
+
 	const changePattern = (pattern: VotePattern) => {
 		voteType = pattern.type;
 		if (pattern.value !== undefined) {
@@ -37,7 +39,10 @@
 		}
 	};
 
-	currentPoker.subscribe(updatePatternFromPoker);
+	currentPoker.subscribe((value) => {
+		updatePatternFromPoker();
+		anonymousVoting = value?.anonymousVoting || false;
+	});
 
 	const handlePokerUpdate = async (event: SubmitEvent) => {
 		event.preventDefault();
@@ -50,7 +55,8 @@
 		try {
 			const poker = await pokerContext.update(current.id, {
 				...current,
-				votePattern: votePattern
+				votePattern: votePattern,
+				anonymousVoting: anonymousVoting
 			});
 
 			closeModal('modal-poker-config');
@@ -73,6 +79,33 @@
 <dialog id="modal-poker-config" class="modal modal-bottom sm:modal-middle">
 	<form method="dialog" class="modal-box flex flex-col gap-4" on:submit={handlePokerUpdate}>
 		<h3 class="font-bold text-xl pb-2">Configurar sessão de Planning Poker</h3>
+		<div class="form-control">
+			<label class="label cursor-pointer">
+				<span class="label-text"> Votação anônima </span>
+				<input type="checkbox" bind:checked={anonymousVoting} class="checkbox checkbox-primary" />
+			</label>
+		</div>
+		<!-- TODO -->
+		<!-- <div class="form-control w-full">
+			<div class="label">
+				<span class="label-text"> Senha de acesso </span>
+			</div>
+			<label class="input input-bordered flex items-center gap-2">
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					viewBox="0 0 16 16"
+					fill="currentColor"
+					class="w-4 h-4"
+				>
+					<path
+						fill-rule="evenodd"
+						d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
+						clip-rule="evenodd"
+					/>
+				</svg>
+				<input type="text" class="grow" placeholder="Senha de acesso" />
+			</label>
+		</div> -->
 		<div class="form-control w-full">
 			<div class="label">
 				<span class="label-text">Padrão de votação</span>

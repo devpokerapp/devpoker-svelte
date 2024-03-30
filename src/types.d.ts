@@ -10,6 +10,7 @@ interface Model {
 interface Poker extends Model {
     creator: string;
     votePattern: string;
+    anonymousVoting: boolean;
     currentStoryId?: string;
     stories: Story[];
     participants: Participant[];
@@ -44,6 +45,7 @@ interface Polling extends Model {
     value?: string;
     completed: boolean;
     revealed: boolean;
+    anonymous: boolean;
     storyId: string;
     votes: Vote[];
 }
