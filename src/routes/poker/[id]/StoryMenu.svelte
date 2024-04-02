@@ -155,12 +155,66 @@
 		// exportAsCSV();
 	};
 
-	const handleMoveUpStory = (entity: Story, index: number) => {
-		// TODO
+	const updateStory = async (entity: Story): Promise<Story | undefined> => {
+		try {
+			const story = await storyContext.update(entity.id, entity);
+			if (story === undefined) {
+				throw Error('Failed to update story!');
+			}
+			return story;
+		} catch (error) {
+			console.error(error);
+		}
 	};
 
-	const handleMoveDownStory = (entity: Story, index: number) => {
-		// TODO
+	const handleMoveUpStory = async (entity: Story, index: number) => {
+		const targetIndex = index - 1;
+		const values = get(stories);
+		const previous = values.at(targetIndex);
+
+		if (previous === undefined) {
+			return;
+		}
+
+		const targetOrder = previous.order;
+		const currentOrder = entity.order;
+
+		await updateStory({
+			...previous,
+			order: currentOrder
+		});
+		const updated = await updateStory({
+			...entity,
+			order: targetOrder
+		});
+
+		focusing = updated;
+		focusingIdx = targetIndex;
+	};
+
+	const handleMoveDownStory = async (entity: Story, index: number) => {
+		const targetIndex = index + 1;
+		const values = get(stories);
+		const next = values.at(targetIndex);
+
+		if (next === undefined) {
+			return;
+		}
+
+		const targetOrder = next.order;
+		const currentOrder = entity.order;
+
+		await updateStory({
+			...next,
+			order: currentOrder
+		});
+		const updated = await updateStory({
+			...entity,
+			order: targetOrder
+		});
+
+		focusing = updated;
+		focusingIdx = targetIndex;
 	};
 </script>
 

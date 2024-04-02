@@ -18,6 +18,7 @@ interface Poker extends Model {
 
 interface Story extends Model {
     name: string;
+    order: int;
     description?: string;
     value?: string;
     pokerId: string;
