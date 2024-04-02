@@ -70,8 +70,7 @@
 							</a>
 						</li>
 						<li>
-							<!-- TODO -->
-							<a href="/">
+							<a href="/projects">
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									viewBox="0 0 20 20"
