@@ -13,6 +13,11 @@ export const getStoryContext = (): IStoryContext => {
     const activeStoryId = writable<string | undefined>(undefined);
     const activeStory = writable<Story | undefined>(undefined);
 
+    websocket.listen('story_updated', () => {
+        const ordered = get<Story[]>(context.entities).sort((a, b) => a.order - b.order);
+        context.entities.set(ordered);
+    });
+
     activeStory.subscribe((value: Story | undefined) => {
         eventContext.entities.set(value?.events || []);
         pollingContext.entities.set(value?.pollings || []);
