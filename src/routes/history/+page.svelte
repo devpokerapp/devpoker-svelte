@@ -135,19 +135,43 @@
 								<div class="flex flex-row w-full gap-2">
 									<a class="btn btn-primary" href={`/poker/${poker.id}`}>Acessar</a>
 									<div class="flex-grow" />
-									<button class="btn btn-secondary btn-circle">
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											viewBox="0 0 20 20"
-											fill="currentColor"
-											class="w-5 h-5"
+									<div class="dropdown dropdown-hover dropdown-end">
+										<button tabindex="0" role="button" class="btn btn-circle btn-secondary">
+											<svg
+												xmlns="http://www.w3.org/2000/svg"
+												viewBox="0 0 20 20"
+												fill="currentColor"
+												class="w-5 h-5"
+											>
+												<path
+													d="M10 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM3.465 14.493a1.23 1.23 0 0 0 .41 1.412A9.957 9.957 0 0 0 10 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 0 0-13.074.003Z"
+												/>
+											</svg>
+										</button>
+										<ul
+											tabindex="0"
+											class="dropdown-content z-[1] menu p-2 shadow bg-secondary text-secondary-content rounded-box w-40"
 										>
-											<path
-												d="M10 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM3.465 14.493a1.23 1.23 0 0 0 .41 1.412A9.957 9.957 0 0 0 10 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 0 0-13.074.003Z"
-											/>
-										</svg>
-									</button>
-									<div class="btn btn-secondary btn-circle">
+											{#each poker.participants as participant}
+												<li>
+													<button>
+														<svg
+															xmlns="http://www.w3.org/2000/svg"
+															viewBox="0 0 16 16"
+															fill="currentColor"
+															class="w-4 h-4"
+														>
+															<path
+																d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z"
+															/>
+														</svg>
+														{participant.name}
+													</button>
+												</li>
+											{/each}
+										</ul>
+									</div>
+									<!-- <div class="btn btn-secondary btn-circle">
 										<svg
 											xmlns="http://www.w3.org/2000/svg"
 											viewBox="0 0 20 20"
@@ -158,7 +182,7 @@
 												d="M10 3a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM10 8.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM11.5 15.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0Z"
 											/>
 										</svg>
-									</div>
+									</div> -->
 								</div>
 							</div>
 						</div>
