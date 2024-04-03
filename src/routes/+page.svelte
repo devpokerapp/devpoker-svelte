@@ -3,8 +3,8 @@
 </script>
 
 <svelte:head>
-	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
+	<title>DevPoker</title>
+	<meta name="description" content="DevPoker app" />
 </svelte:head>
 
 <div class="absolute top-2 right-2">
@@ -45,12 +45,12 @@
 				<img
 					src="/img/demo1.png"
 					class="shadow-xl rounded w-96 hover:scale-125 hover:z-10"
-					alt=""
+					alt="Tela de votação depois da realização de uma estimativa"
 				/>
 				<img
 					src="/img/demo2.png"
 					class="shadow-xl rounded w-96 hover:scale-125 hover:z-10"
-					alt=""
+					alt="Tela de votação utilizando t-shirt sizing"
 				/>
 				<!-- <img
 					src="/img/demo3.png"
