@@ -97,17 +97,14 @@
 				<div class="card-body">
 					<div class="flex flex-row flex-wrap justify-center gap-4">
 						{#each $currentPoker.votePattern.split(',') as value, index}
+							{@const symbol = CARD_SYMBOLS[index % CARD_SYMBOLS.length]}
 							<button
 								class="btn btn-secondary relative h-28 w-20 rounded-xl hover:scale-125 hover:z-10 pointer-events-auto"
 								on:click={() => sendVote(value)}
 							>
 								<VoteLabel {value} />
-								<span class="absolute top-2 left-2"
-									>{CARD_SYMBOLS[index % CARD_SYMBOLS.length]}</span
-								>
-								<span class="absolute bottom-2 right-2"
-									>{CARD_SYMBOLS[index % CARD_SYMBOLS.length]}</span
-								>
+								<span class="absolute top-2 left-2">{symbol}</span>
+								<span class="absolute bottom-2 right-2">{symbol}</span>
 							</button>
 						{/each}
 					</div>
