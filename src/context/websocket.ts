@@ -7,6 +7,8 @@ export const websocket: IWebSocketContext = (() => {
     let url: string;
     let socket: WebSocket;
 
+    const TIMEOUT_RETRY = 2000; // ms = 2s
+
     const initiated = writable(false);
     const connected = writable(false);
 
@@ -117,6 +119,7 @@ export const websocket: IWebSocketContext = (() => {
                 console.debug(`[ws] connection closed cleanly. code=${event.code} reason=${event.reason}`);
             } else {
                 console.debug('[ws] connection died');
+                setTimeout(restart, TIMEOUT_RETRY);
             }
             connected.set(false);
 		}
