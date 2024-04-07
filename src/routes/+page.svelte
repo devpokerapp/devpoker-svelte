@@ -11,7 +11,7 @@
 	<AuthButton />
 </div>
 <section class="bg-base-200">
-	<div class="hero min-h-screen -mb-12">
+	<div class="hero px-12 min-h-screen -mb-12">
 		<div class="hero-content text-center">
 			<div class="max-w-md">
 				<h1 class="text-5xl font-bold">DevPoker</h1>
@@ -39,9 +39,23 @@
 	</div>
 </section>
 <section id="features" class="bg-secondary">
-	<div class="hero py-32">
-		<div class="hero-content flex-col lg:flex-row-reverse gap-24">
-			<div class="space-x-16 -space-y-16">
+	<div class="hero px-12 py-32">
+		<div class="hero-content flex-col lg:flex-row gap-12 lg:gap-24">
+			<div class="max-w-md">
+				<h1 class="text-5xl font-bold">Estimativa super poderosa!</h1>
+				<p class="py-6">
+					Várias funcionalidades são fornecidas pelo DevPoker de forma totalmente gratuita.
+				</p>
+				<ul class="list-disc pl-6 pb-6">
+					<li>Voto anônimo;</li>
+					<li>T-shirt sizing;</li>
+					<li>Formatos de votação customizados;</li>
+					<li>Convite por QR Code;</li>
+					<li>Exportação de resultados.</li>
+				</ul>
+				<a class="btn btn-primary" href="/poker"> Comece agora mesmo </a>
+			</div>
+			<div class="flex flex-col gap-4">
 				<img
 					src="/img/demo1.png"
 					class="shadow-xl rounded w-96 hover:scale-125 hover:z-10"
@@ -58,25 +72,11 @@
 					alt=""
 				/> -->
 			</div>
-			<div class="max-w-md">
-				<h1 class="text-5xl font-bold">Estimativa super poderosa!</h1>
-				<p class="py-6">
-					Várias funcionalidades são fornecidas pelo DevPoker de forma totalmente gratuita.
-				</p>
-				<ul class="list-disc pl-6 pb-6">
-					<li>Voto anônimo;</li>
-					<li>T-shirt sizing;</li>
-					<li>Formatos de votação customizados;</li>
-					<li>Convite por QR Code;</li>
-					<li>Exportação de resultados.</li>
-				</ul>
-				<a class="btn btn-primary" href="/poker"> Comece agora mesmo </a>
-			</div>
 		</div>
 	</div>
 </section>
 <section id="premium" class="bg-primary">
-	<div class="hero py-32">
+	<div class="hero px-12 py-32">
 		<div class="hero-content">
 			<div class="max-w-md">
 				<h1 class="text-5xl font-bold">Plano premium</h1>
