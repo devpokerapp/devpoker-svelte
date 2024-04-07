@@ -29,6 +29,7 @@
 	let name: string = '';
 	let loading: boolean = false;
 	let waitingParticipant = false;
+	let updatingStory: Story | undefined = undefined;
 
 	const { activeStory }: { activeStory: Writable<Story | undefined> } = storyContext;
 	const { current: currentPoker }: { current: Writable<Poker | undefined> } = pokerContext;
@@ -212,6 +213,30 @@
 		event.preventDefault();
 		createParticipantAndStart(name);
 	};
+
+	const handleUpdateStory = async (event: SubmitEvent) => {
+		event.preventDefault();
+		loading = true;
+
+		try {
+			if (updatingStory === undefined) {
+				throw Error('Unable to locate updated story!');
+			}
+
+			const story = await storyContext.update(updatingStory.id, updatingStory);
+
+			if (story === undefined) {
+				throw Error('Failed to update story!');
+			}
+
+			updatingStory = undefined;
+		} catch (error) {
+			console.error(error);
+		} finally {
+			loading = false;
+			closeModal('modal-active-story-update');
+		}
+	};
 </script>
 
 <svelte:head>
@@ -269,7 +294,30 @@
 					</div>
 				{/if}
 				{#if $activeStory !== undefined}
-					<div class="text-5xl leading-snug font-bold text-left pt-6 relative">
+					<div class="flex flex-row justify-end">
+						<button
+							class="btn btn-sm"
+							on:click={() => {
+								updatingStory = $activeStory;
+								openModal('modal-active-story-update');
+							}}
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 16 16"
+								fill="currentColor"
+								class="w-4 h-4"
+							>
+								<path
+									d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.262a1.75 1.75 0 0 0 0-2.474Z"
+								/>
+								<path
+									d="M4.75 3.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h6.5c.69 0 1.25-.56 1.25-1.25V9A.75.75 0 0 1 14 9v2.25A2.75 2.75 0 0 1 11.25 14h-6.5A2.75 2.75 0 0 1 2 11.25v-6.5A2.75 2.75 0 0 1 4.75 2H7a.75.75 0 0 1 0 1.5H4.75Z"
+								/>
+							</svg>
+						</button>
+					</div>
+					<div class="text-5xl leading-snug font-bold text-left relative">
 						{#if $activeStory.value !== null}
 							<span class="badge badge-accent absolute right-0 top-4">{$activeStory.value}</span>
 						{/if}
@@ -336,3 +384,32 @@
 </dialog>
 <InviteParticipantModal url={data.currentURL} pokerId={data.id} />
 <PokerConfigModal />
+<dialog id="modal-active-story-update" class="modal modal-bottom sm:modal-middle">
+	<form method="dialog" class="modal-box flex flex-col gap-4" on:submit={handleUpdateStory}>
+		<h3 class="font-bold text-xl pb-2">Atualizar User Story</h3>
+		{#if updatingStory !== undefined}
+			<input
+				type="text"
+				placeholder="Nome"
+				class="input input-bordered w-full"
+				bind:value={updatingStory.name}
+			/>
+			<textarea
+				class="textarea textarea-bordered"
+				placeholder="Descrição"
+				bind:value={updatingStory.description}
+			/>
+		{/if}
+		<div class="modal-action">
+			<div class="flex flex-row gap-4">
+				<button type="reset" class="btn" on:click={() => closeModal('modal-active-story-update')}>
+					Cancelar
+				</button>
+				<button type="submit" class="btn btn-primary" disabled={loading}> Confirmar </button>
+			</div>
+		</div>
+	</form>
+	<form method="dialog" class="modal-backdrop">
+		<button>close</button>
+	</form>
+</dialog>
