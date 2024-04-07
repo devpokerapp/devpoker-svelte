@@ -13,30 +13,32 @@
 	<AuthButton />
 </div>
 <section class="bg-base-200">
-	<div class="hero px-12 min-h-screen -mb-12">
-		<div class="hero-content text-center">
-			<div class="max-w-md">
-				<h1 class="text-5xl font-bold">DevPoker</h1>
-				<p class="py-6">
-					Estime suas user stories de forma confortável e dinâmica, com todos membros do seu time.
-					No browser ou no smartphone.
-				</p>
-				<a class="btn btn-primary" href="/poker"> Começar </a>
+	<div class="flex flex-col px-12 min-h-screen">
+		<div class="hero flex-grow pt-24">
+			<div class="hero-content text-center">
+				<div class="max-w-md">
+					<h1 class="text-5xl font-bold">DevPoker</h1>
+					<p class="py-6">
+						Estime suas user stories de forma confortável e dinâmica, com todos membros do seu time.
+						No browser ou no smartphone.
+					</p>
+					<a class="btn btn-primary" href="/poker"> Começar </a>
+				</div>
 			</div>
 		</div>
-	</div>
-	<div class="min-h-12">
-		<div class="flex flex-row justify-center">
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				fill="none"
-				viewBox="0 0 24 24"
-				stroke-width="1.5"
-				stroke="currentColor"
-				class="w-6 h-6"
-			>
-				<path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-			</svg>
+		<div class="min-h-12 pb-28">
+			<div class="flex flex-row justify-center">
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke-width="1.5"
+					stroke="currentColor"
+					class="w-6 h-6"
+				>
+					<path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+				</svg>
+			</div>
 		</div>
 	</div>
 </section>
